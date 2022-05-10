@@ -1,0 +1,217 @@
+/*===== GOOGLE FONTS =====*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap");
+
+/*===== VARIABLES CSS =====*/
+
+:root {
+    /* --primario :rgb(33, 42, 52); */
+    --primario: rgb(33, 33, 33);
+    --fondo: rgb(25, 23, 21);
+    --secundario: #2473cd ;
+}
+
+/*===== BASE =====*/
+*,::before,::after{
+  box-sizing: border-box;
+}
+body{
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+}
+.contenedor {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+}
+
+/*===== MENÚ =====*/
+
+.menu {
+    width: 85px;
+    height: 100vh;
+    background-color: var(--primario);
+    padding: 10px 0  0 10px;
+    transition: 0.5s;
+}
+.navi {
+    margin-right: 20px;
+}
+
+.logo {
+    display: grid;
+    grid-template-columns: max-content max-content max-content;
+    gap: 35px;
+    margin: 20px 0 50px 20px;
+    /* line-height: 25px; */
+    /* background-color: green; */
+}
+
+.logo img {
+    margin-top: 15px;
+    width: 50px;
+    height: 50px;
+}
+
+.logo h2 {
+    color: white;
+    font-size: 27px;
+    font-weight: 750;
+    position: relative;
+    right: 20px;
+    line-height: 80px;
+}
+
+.logo span {
+    color: var(--secundario);
+    
+}
+
+.logo__icono {
+    color: var(--secundario);
+    font-size: 25px;
+    cursor: pointer;
+    line-height: 80px;
+}
+
+.logo__titulo {
+    font-family: Poppins;
+    text-decoration: none;
+    font-size: 28px;
+    color: var(--secundario);
+    text-transform: uppercase;
+    font-weight: 600;
+    /* text-shadow: 1px 1px 5px rgba(255,255,255,0.5); */
+}
+
+.nav__lista {
+    height: 100%;
+    display:flex;
+    flex-direction: column;
+}
+
+.nav__link {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    gap: 35px;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    padding: 10px;
+    transition: .5s;
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+.nav__link:hover {
+    background-color: #2473cd ;
+    transform: scale(1.15);
+}
+
+.nav__icono {
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.nav__nombre {
+    font-family: Poppins;
+    font-size: 15px;
+    color: white;
+}
+
+.nav__toggle {
+    width: 250px;
+    transition: .5s;
+}
+
+.asunto {
+    width: 100%;
+    height: 100vh;
+    background-color: var(--fondo);
+    z-index: 100;
+}
+
+.barra {
+    width: 100%;
+    height: 80px;
+    background-color: var(--primario);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.buscar {
+    position:relative;
+    font-family: Poppins;
+    height: 40px; 
+    margin-right: 20px;
+    padding:0 40px 0 25px;
+    border-radius: 20px; 
+    background: var(--fondo);
+    color: white;
+}
+
+/* ===== TABLA DE CLIENTES ===== */
+.tabla{
+    margin: 30px;
+    border-radius:10px;
+    background: var(--primario);
+    display: inline-block; 
+    padding: 10px;
+}
+
+.tabla__tools {
+    display: flex;
+    justify-content: space-between;
+}  
+
+.tabla__tools ul {
+    display: flex;
+    list-style:none;
+    gap: 20px;
+    align-items: center;
+}
+
+.tabla__tools ul li .icono {
+    color: white;
+    font-size: 20px;
+    padding:10px;
+    border-radius: 5px;
+}
+
+.tabla__tools ul li .icono:hover {
+    background: var(--secundario)
+}
+
+.tabla__tools input {
+    color: white;
+    font-size: 15px;;
+    background: var(--fondo);
+    height: 30px;
+    width:100%;
+    margin: 30px;
+    align-items: center;
+    border-radius: 5px;
+    padding: 0 15px;
+}
+
+.tabla__titulo {
+    font-family: "Noto Sans";
+    font-size: 15px;
+    color: white;
+}
+
+.tabla__titulo tr th {
+    padding: 10px 10px;
+}
+
+.tabla__contenido {
+    overflow-x: scroll;
+}
+
+
+
+
+
