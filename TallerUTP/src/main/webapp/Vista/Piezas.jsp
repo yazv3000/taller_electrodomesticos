@@ -9,95 +9,77 @@
 <link rel="stylesheet" type="text/css" href="../css/style.css">
 <link rel="stylesheet" type="text/css" href="../css/mant.css">
 <link rel="icon" type="image/png" href="../img/ico.png">
-<!-- LIBRERIA DE TELEFONOS -->
-<link  rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-
-<title>TECNICOS - TALLER UTP</title>
+<title>PIEZAS - TALLER UTP</title>
 </head> 
 <body id="body">
-
 <!-- IMPORTANDO LAS CLASES -->
 <%@ page import="utp.taller.dao.*" %>
 <%@ page import="utp.taller.entidades.*" %>
 <%@ page import="java.util.List" %>
-
-
-	<div class="d-flex justify-content-center">
+	<div class="d-flex justify-content-center margen">
 		<div class="card col-sm-4" id="formServPrest">
 			<div class="card-body">
 				<form class="justify-content-center needs-validation" align="center" action="Validar" novalidate>
 					<div class="form-group pt-2">
-						<label class="formuTecTit">NOMBRES</label>
-						<input type="text" name="nom_tec" class="form-control estinputs" placeholder="Nombre" required>
+						<label class="formuTecTit">PIEZA</label>
+						<input type="text" name="fech_serv" class="form-control estinputs" placeholder="Pieza" required>
 						<div class="valid-feedback">Campos Completos</div>
 						<div class="invalid-feedback">Campos Incompletos</div>
 					</div>
 					<div class="form-group pt-2">
-						<label class="formuTecTit">APELLIDOS</label>
-					</div>
-					<div class="form-group pt-1">
-						<div style="float:left; width: 150px;">
-						<input type="text" class="form-control estinputs" name="ape_princ_tec" placeholder="Principal" required>
-						<div class="valid-feedback">Campos Completos</div>
-						<div class="invalid-feedback">Campos Incompletos</div>
-						</div>
-						<div style="float:right; width: 150px;">
-						<input type="text" class="form-control estinputs" name="ape_sec_tec" placeholder="Secundario" required>
-						<div class="valid-feedback">Campos Completos</div>
-						<div class="invalid-feedback">Campos Incompletos</div>
-						</div>
-						<div style="clear:both"></div>
-					</div>
-					<div class="form-group pt-2">
-						<label class="formuTecTit">DIRECCION</label>
-						<input type="text" name="calificacion" class="form-control estinputs" placeholder="Direccion" required>
+						<label class="formuTecTit">STOCK</label>
+						<input id="campo-numerico" type="number" class="form-control estinputs" name="ape_princ_tec" placeholder="Ingrese una cantidad" required>
 						<div class="valid-feedback">Campos Completos</div>
 						<div class="invalid-feedback">Campos Incompletos</div>
 					</div>
 					<div class="form-group pt-2">
-						<label class="formuTecTit">TELEFONO</label>
-					</div>
-					<div class="form-group pt-1">
-						<input id="phone" type="number" name="phone" class="form-control estinputs" required>
+						<label class="formuTecTit">MARCA</label>
+						<select name="example" class="form-control estinputs" required>
+						  <option value="A">A</option>
+						  <option value="B">B</option>
+						  <option value="-">Other</option>
+						</select>
 						<div class="valid-feedback">Campos Completos</div>
 						<div class="invalid-feedback">Campos Incompletos</div>
+					</div>
+					<div class="form-group pt-2">
+						<label class="formuTecTit">COSTO (S/.)</label>
+						<input id="campo-numerico" type="number" min="1" pattern="^[0-9]+" onpaste="return false;" onDrop="return false;" autocomplete=off
+						class="form-control estinputs" placeholder="Ingreso Monto" required>
+						<div class="valid-feedback">Campos Completos</div>
+                 		<div class="invalid-feedback">Campos Incompletos</div>
 					</div>
 					<div class="form-group text-center pt-2">
-						<button type="submit" class="btn btn-dark"><b>Agregar</b></button>
+						<button class="btn btn-dark" type="submit"><b>Agregar</b></button>
 					</div>
 				</form>
 			</div>
 		</div>
 		<%
-			DaoCliente daocli = new DaoCliente();
-			List<Cliente> lst = daocli.listar();
+			DaoPieza daopi = new DaoPieza();
+			List<Pieza> lst = daopi.listar();
 		%>
 		<div class="col-sm-8 paddingsty" id="formServPrest">
 			<table id="miTabla" class="table table-dark table-hover text-center">
-				<thead>
+				<thead> 
 					<tr>
 						<th>ID</th>
-						<th>NOMBRES</th>
-						<th>APELLIDOS</th>
-						<th># DOC</th>
-						<th>DIRECCION</th>
-						<th>CORREO</th>
-						<th>TELEFONO</th>
+						<th>PIEZA</th>
+						<th>STOCK</th>
+						<th>CATEGORIA</th>
+						<th>PRECIO (S/.)</th>
 					</tr>
 				</thead>
-				<tbody class="table-dark">
 				<%
-					for (Cliente cli : lst){
+					for (Pieza pi : lst){
 				%>
+				<tbody class="table-dark">
 				<tr>
-					<th><%=cli.getIdCliente()%></th>
-					<th><%=cli.getNombre()%></th>
-					<th><%=cli.getApePrin()+"/"+cli.getApeSec()%></th>
-					<th><%=cli.getNro_doc()%></th>
-					<th><%=cli.getDireccion()%></th>
-					<th><%=cli.getEmail()%></th>
-					<th><%=cli.getTelefonos() %></th>
+					<th><%= pi.getIdPieza()%></th>
+					<th><%= pi.getNomPieza()%></th>
+					<th><%= pi.getStock() %></th>
+					<th><%= pi.getCategoria() %></th>
+					<th><%= pi.getPrecio() %></th>
 				</tr>
 				<%
 					}
@@ -109,13 +91,15 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<!-- VALIDAR CAMPOS -->
-<script src="../js/validForm.js"></script>
+<!-- VALIDACION NUMERO -->
+<script src="../js/ValidacionMonto.js"></script>
+<!-- LIBRERIA TABLA -->
 <script>
 	$(document).ready(function () {
 		$('#miTabla').DataTable();
 	});
 </script>
-<script src="../js/libreriaTel.js"></script>
+<!-- VALIDAR CAMPOS -->
+	<script src="../js/validForm.js"></script>
 </body>
 </html>

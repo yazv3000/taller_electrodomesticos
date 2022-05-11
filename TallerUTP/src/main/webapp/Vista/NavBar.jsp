@@ -29,27 +29,27 @@
                     </div>
                     <!-- ===== LINK ===== -->
                     <div class="nav__lista">
-                        <a href="ServPrest.jsp" class="nav__link" target="myFrame">
+                        <a href="Cliente.jsp" class="nav__link" target="myFrame">
                             <i class="fa-solid fa-user nav__icono"></i>
                             <span class="nav__nombre">Clientes</span>
                         </a>
-                        <a href="#" class="nav__link" target="myFrame">
+                        <a href="Tecnico.jsp" class="nav__link" target="myFrame">
                             <i class="fa-solid fa-screwdriver-wrench nav__icono"></i>
                             <span class="nav__nombre">Tecnicos</span>
                         </a>
-                        <a href="#" class="nav__link" target="myFrame">
+                        <a href="Cita.jsp" class="nav__link" target="myFrame">
                             <i class="fas fa-calendar-check nav__icono"></i>
                             <span class="nav__nombre">Citas</span>
                         </a>
-                        <a href="#" class="nav__link" target="myFrame">
+                        <a href="Horario.jsp" class="nav__link" target="myFrame">
                             <i class="fa-solid fa-calendar-days nav__icono"></i>
                             <span class="nav__nombre">Horarios</span>
                         </a>
-                        <a href="#" class="nav__link" target="myFrame">
+                        <a href="Piezas.jsp" class="nav__link" target="myFrame">
                             <i class="fa-solid fa-bag-shopping nav__icono"></i>
                             <span class="nav__nombre">Accesorios</span>
                         </a>
-                        <a href="#" class="nav__link" target="myFrame">
+                        <a href="Reportes.jsp" class="nav__link" target="myFrame">
                             <i class="fa-solid fa-arrow-trend-up nav__icono"></i>
                             <span class="nav__nombre">Reportes</span>
                         </a>
@@ -57,7 +57,7 @@
                             <i class="fa-solid fa-gear nav__icono"></i>
                             <span class="nav__nombre">Configuraciones</span>
                         </a>
-                        <a href="#" class="nav__link" target="myFrame">
+                        <a href="Login.jsp" class="nav__link">
                             <i class="fa-solid fa-arrow-right-from-bracket nav__icono"></i>
                             <span class="nav__nombre">Salir</span>
                         </a>
