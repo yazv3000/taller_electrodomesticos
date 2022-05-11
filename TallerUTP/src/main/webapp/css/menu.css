@@ -30,7 +30,7 @@ body{
 /*===== MENÚ =====*/
 
 .menu {
-    width: 85px;
+    width: 81px;
     height: 100vh;
     background-color: var(--primario);
     padding: 10px 0  0 10px;
@@ -43,8 +43,11 @@ body{
 .logo {
     display: grid;
     grid-template-columns: max-content max-content max-content;
-    gap: 35px;
-    margin: 20px 0 50px 20px;
+    gap: 30px;
+    margin: 0px 0 40px 0px;
+    position: relative;
+    top: 20px;
+    right: 20px;
     /* line-height: 25px; */
     /* background-color: green; */
 }
@@ -57,7 +60,7 @@ body{
 
 .logo h2 {
     color: white;
-    font-size: 27px;
+    font-size: 30px;
     font-weight: 750;
     position: relative;
     right: 20px;
@@ -122,7 +125,7 @@ body{
 }
 
 .nav__toggle {
-    width: 250px;
+    width: 290px;
     transition: .5s;
 }
 

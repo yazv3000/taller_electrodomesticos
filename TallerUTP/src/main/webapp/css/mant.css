@@ -5,15 +5,25 @@
     --fondo: rgb(25, 23, 21);
     --secundario: #2473cd ;
 }
-body{
+#body {
 	background: #000;
-	margin: 40px;
+	margin: 15px;
 }
 #formServPrest {
-	margin: 5px;
+	margin: 10px;
 	background-color: var(--primario);
     border-radius: 20px;
     color: white;
+}
+#conjuntcard {
+	background-color: var(--primario);
+    border-radius: 20px;
+    color: white;
+}
+.paddingsty {
+	padding: 10px;
+	background: #000;
+	color: white;
 }
 .estinputs {
 	background: #000;
@@ -34,6 +44,4 @@ div {
 input {
 	color: white;
 }
-.margen {
-	z-index: -100;
-}
+
