@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -70,8 +71,8 @@
 			</div>
 		</div>
 		<%
-			DaoCliente daocli = new DaoCliente();
-			List<Cliente> lst = daocli.listar();
+			//DaoCliente daocli = new DaoCliente();
+			//List<Cliente> lst = daocli.listar();
 		%>
 		<div class="col-sm-8 paddingsty" id="formServPrest">
 			<table id="miTabla" class="table table-dark table-hover text-center">
@@ -88,19 +89,15 @@
 				</thead>
 				<tbody class="table-dark">
 				<%
-					for (Cliente cli : lst){
+					//for (Cliente cli : lst){
 				%>
+				<c:forEach var="a" items="${listaClientes}">
 				<tr>
-					<th><%=cli.getIdCliente()%></th>
-					<th><%=cli.getNombre()%></th>
-					<th><%=cli.getApePrin()+"/"+cli.getApeSec()%></th>
-					<th><%=cli.getNro_doc()%></th>
-					<th><%=cli.getDireccion()%></th>
-					<th><%=cli.getEmail()%></th>
-					<th><%=cli.getTelefonos() %></th>
+					<th><% %></th>
 				</tr>
+				</c:forEach>
 				<%
-					}
+				//	}
 				%>			
 				</tbody>
 			</table>

@@ -45,7 +45,7 @@
                             <i class="fa-solid fa-calendar-days nav__icono"></i>
                             <span class="nav__nombre">Horarios</span>
                         </a>
-                        <a href="Piezas.jsp" class="nav__link" target="myFrame">
+                        <a href="Pieza.jsp" class="nav__link" target="myFrame">
                             <i class="fa-solid fa-bag-shopping nav__icono"></i>
                             <span class="nav__nombre">Accesorios</span>
                         </a>

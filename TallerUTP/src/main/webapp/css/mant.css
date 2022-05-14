@@ -11,12 +11,12 @@
 }
 #formServPrest {
 	margin: 10px;
-	background-color: var(--primario);
+	background-color: var(--primario) !important;
     border-radius: 20px;
     color: white;
 }
 #conjuntcard {
-	background-color: var(--primario);
+	background-color: var(--primario) !important;
     border-radius: 20px;
     color: white;
 }
