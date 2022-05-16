@@ -15,7 +15,6 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
-	@Override
 	public List<Pieza> listar() {
 
 		List<Pieza> lst = new ArrayList<Pieza>();
@@ -52,6 +51,11 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 
 	}
 
+	@Override
+	public Pieza consultarId(String id) {
+		return null;
+	}
+	
 	@Override
 	public int insertar(Pieza p) {		
 		String sql = "insert into pieza(nom_pieza, stock, precio_pieza, id_cat) values (?, ?, ?, ?)";

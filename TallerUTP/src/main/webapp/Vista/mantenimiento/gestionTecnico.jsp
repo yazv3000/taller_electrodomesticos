@@ -24,7 +24,7 @@
 					
 					<div class="form-group pt-2">
 						<label class="formuTecTit">NOMBRES</label>
-						<input type="text" name="txt_nomTec" class="form-control" placeholder="Nombres" required>
+						<input type="text" value="${tec.getNombre()}"  name="txt_nomTec" class="form-control" placeholder="Nombres" required>
 						<div class="valid-feedback">Campos Completos</div>
 						<div class="invalid-feedback">Campos Incompletos</div>
 					</div>
@@ -34,12 +34,12 @@
 					</div>
 					<div class="form-group pt-1">
 						<div style="float:left; width: 190px;">
-						<input type="text" class="form-control" name="txt_ape1Tec" placeholder="Principal" required>
+						<input type="text" value="${tec.getApePrin()}" name="txt_ape1Tec" class="form-control" placeholder="Principal" required>
 						<div class="valid-feedback">Campos Completos</div>
 						<div class="invalid-feedback">Campos Incompletos</div>
 						</div>
 						<div style="float:right; width: 190px;">
-						<input type="text" class="form-control" name="txt_ape2Tec" placeholder="Secundario" required>
+						<input type="text" value="${tec.getApeSec()}" name="txt_ape2Tec" class="form-control" placeholder="Secundario" required>
 						<div class="valid-feedback">Campos Completos</div>
 						<div class="invalid-feedback">Campos Incompletos</div>
 						</div>
@@ -47,15 +47,13 @@
 					</div>
 					
 					<div class="form-group pt-2">
-						<label class="formuTecTit">DIRECCION</label>
-						<input type="text" name="calificacion" class="form-control" placeholder="Direccion" required>
-						<div class="valid-feedback">Campos Completos</div>
-						<div class="invalid-feedback">Campos Incompletos</div>
-					</div>
-					
-					<div class="form-group pt-2">
-						<label class="formuTecTit">CORREO ELECTRONICO</label>
-						<input type="email" name="txt_email" class="form-control" placeholder="Correo Electronico" required>
+						<label class="formuTecTit">DOCUMENTO DE IDENTIDAD</label>
+						<select name="tipo_docid">
+							<option value=1  ${tec.getTipo_doc() == 1 ? 'selected' : ''}>DNI</option>
+							<option value=2  ${tec.getTipo_doc() == 2 ? 'selected' : ''}>Carne de Extranjería</option>
+							<option value=3  ${tec.getTipo_doc() == 3 ? 'selected' : ''}>Otros</option>
+						</select>
+						<input type="text" value="${tec.getNro_doc()}"  name="txt_docTec" class="form-control" required>
 						<div class="valid-feedback">Campos Completos</div>
 						<div class="invalid-feedback">Campos Incompletos</div>
 					</div>
@@ -64,13 +62,31 @@
 						<label class="formuTecTit">TELEFONO</label>
 					</div>
 					<div class="form-group pt-1">
-						<input id="phone" type="number" name="txt_telefTec" class="form-control" required>
+						<input id="phone"  value="${tec.getTelefono()}" name="txt_telefTec" class="form-control" required>
 						<div class="valid-feedback">Campos Completos</div>
 						<div class="invalid-feedback">Campos Incompletos</div>
 					</div>
+					
+					<div class="form-group pt-2">
+						<label class="formuTecTit">DIRECCION</label>
+						<input type="text" value="${tec.getDireccion()}"  name="txt_direcTec" class="form-control" placeholder="Direccion" required>
+						<div class="valid-feedback">Campos Completos</div>
+						<div class="invalid-feedback">Campos Incompletos</div>
+					</div>
+					
+					<div class="form-group pt-2">
+						<label class="formuTecTit">CORREO ELECTRONICO</label>
+						<input type="email" value="${tec.getEmail()}" name="txt_emailTec" class="form-control" placeholder="Correo Electronico" required>
+						<div class="valid-feedback">Campos Completos</div>
+						<div class="invalid-feedback">Campos Incompletos</div>
+					</div>
+					
+					<!--  BOTONES -->
 					<div class="form-group text-center pt-2">
 						<button type="submit" class="btn btn-warning"><b>Agregar</b></button>
+						<button type="submit" class="btn btn-info"><b>Modificar</b></button>
 					</div>
+					
 				</form>
 			</div><!--  /.card-body -->
 		</div><!-- /.card col-sm-4 -->
@@ -85,7 +101,7 @@
 						<th>TELEFONO</th>
 						<th>DIRECCION</th>
 						<th>EMAIL</th>
-						
+						<th> ACCION </th>
 					</tr>
 				</thead>
 				<tbody class="table-light">
@@ -96,6 +112,10 @@
 					<td> <c:out value="${t.getTelefono()}"></c:out> </td>
 					<td> <c:out value="${t.getDireccion()}"></c:out> </td>
 					<td> <c:out value="${t.getEmail()}"></c:out> </td>
+					<td>
+						  <a class="btn btn-info" href="ServletGestionarTecnico?accion=editar&id=${t.getIdTecnico()}">Editar</a>
+                          <a class="btn btn-danger" href="ServletGestionarTecnico?accion=eliminar&id=${t.getIdTecnico()}">Eliminar</a>
+					</td>
 				</tr>
 				</c:forEach>
 				</tbody>

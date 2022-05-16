@@ -5,6 +5,7 @@ public abstract class Persona {
 		// ATRIBUTOS
 		private String idPersona;
 		private String nombre, apePrin, apeSec;
+		private int tipo_doc;
 		private String nro_doc;
 		private String telefono;
 		private String direccion;
@@ -39,6 +40,9 @@ public abstract class Persona {
 
 		public String getApeSec() {		return apeSec;	}
 		public void setApeSec(String apeSec) {		this.apeSec = apeSec;	}
+
+		public int getTipo_doc() {		return tipo_doc;		}
+		public void setTipo_doc(int tipo_doc) {			this.tipo_doc = tipo_doc;		}
 
 		public String getNro_doc() {		return nro_doc;	}
 		public void setNro_doc(String nro_doc) {		this.nro_doc = nro_doc;	}

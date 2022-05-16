@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import utp.taller.dao.DaoCliente;
 import utp.taller.dto.DtoClienteConsulta;
+import utp.taller.entidades.Cliente;
 
 
 /**
@@ -33,13 +34,20 @@ public class ServletGestionarCliente extends HttpServlet {
     	String accion = request.getParameter("accion");
     	
     	switch (accion) {
-		case "listar": {
-			 	List<DtoClienteConsulta> lst = dao.listarDtoClientes();
-			 	request.setAttribute("lstConsultaClientes", lst);
-			break;
-		}
-		default:
-			throw new IllegalArgumentException("Unexpected value: " + accion);
+			case "listar": 
+				 	List<DtoClienteConsulta> lst = dao.listarDtoClientes();
+				 	request.setAttribute("lstConsultaClientes", lst);
+				break;
+			
+			case "editar":
+			    String id= request.getParameter("id");
+				Cliente cliente = dao.consultarId(id);
+				request.setAttribute("cli", cliente);
+				request.getRequestDispatcher("ServletGestionarCliente?accion=listar").forward(request, response);
+				break;
+			
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + accion);
 		}
     	
     	request.getRequestDispatcher("Vista/mantenimiento/gestionCliente.jsp").forward(request, response);

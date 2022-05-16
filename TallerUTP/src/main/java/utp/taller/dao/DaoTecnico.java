@@ -48,34 +48,33 @@ public class DaoTecnico extends Conexion implements BaseDAO<Tecnico> {
 	}
 
 	@Override
-	public List<Tecnico> listar() {
+	public Tecnico consultarId(String idTecnico) {
 
-		List<Tecnico> lst = new ArrayList<Tecnico>();
 		Tecnico t = null;
 
-		String sql = "select * from tecnico";	// inner join ....
+		String sql = "select P.*, U.email, U.contra from persona P inner join usuario U on P.id_persona = U.id_persona where P.id_rol=2 and P.id_persona=?";
 
 		cnx = getConnection();
 		ResultSet rs = null;
 
 		try {
 			stm = cnx.prepareStatement(sql);
+			stm.setString(1, idTecnico);
 			rs = stm.executeQuery();
 
-			while (rs.next()) {
+			if (rs.next()) {
 				t = new Tecnico();
-				//t.setIdTecnico(rs.getInt(1));
-				t.setNombre(rs.getString(2));
-				t.setApePrin(rs.getString(3));
-				t.setApeSec(rs.getString(4));
-				// 5 - tipo de documento
-				t.setNro_doc(rs.getString(6));
-				t.setDireccion(rs.getString(7));
-				t.setAnios_experiencia(rs.getInt(8));
-				t.setEmail(rs.getString(9));
-				t.setContrasena(rs.getString(10));
-				
-				lst.add(t);
+				t.setIdTecnico(rs.getString(1));
+				t.setNombre(rs.getString(3));
+				t.setApePrin(rs.getString(4));
+				t.setApeSec(rs.getString(5));
+				t.setTipo_doc(rs.getInt(6));
+				t.setNro_doc(rs.getString(7));
+				t.setTelefono(rs.getString(8));
+				t.setDireccion(rs.getString(9));
+				t.setAnios_experiencia(rs.getInt(10));
+				t.setEmail(rs.getString(11));
+				t.setContrasena(rs.getString(12));
 			}
 			
 			cnx.close();
@@ -83,8 +82,7 @@ public class DaoTecnico extends Conexion implements BaseDAO<Tecnico> {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		return lst;
-
+		return t;
 	}
 
 	@Override

@@ -12,46 +12,12 @@ import utp.taller.entidades.Encargado;
 
 public class DaoEncargado extends Conexion implements BaseDAO<Encargado> {
 
-	/*
-	 * TABLA encargado
-	 * 
-	 * id_encargado | email_enc | contra_enc 
-	 */
-
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
 	@Override
-	public List<Encargado> listar() {
-
-		List<Encargado> lst = new ArrayList<Encargado>();
-		Encargado enc = null;
-
-		String sql = "select * from encargado";
-
-		cnx = getConnection();
-		ResultSet rs = null;
-
-		try {
-			stm = cnx.prepareStatement(sql);
-			rs = stm.executeQuery();
-
-			while (rs.next()) {
-				enc = new Encargado();
-				enc.setIdEncargado(rs.getString(1));
-				enc.setEmail(rs.getString(2));
-				enc.setContrasena(rs.getString(3));
-				
-				lst.add(enc);
-			}
-			
-			cnx.close();
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return lst;
-
+	public Encargado consultarId(String id) {
+		return null;
 	}
 
 	@Override

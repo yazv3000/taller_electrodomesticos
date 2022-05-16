@@ -21,7 +21,7 @@ public class DaoElectrodomestico extends Conexion implements BaseDAO<Electrodome
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
-	@Override
+
 	public List<Electrodomestico> listar() {
 
 		List<Electrodomestico> lst = new ArrayList<Electrodomestico>();
@@ -57,6 +57,11 @@ public class DaoElectrodomestico extends Conexion implements BaseDAO<Electrodome
 		
 		return lst;
 
+	}
+	
+	@Override
+	public Electrodomestico consultarId(String id) {
+		return null;
 	}
 
 	@Override

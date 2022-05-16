@@ -17,55 +17,76 @@
 </head> 
 <body>
 	<div class="d-flex justify-content-center">
-		<!-- DATOS DEL TECNICO SELECCIONADO -->
+		<!-- DATOS DEL CLIENTE SELECCIONADO -->
 		<div class="card col-sm-4">
 			<div class="card-body">
 				<form class="justify-content-center needs-validation"  align="center" action="Validar" novalidate>
+					
 					<div class="form-group pt-2">
 						<label class="formuTecTit">NOMBRES</label>
-						<input type="text" name="nom_tec" class="form-control" placeholder="Nombre" required>
+						<input type="text" value="${cli.getNombre()}"  name="txt_nomCli" class="form-control" placeholder="Nombres" required>
 						<div class="valid-feedback">Campos Completos</div>
 						<div class="invalid-feedback">Campos Incompletos</div>
 					</div>
+					
 					<div class="form-group pt-2">
 						<label class="formuTecTit">APELLIDOS</label>
 					</div>
 					<div class="form-group pt-1">
 						<div style="float:left; width: 190px;">
-						<input type="text" class="form-control" name="ape_princ_tec" placeholder="Principal" required>
+						<input type="text" value="${cli.getApePrin()}" name="txt_ape1Cli" class="form-control" placeholder="Principal" required>
 						<div class="valid-feedback">Campos Completos</div>
 						<div class="invalid-feedback">Campos Incompletos</div>
 						</div>
 						<div style="float:right; width: 190px;">
-						<input type="text" class="form-control" name="ape_sec_tec" placeholder="Secundario" required>
+						<input type="text" value="${cli.getApeSec()}" name="txt_ape2Cli" class="form-control" placeholder="Secundario" required>
 						<div class="valid-feedback">Campos Completos</div>
 						<div class="invalid-feedback">Campos Incompletos</div>
 						</div>
 						<div style="clear:both"></div>
 					</div>
+
 					<div class="form-group pt-2">
-						<label class="formuTecTit">DIRECCION</label>
-						<input type="text" name="calificacion" class="form-control" placeholder="Direccion" required>
+						<label class="formuTecTit">DOCUMENTO DE IDENTIDAD</label>
+						<select name="tipo_docid">
+							<option value=1  ${cli.getTipo_doc() == 1 ? 'selected' : ''}>DNI</option>
+							<option value=2  ${cli.getTipo_doc() == 2 ? 'selected' : ''}>Carne de Extranjería</option>
+							<option value=3  ${cli.getTipo_doc() == 3 ? 'selected' : ''}>Otros</option>
+						</select>
+						<input type="text" value="${cli.getNro_doc()}"  name="txt_docCli" class="form-control" required>
 						<div class="valid-feedback">Campos Completos</div>
 						<div class="invalid-feedback">Campos Incompletos</div>
 					</div>
-					<div class="form-group pt-2">
-						<label class="formuTecTit">CORREO ELECTRONICO</label>
-						<input type="email" name="calificacion" class="form-control" placeholder="Correo Electronico" required>
-						<div class="valid-feedback">Campos Completos</div>
-						<div class="invalid-feedback">Campos Incompletos</div>
-					</div>
+					
 					<div class="form-group pt-2">
 						<label class="formuTecTit">TELEFONO</label>
 					</div>
 					<div class="form-group pt-1">
-						<input id="phone" type="number" name="phone" class="form-control" required>
+						<input id="phone"  value="${cli.getTelefono()}" name="txt_telefCli" class="form-control" required>
 						<div class="valid-feedback">Campos Completos</div>
 						<div class="invalid-feedback">Campos Incompletos</div>
 					</div>
+					
+					<div class="form-group pt-2">
+						<label class="formuTecTit">DIRECCION</label>
+						<input type="text" value="${cli.getDireccion()}"  name="txt_direcCli" class="form-control" placeholder="Direccion" required>
+						<div class="valid-feedback">Campos Completos</div>
+						<div class="invalid-feedback">Campos Incompletos</div>
+					</div>
+					
+					<div class="form-group pt-2">
+						<label class="formuTecTit">CORREO ELECTRONICO</label>
+						<input type="email" value="${cli.getEmail()}" name="txt_emailCli" class="form-control" placeholder="Correo Electronico" required>
+						<div class="valid-feedback">Campos Completos</div>
+						<div class="invalid-feedback">Campos Incompletos</div>
+					</div>
+										
+					<!--  BOTONES -->
 					<div class="form-group text-center pt-2">
 						<button type="submit" class="btn btn-warning"><b>Agregar</b></button>
+						<button type="submit" class="btn btn-info"><b>Modificar</b></button>
 					</div>
+					
 				</form>
 			</div><!--  /.card-body -->
 		</div><!-- /.card col-sm-4 -->
@@ -80,7 +101,7 @@
 						<th>TELEFONO</th>
 						<th>DIRECCION</th>
 						<th>EMAIL</th>
-						
+						<th>ACCION</th>
 					</tr>
 				</thead>
 				<tbody class="table-light">
@@ -91,6 +112,10 @@
 					<td> <c:out value="${c.getTelefono()}"></c:out> </td>
 					<td> <c:out value="${c.getDireccion()}"></c:out> </td>
 					<td> <c:out value="${c.getEmail()}"></c:out> </td>
+					<td>
+						  <a class="btn btn-info" href="ServletGestionarCliente?accion=editar&id=${c.getIdCliente()}">Editar</a>
+                          <a class="btn btn-danger" href="ServletGestionarCliente?accion=eliminar&id=${c.getIdCliente()}">Eliminar</a>
+					</td>
 				</tr>
 				</c:forEach>
 				</tbody>

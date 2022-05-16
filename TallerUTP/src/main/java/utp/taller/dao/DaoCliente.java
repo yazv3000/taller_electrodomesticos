@@ -34,7 +34,7 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 
 			while (rs.next()) {
 				tc = new DtoClienteConsulta();
-				tc.setIdTecnico(rs.getString(1));
+				tc.setIdCliente(rs.getString(1));
 				tc.setNombreCompleto(rs.getString(2));
 				tc.setTelefono(rs.getString(3));
 				tc.setDireccion(rs.getString(4));
@@ -51,43 +51,44 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 	}
 	
 	@Override
-	public List<Cliente> listar() {
+	public Cliente consultarId(String idCliente) {
 
-		List<Cliente> lst = new ArrayList<Cliente>();
 		Cliente c = null;
 
-		String sql = "select * from cliente";	// inner join ....telefonos
+		String sql = "select P.*, U.email, U.contra from persona P inner join usuario U on P.id_persona = U.id_persona where P.id_rol=3 and P.id_persona=?";
 
 		cnx = getConnection();
 		ResultSet rs = null;
 
 		try {
 			stm = cnx.prepareStatement(sql);
+			stm.setString(1, idCliente);
 			rs = stm.executeQuery();
 
-			while (rs.next()) {
+			if (rs.next()) {
 				c = new Cliente();
-				//c.setIdCliente(rs.getInt(1));
-				c.setNombre(rs.getString(2));
-				c.setApePrin(rs.getString(3));
-				c.setApeSec(rs.getString(4));
-				// 5 - tipo de documento
-				c.setNro_doc(rs.getString(6));
-				c.setDireccion(rs.getString(7));
-				c.setEmail(rs.getString(8));
-				c.setContrasena(rs.getString(9));
-				
-				lst.add(c);
+				c.setIdCliente(rs.getString(1));
+				c.setNombre(rs.getString(3));
+				c.setApePrin(rs.getString(4));
+				c.setApeSec(rs.getString(5));
+				c.setTipo_doc(rs.getInt(6));
+				c.setNro_doc(rs.getString(7));
+				c.setTelefono(rs.getString(8));
+				c.setDireccion(rs.getString(9));
+				c.setEmail(rs.getString(11));
+				c.setContrasena(rs.getString(12));
 			}
 			
 			cnx.close();
-
+			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		return lst;
+		return c;
 
 	}
+	
+
 
 	@Override
 	public int insertar(Cliente c) {
