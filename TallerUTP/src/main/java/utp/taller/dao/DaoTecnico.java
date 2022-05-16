@@ -8,18 +8,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utp.config.Conexion;
+import utp.taller.dto.DtoTecnicoConsulta;
 import utp.taller.entidades.Tecnico;
 
 public class DaoTecnico extends Conexion implements BaseDAO<Tecnico> {
 
-	/*
-	 * TABLA tecnico
-	 * 
-	 * id_tecnico | nom_tec | ape1_tec | ape2_tec | id_tdoc | nro_doc | direccion | experiencia | email_tec | contra_tec  
-	 */
-
 	Connection cnx = null;
 	PreparedStatement stm = null;
+	
+	public List<DtoTecnicoConsulta> listarDtoTecnicos(){
+		List<DtoTecnicoConsulta> lst = new ArrayList<DtoTecnicoConsulta>();
+		DtoTecnicoConsulta tc = null;
+		String sql = "select * from f_listar_tecnicos()";
+		
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				tc = new DtoTecnicoConsulta();
+				tc.setIdTecnico(rs.getString(1));
+				tc.setNombreCompleto(rs.getString(2));
+				tc.setTelefono(rs.getString(3));
+				tc.setDireccion(rs.getString(4));
+				tc.setEmail(rs.getString(5));
+				lst.add(tc);
+			}
+			
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return lst;
+
+	}
 
 	@Override
 	public List<Tecnico> listar() {
@@ -38,7 +64,7 @@ public class DaoTecnico extends Conexion implements BaseDAO<Tecnico> {
 
 			while (rs.next()) {
 				t = new Tecnico();
-				t.setIdTecnico(rs.getInt(1));
+				//t.setIdTecnico(rs.getInt(1));
 				t.setNombre(rs.getString(2));
 				t.setApePrin(rs.getString(3));
 				t.setApeSec(rs.getString(4));
@@ -103,7 +129,7 @@ public class DaoTecnico extends Conexion implements BaseDAO<Tecnico> {
 			stm.setInt(7, t.getAnios_experiencia());
 			stm.setString(8, t.getEmail());
 			stm.setString(9, t.getContrasena());
-			stm.setInt(10, t.getIdTecnico());
+			//stm.setInt(10, t.getIdTecnico());
 			stm.executeUpdate();
 			cnx.commit();
 			cnx.close();

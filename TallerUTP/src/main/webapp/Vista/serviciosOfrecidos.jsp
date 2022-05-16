@@ -23,7 +23,7 @@
 	                    <h2>U <span>T</span> P</h2>
 	                </div>
 	                <ul>
-	                    <li><a href="#">Inicio</a></li>
+	                    <li><a href="../index.html">Inicio</a></li>
 	                    <li><a href="#">Servicio</a></li>
 	                    <li><a href="#">Nosotros</a></li>
 	                    <li><a href="#">Sesion</a></li>

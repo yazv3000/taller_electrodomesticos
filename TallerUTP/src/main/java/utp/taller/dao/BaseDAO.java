@@ -11,5 +11,5 @@ public interface BaseDAO<T> {
 	public int modificar(T obj_modificar);
 	
 	public int eliminar(int id);
-
+ 
 }
