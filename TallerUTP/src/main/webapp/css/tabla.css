@@ -1,0 +1,120 @@
+/*===== GOOGLE FONTS =====*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap");
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Tangerine&display=swap');
+
+/*===== VARIABLES CSS =====*/
+
+:root {
+    --primario: rgb(33, 33, 33);
+    --fondo: rgb(25, 23, 21);
+    --secundario: #2473cd ;
+}
+
+/*===== BASE =====*/
+*,::before,::after{
+  box-sizing: border-box;
+}
+
+body{
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background-color: var(--fondo) !important;
+}
+
+
+.tabla{
+    /* margin: 30px; */
+    border-radius:20px;
+    background: var(--primario);
+    padding: 10px;
+    margin: 20px;
+    overflow-x: auto;
+}
+
+.tabla__tools {
+    display: flex;
+    justify-content: space-between;
+}  
+
+.tabla__tools ul {
+    display: flex;
+    list-style:none;
+    gap: 20px;
+    align-items: center;
+}
+
+.tabla__tools ul li .icono {
+    color: white;
+    font-size: 20px;
+    padding:10px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+}
+
+.tabla__tools ul li .icono:hover {
+	transform: scale(1.1);
+    cursor: pointer;
+}
+
+.tabla__tools input {
+    color: white;
+    font-size: 15px;;
+    background: var(--fondo);
+    height: 30px;
+    width:100%;
+    margin: 30px;
+    align-items: center;
+    border-radius: 5px;
+    padding: 0 15px;
+}
+
+.tabla__titulo {
+    font-family: "Noto Sans";
+    font-size: 15px;
+    color: white;
+}
+
+.tabla__titulo tr th {
+    padding: 10px 10px;
+}
+
+.tabla__contenido {
+    padding: 0 20px 20px 20px;
+}
+
+.tabla__info tr td {
+    color: white;
+    background: var(--primario);
+    font-family: "Noto Sans";
+    font-size: 15px;
+}
+
+select{
+    color: white;
+}
+
+select option {
+    background: var(--primario)
+}
+
+label {
+    color: white;
+    font-family: "Noto Sans";
+}
+
+
+.contenido {
+	height: 100vh;
+	overflow-y: auto;
+}
+
+.modal-content {
+	background-color: var(--primario) !important;
+}

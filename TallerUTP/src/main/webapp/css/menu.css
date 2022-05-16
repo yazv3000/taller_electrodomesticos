@@ -3,6 +3,10 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap");
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Tangerine&display=swap');
+
 /*===== VARIABLES CSS =====*/
 
 :root {
@@ -20,11 +24,17 @@ body{
   position: relative;
   overflow: hidden;
   margin: 0;
+  padding: 0;
 }
 .contenedor {
     width: 100%;
     height: 100vh;
     display: flex;
+}
+
+.asunto {
+    /* overflow-y: auto; */
+    /* z-index: -100; */
 }
 
 /*===== MENÚ =====*/
@@ -33,7 +43,7 @@ body{
     width: 85px;
     height: 100vh;
     background-color: var(--primario);
-    padding: 10px 0  0 10px;
+    padding: 0px 0  0 10px;
     transition: 0.5s;
 }
 .navi {
@@ -42,26 +52,32 @@ body{
 
 .logo {
     display: grid;
-    grid-template-columns: max-content max-content max-content;
+    grid-template-columns: 1fr 1fr max-content;
     gap: 35px;
-    margin: 20px 0 50px 20px;
-    /* line-height: 25px; */
-    /* background-color: green; */
+    margin: 0px 0 50px 20px;
+}
+
+
+.logo__img {
+    display:flex;
 }
 
 .logo img {
-    margin-top: 15px;
     width: 50px;
     height: 50px;
+    position: relative;
+    margin:auto
 }
 
 .logo h2 {
     color: white;
-    font-size: 27px;
+    font-size: 33px;
     font-weight: 750;
     position: relative;
     right: 20px;
     line-height: 80px;
+    font-family: 'Audiowide';
+    margin: 0
 }
 
 .logo span {
@@ -73,7 +89,8 @@ body{
     color: var(--secundario);
     font-size: 25px;
     cursor: pointer;
-    line-height: 80px;
+    position: relative;
+    top:25px;
 }
 
 .logo__titulo {
@@ -84,6 +101,7 @@ body{
     text-transform: uppercase;
     font-weight: 600;
     /* text-shadow: 1px 1px 5px rgba(255,255,255,0.5); */
+    
 }
 
 .nav__lista {
@@ -129,8 +147,10 @@ body{
 .asunto {
     width: 100%;
     height: 100vh;
-    background-color: var(--fondo);
-    z-index: 100;
+    background-color: var(--fondo); 
+    /* z-index: 100; */
+    overflow: hidden;
+    
 }
 
 .barra {
@@ -147,71 +167,21 @@ body{
     font-family: Poppins;
     height: 40px; 
     margin-right: 20px;
+    margin-left: 20px;
+    min-width: 300px;
     padding:0 40px 0 25px;
     border-radius: 20px; 
     background: var(--fondo);
     color: white;
 }
 
-/* ===== TABLA DE CLIENTES ===== */
-.tabla{
-    margin: 30px;
-    border-radius:10px;
-    background: var(--primario);
-    display: inline-block; 
-    padding: 10px;
+.ventana {
+	height: 100vh;
 }
 
-.tabla__tools {
-    display: flex;
-    justify-content: space-between;
-}  
-
-.tabla__tools ul {
-    display: flex;
-    list-style:none;
-    gap: 20px;
-    align-items: center;
+#ventana__contenido {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
 }
-
-.tabla__tools ul li .icono {
-    color: white;
-    font-size: 20px;
-    padding:10px;
-    border-radius: 5px;
-}
-
-.tabla__tools ul li .icono:hover {
-    background: var(--secundario)
-}
-
-.tabla__tools input {
-    color: white;
-    font-size: 15px;;
-    background: var(--fondo);
-    height: 30px;
-    width:100%;
-    margin: 30px;
-    align-items: center;
-    border-radius: 5px;
-    padding: 0 15px;
-}
-
-.tabla__titulo {
-    font-family: "Noto Sans";
-    font-size: 15px;
-    color: white;
-}
-
-.tabla__titulo tr th {
-    padding: 10px 10px;
-}
-
-.tabla__contenido {
-    overflow-x: scroll;
-}
-
-
-
-
-
