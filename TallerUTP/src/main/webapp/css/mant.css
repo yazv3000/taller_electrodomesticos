@@ -44,4 +44,8 @@ div {
 input {
 	color: white;
 }
+option {
+	color: white;
+	background-color: var(--primario) !important;
+}
 

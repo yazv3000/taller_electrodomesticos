@@ -1,25 +1,22 @@
 package utp.taller.entidades;
 
-public class Encargado extends Usuario{
-
-	// ATRIBUTOS
-	private String idEncargado;
+public class Encargado extends Persona{
 
     // CONSTRUCTORES
 	public Encargado() {}
 
-    public Encargado(String idEncargado, String email, String contrasena) {
-		super(email, contrasena);
-		this.idEncargado = idEncargado;
+	public Encargado(String idEncargado, String nombre, String apePrin, String apeSec, String nro_doc, String telefono, String direccion, String email,
+			String contrasena) {
+		super(idEncargado, nombre, apePrin, apeSec, nro_doc, telefono, direccion, email, contrasena);
 	}
 
 	// MÉTODOS GETTER & SETTER
-	public String getIdEncargado() {
-		return idEncargado;
+	public String getIdEncargado() { 
+		return this.getIdPersona(); 
 	}
 
 	public void setIdEncargado(String idEncargado) {
-		this.idEncargado = idEncargado;
+		this.setIdPersona(idEncargado);
 	}
 
 

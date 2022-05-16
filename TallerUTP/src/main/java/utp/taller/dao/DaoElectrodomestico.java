@@ -9,7 +9,6 @@ import java.util.List;
 
 import utp.config.Conexion;
 import utp.taller.entidades.Electrodomestico;
-import utp.taller.entidades.Servicio;
 
 public class DaoElectrodomestico extends Conexion implements BaseDAO<Electrodomestico> {
 

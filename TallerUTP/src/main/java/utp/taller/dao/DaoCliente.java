@@ -10,19 +10,46 @@ import java.util.List;
 import java.util.Set;
 
 import utp.config.Conexion;
+import utp.taller.dto.DtoClienteConsulta;
+import utp.taller.dto.DtoTecnicoConsulta;
 import utp.taller.entidades.Cliente;
 
-public class DaoCliente extends Conexion implements BaseDAO<Cliente> {
+public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 
-	/*
-	 * TABLA cliente
-	 * 
-	 * id_cliente | nom_cli | ape1_cli | ape2_cli | id_tdoc | nro_doc | direccion | email_cli | contra_cli  
-	 */
 
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
+	public List<DtoClienteConsulta> listarDtoClientes() {
+		List<DtoClienteConsulta> lst = new ArrayList<DtoClienteConsulta>();
+		DtoClienteConsulta tc = null;
+		String sql = "select * from f_listar_clientes()";
+		
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				tc = new DtoClienteConsulta();
+				tc.setIdTecnico(rs.getString(1));
+				tc.setNombreCompleto(rs.getString(2));
+				tc.setTelefono(rs.getString(3));
+				tc.setDireccion(rs.getString(4));
+				tc.setEmail(rs.getString(5));
+				lst.add(tc);
+			}
+			
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return lst;
+	}
+	
 	@Override
 	public List<Cliente> listar() {
 
@@ -40,7 +67,7 @@ public class DaoCliente extends Conexion implements BaseDAO<Cliente> {
 
 			while (rs.next()) {
 				c = new Cliente();
-				c.setIdCliente(rs.getInt(1));
+				//c.setIdCliente(rs.getInt(1));
 				c.setNombre(rs.getString(2));
 				c.setApePrin(rs.getString(3));
 				c.setApeSec(rs.getString(4));
@@ -102,7 +129,7 @@ public class DaoCliente extends Conexion implements BaseDAO<Cliente> {
 			stm.setString(6, c.getDireccion());
 			stm.setString(7, c.getEmail());
 			stm.setString(8, c.getContrasena());
-			stm.setInt(9, c.getIdCliente());
+			//stm.setInt(9, c.getIdCliente());
 			stm.executeUpdate();
 			cnx.commit();
 			cnx.close();
@@ -155,5 +182,6 @@ public class DaoCliente extends Conexion implements BaseDAO<Cliente> {
 		
 		return tel;
 	}
-	
+
+
 }
