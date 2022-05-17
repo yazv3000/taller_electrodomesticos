@@ -12,24 +12,16 @@ import utp.taller.entidades.Pieza;
 
 public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 
-	/*
-	 * TABLA pieza
-	 * 
-	 * id_pieza | nomPieza | stock | precio_pieza | id_cat
-	 */
-
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
-	@Override
 	public List<Pieza> listar() {
 
 		List<Pieza> lst = new ArrayList<Pieza>();
 		Pieza p = null;
 
-		String sql = "select P.*, C.nom_cat from pieza P inner join categoria_pieza C on P.id_cat = C.id_categoria";
-		
-		// (1) id_pieza | (2) nomPieza | (3) stock | (4) precio_pieza | (5) id_cat | (6) nom_cat
+		String sql = "select * from f_listar_piezas()";
+		// (1) id_pieza | (2) nomPieza | (3) nom_cat | (4) precio_pieza | (5) stock
 		
 		cnx = getConnection();
 		ResultSet rs = null;
@@ -42,9 +34,9 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 				p = new Pieza();
 				p.setIdPieza(rs.getInt(1));
 				p.setNomPieza(rs.getString(2));
-				p.setStock(rs.getLong(3));
+				p.setCategoria(rs.getString(3));
 				p.setPrecio(rs.getDouble(4));
-				p.setCategoria(rs.getString(6));
+				p.setStock(rs.getLong(5));
 				
 				lst.add(p);
 			}
@@ -59,6 +51,11 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 
 	}
 
+	@Override
+	public Pieza consultarId(String id) {
+		return null;
+	}
+	
 	@Override
 	public int insertar(Pieza p) {		
 		String sql = "insert into pieza(nom_pieza, stock, precio_pieza, id_cat) values (?, ?, ?, ?)";
@@ -120,8 +117,5 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 		}
 		return 0;
 	}
-	
-	// CONSULTAR CATEGORÍA DE PIEZAS
-	
 	
 }

@@ -21,7 +21,6 @@ public class DaoEspecialidad extends Conexion implements BaseDAO<Especialidad> {
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
-	@Override
 	public List<Especialidad> listar() {
 
 		List<Especialidad> lst = new ArrayList<Especialidad>();
@@ -54,6 +53,11 @@ public class DaoEspecialidad extends Conexion implements BaseDAO<Especialidad> {
 
 	}
 
+	@Override
+	public Especialidad consultarId(String id) {
+		return null;
+	}
+	
 	@Override
 	public int insertar(Especialidad esp) {		return 0;	}
 

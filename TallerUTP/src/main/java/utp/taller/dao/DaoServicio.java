@@ -21,7 +21,7 @@ public class DaoServicio extends Conexion implements BaseDAO<Servicio> {
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
-	@Override
+
 	public List<Servicio> listar() {
 
 		List<Servicio> lst = new ArrayList<Servicio>();
@@ -55,6 +55,11 @@ public class DaoServicio extends Conexion implements BaseDAO<Servicio> {
 		}*/
 		return lst;
 
+	}
+	
+	@Override
+	public Servicio consultarId(String id) {
+		return null;
 	}
 
 	@Override

@@ -56,6 +56,7 @@ body{
     padding:10px;
     border-radius: 5px;
     background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    transition: 0.3s
 }
 
 .tabla__tools ul li .icono:hover {
@@ -91,9 +92,23 @@ body{
 
 .tabla__info tr td {
     color: white;
-    background: var(--primario);
     font-family: "Noto Sans";
     font-size: 15px;
+}
+
+#tabla__filas {
+	background-color: var(--primario);
+	transition: .3s;
+}
+
+#tabla__filas:hover {
+	background-color: rgba(13,129,205,1);
+	
+}
+
+#tabla__filas:active {
+	background-color: rgba(50,59,171,1);
+	
 }
 
 select{
