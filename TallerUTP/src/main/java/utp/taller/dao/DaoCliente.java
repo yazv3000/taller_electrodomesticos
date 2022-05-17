@@ -11,7 +11,7 @@ import java.util.Set;
 
 import utp.config.Conexion;
 import utp.taller.dto.DtoClienteConsulta;
-import utp.taller.dto.DtoTecnicoConsulta;
+import utp.taller.dto.DtoUsuario;
 import utp.taller.entidades.Cliente;
 
 public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
@@ -20,6 +20,32 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
+	public DtoUsuario validar(String email, String contra) {
+		DtoUsuario dtoClie = new DtoUsuario();
+		String sql = "select * from usuario where email=? and contra=?";
+		cnx = getConnection();
+		ResultSet rs = null;
+		
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setString(1, email);
+			stm.setString(2, contra);
+			rs = stm.executeQuery();
+			while (rs.next()) {
+				dtoClie.setCorreo(rs.getString("email"));
+				dtoClie.setContra(rs.getString("contra"));
+			}
+			cnx.close();
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		return dtoClie;
+	}
+	
+	
+	
 	public List<DtoClienteConsulta> listarDtoClientes() {
 		List<DtoClienteConsulta> lst = new ArrayList<DtoClienteConsulta>();
 		DtoClienteConsulta tc = null;

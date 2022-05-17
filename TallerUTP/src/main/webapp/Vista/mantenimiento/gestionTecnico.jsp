@@ -10,15 +10,18 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"  type="text/css" >
 	<link rel="stylesheet" href="./css/style.css"  type="text/css" >
-
+	<link rel="stylesheet" type="text/css" href="./css/mant.css">
+	
 	<!-- LIBRERIA DE TELEFONOS -->
 	<link  rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+
+	 <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
 
 </head> 
 <body>
 	<div class="d-flex justify-content-center">
 		<!-- DATOS DEL TECNICO SELECCIONADO -->
-		<div class="card col-sm-4">
+		<div class="card col-sm-4" id="formServPrest">
 			<div class="card-body">
 				<form class="justify-content-center needs-validation"  align="center" action="Validar" novalidate>
 					

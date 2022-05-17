@@ -23,6 +23,11 @@
 	Listar pieza
 </a><br/>
 
+<div class="panel" style="color:blue;">
+  <a href="http://www.google.com" data-parent="#panel" data-toggle="collapse" data-target="#aa">Collapse</a>
+  <div id="aa" class="collapse in">aaaaaaaaaaaaaaaaaaaggggggggg hhhhhhhhhh iii ii jjjjjjj kkkkkkk lllllllllll lllllllll mmmmmm mmmm ooooop</div>
+</div>
+
     <!-- ===== JAVASCRIPT ===== -->
 
     <script src="./js/menu.js"></script>

@@ -44,6 +44,7 @@ public class ServletGestionarCliente extends HttpServlet {
 				Cliente cliente = dao.consultarId(id);
 				request.setAttribute("cli", cliente);
 				request.getRequestDispatcher("ServletGestionarCliente?accion=listar").forward(request, response);
+				
 				break;
 			
 			default:
