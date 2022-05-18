@@ -39,7 +39,7 @@ public class ServletGestionarTecnico extends HttpServlet {
 				 	break;
 			
 			case "editar":
-				    String id= request.getParameter("id");
+				    int id= Integer.parseInt(request.getParameter("id"));
 					Tecnico tecnico = dao.consultarId(id);
 					request.setAttribute("tec", tecnico);
 					request.getRequestDispatcher("ServletGestionarTecnico?accion=listar").forward(request, response);

@@ -4,7 +4,7 @@ public abstract class Persona {
 
 		// ATRIBUTOS
 		private String idPersona;
-		private String nombre, apePrin, apeSec;
+		private String nombrePrin, nombreSec, apePrin, apeSec;
 		private int tipo_doc;
 		private String nro_doc;
 		private String telefono;
@@ -15,10 +15,11 @@ public abstract class Persona {
 		// CONSTRUCTORES
 		public Persona(){}
 
-		public Persona(String id_persona, String nombre, String apePrin, String apeSec, String nro_doc, String telefono, String direccion, String email,
+		public Persona(String id_persona, String nombrePrin,String nombreSec, String apePrin, String apeSec, String nro_doc, String telefono, String direccion, String email,
 				String contrasena) {
 			this.idPersona = id_persona;
-			this.nombre = nombre;
+			this.nombrePrin = nombrePrin;
+			this.nombreSec = nombreSec;
 			this.apePrin = apePrin;
 			this.apeSec = apeSec;
 			this.nro_doc = nro_doc;
@@ -32,9 +33,12 @@ public abstract class Persona {
 		public String getIdPersona() {			return idPersona;		}
 		public void setIdPersona(String idPersona) {			this.idPersona = idPersona;		}
 		
-		public String getNombre() {		return nombre;	}
-		public void setNombre(String nombre) {		this.nombre = nombre;	}
+		public String getNombrePrin() {		return nombrePrin;	}
+		public void setNombrePrin(String nombrePrin) {		this.nombrePrin = nombrePrin;	}
 		
+		public String getNombreSec() {	return nombreSec;	}
+		public void setNombreSec(String nombreSec) {this.nombreSec = nombreSec;	}
+
 		public String getApePrin() {		return apePrin;	}
 		public void setApePrin(String apePrin) {		this.apePrin = apePrin;	}
 

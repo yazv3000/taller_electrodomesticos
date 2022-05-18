@@ -60,7 +60,7 @@ public class DaoElectrodomestico extends Conexion implements BaseDAO<Electrodome
 	}
 	
 	@Override
-	public Electrodomestico consultarId(String id) {
+	public Electrodomestico consultarId(int id) {
 		return null;
 	}
 

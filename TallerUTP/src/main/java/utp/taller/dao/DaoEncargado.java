@@ -16,7 +16,7 @@ public class DaoEncargado extends Conexion implements BaseDAO<Encargado> {
 	PreparedStatement stm = null;
 
 	@Override
-	public Encargado consultarId(String id) {
+	public Encargado consultarId(int id) {
 		return null;
 	}
 

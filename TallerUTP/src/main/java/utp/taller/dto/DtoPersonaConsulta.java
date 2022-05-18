@@ -3,15 +3,19 @@ package utp.taller.dto;
 public abstract class DtoPersonaConsulta {
 
 	// ATRIBUTOS
-	private String idPersona;
+	private String idUsuario;
+	private int idPersona;
 	private String nombreCompleto;
 	private String telefono;
 	private String direccion;
 	private String email;
 	
 	// MÉTODOS GETTER & SETTER
-	public String getIdPersona() {			return idPersona;		}
-	public void setIdPersona(String idPersona) {			this.idPersona = idPersona;		}
+	public String getIdUsuario() {return idUsuario;	}
+	public void setIdUsuario(String idUsuario) {		this.idUsuario = idUsuario;	}
+	
+	public int getIdPersona() {			return idPersona;		}
+	public void setIdPersona(int idPersona) {			this.idPersona = idPersona;		}
 	
 	public String getNombreCompleto() { return nombreCompleto;	}
 	public void setNombreCompleto(String nombreCompleto) {		this.nombreCompleto = nombreCompleto;	}

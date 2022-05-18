@@ -15,9 +15,9 @@ public class Tecnico extends Persona{
 		// CONSTRUCTORES
 		public Tecnico() {}
 		
-		public Tecnico(String idTecnico, String nombre, String apePrin, String apeSec, String nro_doc, int anios_experiencia, String telefono, String direccion, String email,
+		public Tecnico(String idTecnico, String nombrePrin, String nombreSec, String apePrin, String apeSec, String nro_doc, int anios_experiencia, String telefono, String direccion, String email,
 				String contrasena) {
-			super(idTecnico, nombre, apePrin, apeSec, nro_doc, telefono, direccion, email, contrasena);
+			super(idTecnico, nombrePrin, nombreSec, apePrin, apeSec, nro_doc, telefono, direccion, email, contrasena);
 			especialidades = new HashSet<Especialidad>();
 			this.anios_experiencia = anios_experiencia;
 			horariosDisponibles = new ArrayList<Horario>();

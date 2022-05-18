@@ -60,11 +60,12 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 
 			while (rs.next()) {
 				tc = new DtoClienteConsulta();
-				tc.setIdCliente(rs.getString(1));
-				tc.setNombreCompleto(rs.getString(2));
-				tc.setTelefono(rs.getString(3));
-				tc.setDireccion(rs.getString(4));
-				tc.setEmail(rs.getString(5));
+				tc.setIdPersona(rs.getInt(1));
+				tc.setIdCliente(rs.getString(2));
+				tc.setNombreCompleto(rs.getString(3));
+				tc.setTelefono(rs.getString(4));
+				tc.setDireccion(rs.getString(5));
+				tc.setEmail(rs.getString(6));
 				lst.add(tc);
 			}
 			
@@ -77,30 +78,31 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 	}
 	
 	@Override
-	public Cliente consultarId(String idCliente) {
+	public Cliente consultarId(int idCliente) {
 
 		Cliente c = null;
 
-		String sql = "select P.*, U.email, U.contra from persona P inner join usuario U on P.id_persona = U.id_persona where P.id_rol=3 and P.id_persona=?";
+		String sql = "select * from f_consultar_cliente(?)";
 
 		cnx = getConnection();
 		ResultSet rs = null;
 
 		try {
 			stm = cnx.prepareStatement(sql);
-			stm.setString(1, idCliente);
+			stm.setInt(1, idCliente);
 			rs = stm.executeQuery();
 
 			if (rs.next()) {
 				c = new Cliente();
 				c.setIdCliente(rs.getString(1));
-				c.setNombre(rs.getString(3));
+				c.setNombrePrin(rs.getString(2));
+				c.setNombreSec(rs.getString(3));
 				c.setApePrin(rs.getString(4));
 				c.setApeSec(rs.getString(5));
 				c.setTipo_doc(rs.getInt(6));
 				c.setNro_doc(rs.getString(7));
 				c.setTelefono(rs.getString(8));
-				c.setDireccion(rs.getString(9));
+				c.setDireccion(rs.getString(10));
 				c.setEmail(rs.getString(11));
 				c.setContrasena(rs.getString(12));
 			}
@@ -123,14 +125,15 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 		try {
 			cnx.setAutoCommit(false);
 			stm = cnx.prepareStatement(sql);
-			stm.setString(1, c.getNombre());
-			stm.setString(2, c.getApePrin());
-			stm.setString(3, c.getApeSec());
-			stm.setInt(4, 1);		// 1 = dni
-			stm.setString(5, c.getNro_doc());
-			stm.setString(6, c.getDireccion());
-			stm.setString(7, c.getEmail());
-			stm.setString(8, c.getContrasena());
+			stm.setString(1, c.getNombrePrin());
+			stm.setString(2, c.getNombreSec());
+			stm.setString(3, c.getApePrin());
+			stm.setString(4, c.getApeSec());
+			stm.setInt(5, 1);		// 1 = dni
+			stm.setString(6, c.getNro_doc());
+			stm.setString(7, c.getDireccion());
+			stm.setString(8, c.getEmail());
+			stm.setString(9, c.getContrasena());
 			
 			stm.executeUpdate();
 			cnx.commit();
@@ -148,14 +151,15 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 		try {
 			cnx.setAutoCommit(false);
 			stm = cnx.prepareStatement(sql);
-			stm.setString(1, c.getNombre());
-			stm.setString(2, c.getApePrin());
-			stm.setString(3, c.getApeSec());
-			stm.setInt(4, 1);		// 1 = dni
-			stm.setString(5, c.getNro_doc());
-			stm.setString(6, c.getDireccion());
-			stm.setString(7, c.getEmail());
-			stm.setString(8, c.getContrasena());
+			stm.setString(1, c.getNombrePrin());
+			stm.setString(2, c.getNombreSec());
+			stm.setString(3, c.getApePrin());
+			stm.setString(4, c.getApeSec());
+			stm.setInt(5, 1);		// 1 = dni
+			stm.setString(6, c.getNro_doc());
+			stm.setString(7, c.getDireccion());
+			stm.setString(8, c.getEmail());
+			stm.setString(9, c.getContrasena());
 			//stm.setInt(9, c.getIdCliente());
 			stm.executeUpdate();
 			cnx.commit();

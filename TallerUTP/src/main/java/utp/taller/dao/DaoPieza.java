@@ -52,8 +52,34 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 	}
 
 	@Override
-	public Pieza consultarId(String id) {
-		return null;
+	public Pieza consultarId(int id) {
+		Pieza p = null;
+
+		String sql = "select P.id_pieza, P.nombre_pieza, C.nombre_cat, P.precio_pieza, P.stock from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria where id_pieza=?;";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, id);
+			rs = stm.executeQuery();
+
+			if (rs.next()) {
+				p = new Pieza();
+				p.setIdPieza(rs.getInt(1));
+				p.setNomPieza(rs.getString(2));
+				p.setCategoria(rs.getString(3));
+				p.setPrecio(rs.getDouble(4));
+				p.setStock(rs.getLong(5));
+			}
+			
+			cnx.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return p;
 	}
 	
 	@Override

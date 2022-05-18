@@ -54,7 +54,7 @@ public class DaoEspecialidad extends Conexion implements BaseDAO<Especialidad> {
 	}
 
 	@Override
-	public Especialidad consultarId(String id) {
+	public Especialidad consultarId(int id) {
 		return null;
 	}
 	

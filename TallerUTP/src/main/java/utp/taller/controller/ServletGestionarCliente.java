@@ -40,7 +40,7 @@ public class ServletGestionarCliente extends HttpServlet {
 				break;
 			
 			case "editar":
-			    String id= request.getParameter("id");
+			    int id= Integer.parseInt(request.getParameter("id"));
 				Cliente cliente = dao.consultarId(id);
 				request.setAttribute("cli", cliente);
 				request.getRequestDispatcher("ServletGestionarCliente?accion=listar").forward(request, response);

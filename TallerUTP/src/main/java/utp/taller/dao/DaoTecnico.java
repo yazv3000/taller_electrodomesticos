@@ -30,11 +30,12 @@ public class DaoTecnico extends Conexion implements BaseDAO<Tecnico> {
 
 			while (rs.next()) {
 				tc = new DtoTecnicoConsulta();
-				tc.setIdTecnico(rs.getString(1));
-				tc.setNombreCompleto(rs.getString(2));
-				tc.setTelefono(rs.getString(3));
-				tc.setDireccion(rs.getString(4));
-				tc.setEmail(rs.getString(5));
+				tc.setIdPersona(rs.getInt(1));
+				tc.setIdTecnico(rs.getString(2));
+				tc.setNombreCompleto(rs.getString(3));
+				tc.setTelefono(rs.getString(4));
+				tc.setDireccion(rs.getString(5));
+				tc.setEmail(rs.getString(6));
 				lst.add(tc);
 			}
 			
@@ -48,33 +49,34 @@ public class DaoTecnico extends Conexion implements BaseDAO<Tecnico> {
 	}
 
 	@Override
-	public Tecnico consultarId(String idTecnico) {
+	public Tecnico consultarId(int idTecnico) {
 
 		Tecnico t = null;
 
-		String sql = "select P.*, U.email, U.contra from persona P inner join usuario U on P.id_persona = U.id_persona where P.id_rol=2 and P.id_persona=?";
+		String sql = "select * from f_consultar_tecnico(?)";
 
 		cnx = getConnection();
 		ResultSet rs = null;
 
 		try {
 			stm = cnx.prepareStatement(sql);
-			stm.setString(1, idTecnico);
+			stm.setInt(1, idTecnico);
 			rs = stm.executeQuery();
 
 			if (rs.next()) {
 				t = new Tecnico();
 				t.setIdTecnico(rs.getString(1));
-				t.setNombre(rs.getString(3));
+				t.setNombrePrin(rs.getString(2));
+				t.setNombreSec(rs.getString(3));
 				t.setApePrin(rs.getString(4));
 				t.setApeSec(rs.getString(5));
 				t.setTipo_doc(rs.getInt(6));
 				t.setNro_doc(rs.getString(7));
 				t.setTelefono(rs.getString(8));
-				t.setDireccion(rs.getString(9));
-				t.setAnios_experiencia(rs.getInt(10));
-				t.setEmail(rs.getString(11));
-				t.setContrasena(rs.getString(12));
+				t.setDireccion(rs.getString(10));
+				t.setAnios_experiencia(rs.getInt(11));
+				t.setEmail(rs.getString(12));
+				t.setContrasena(rs.getString(13));
 			}
 			
 			cnx.close();
@@ -92,15 +94,16 @@ public class DaoTecnico extends Conexion implements BaseDAO<Tecnico> {
 		try {
 			cnx.setAutoCommit(false);
 			stm = cnx.prepareStatement(sql);
-			stm.setString(1, t.getNombre());
-			stm.setString(2, t.getApePrin());
-			stm.setString(3, t.getApeSec());
-			stm.setInt(4, 1);		// 1 = dni
-			stm.setString(5, t.getNro_doc());
-			stm.setString(6, t.getDireccion());
-			stm.setInt(7, t.getAnios_experiencia());
-			stm.setString(8, t.getEmail());
-			stm.setString(9, t.getContrasena());
+			stm.setString(1, t.getNombrePrin());
+			stm.setString(2, t.getNombreSec());
+			stm.setString(3, t.getApePrin());
+			stm.setString(4, t.getApeSec());
+			stm.setInt(5, 1);		// 1 = dni
+			stm.setString(6, t.getNro_doc());
+			stm.setString(7, t.getDireccion());
+			stm.setInt(8, t.getAnios_experiencia());
+			stm.setString(9, t.getEmail());
+			stm.setString(10, t.getContrasena());
 			
 			stm.executeUpdate();
 			cnx.commit();
@@ -118,15 +121,16 @@ public class DaoTecnico extends Conexion implements BaseDAO<Tecnico> {
 		try {
 			cnx.setAutoCommit(false);
 			stm = cnx.prepareStatement(sql);
-			stm.setString(1, t.getNombre());
-			stm.setString(2, t.getApePrin());
-			stm.setString(3, t.getApeSec());
-			stm.setInt(4, 1);		// 1 = dni
-			stm.setString(5, t.getNro_doc());
-			stm.setString(6, t.getDireccion());
-			stm.setInt(7, t.getAnios_experiencia());
-			stm.setString(8, t.getEmail());
-			stm.setString(9, t.getContrasena());
+			stm.setString(1, t.getNombrePrin());
+			stm.setString(2, t.getNombreSec());
+			stm.setString(3, t.getApePrin());
+			stm.setString(4, t.getApeSec());
+			stm.setInt(5, 1);		// 1 = dni
+			stm.setString(6, t.getNro_doc());
+			stm.setString(7, t.getDireccion());
+			stm.setInt(8, t.getAnios_experiencia());
+			stm.setString(9, t.getEmail());
+			stm.setString(10, t.getContrasena());
 			//stm.setInt(10, t.getIdTecnico());
 			stm.executeUpdate();
 			cnx.commit();

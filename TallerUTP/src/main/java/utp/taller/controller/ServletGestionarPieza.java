@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import utp.taller.dao.DaoPieza;
+import utp.taller.entidades.Cliente;
 import utp.taller.entidades.Pieza;
 
 
@@ -33,11 +34,16 @@ public class ServletGestionarPieza extends HttpServlet {
     	String accion = request.getParameter("accion");
     	
     	switch (accion) {
-		case "listar": {
+		case "listar": 
 			 	List<Pieza> lst = dao.listar();
 			 	request.setAttribute("lstConsultaPiezas", lst);
 			break;
-		}
+		case "editar":
+		    int id= Integer.parseInt(request.getParameter("id"));
+			Pieza pieza = dao.consultarId(id);
+			request.setAttribute("pi", pieza);
+			request.getRequestDispatcher("ServletGestionarPieza?accion=listar").forward(request, response);
+			break;
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + accion);
 		}

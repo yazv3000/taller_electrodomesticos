@@ -2,7 +2,7 @@ package utp.taller.dao;
 
 public interface BaseDAO<T> {
 	
-	public T consultarId(String id);
+	public T consultarId(int id);
 	
 	public int insertar(T obj_nuevo);
 	
