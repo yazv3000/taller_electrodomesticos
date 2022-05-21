@@ -8,7 +8,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="./css/tabla.css">
+    <c:set var="context" value="${pageContext.request.contextPath}" /> 
+    <link rel="stylesheet" type="text/css" href="${context}/css/tabla.css">
     <link rel="icon" href="img/Logo.png" type="image/png">
     <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
@@ -30,15 +31,16 @@
 	            <input class="tabla_buscar" type="text" placeholder="Filtrar">
 	        </div>
 	        <div class="tabla__contenido">
-	            <table id="tabla__Cliente" >
+	            <table id="tabla__Tecnico" >
 	                <thead class="tabla__titulo">
 	                    <tr>
 	                        <th>ID</th>
 							<th>NOMBRES Y APELLIDOS</th>
+							<th>ESPECIALIDAD</th>
 							<th>TELEFONO</th>
+							<th>DISTRITO</th>
 							<th>DIRECCION</th>
 							<th>EMAIL</th>
-							<th>ESTADO</th>
 	                    </tr>
 	                </thead>
 	                <tbody class="tabla__info">
@@ -46,7 +48,9 @@
 	                    <tr id="tabla__filas" onclick="location.href='ServletGestionarTecnico?accion=editar&id=${t.getIdPersona()}'">
 	                   		<td> <c:out value="${t.getIdTecnico()}"></c:out> </td>
 							<td> <c:out value="${t.getNombreCompleto()}"></c:out> </td>
+							<td> <c:out value="${t.getEspecialidad()}"></c:out> </td>
 							<td> <c:out value="${t.getTelefono()}"></c:out> </td>
+							<td> <c:out value="${t.getDistrito()}"></c:out> </td>
 							<td> <c:out value="${t.getDireccion()}"></c:out> </td>
 							<td> <c:out value="${t.getEmail()}"></c:out> </td>			
 	                    </tr>
@@ -57,7 +61,6 @@
 	        <div class="tabla__especificacion">
 	        </div>
 	    </div>
-	    
 	    <!-- ===== MODAL INSERTAR ===== -->
 	
 	<!-- Button trigger modal -->
@@ -176,7 +179,7 @@
 	
     <script>
        $(document).ready(function () {
-            $('#tabla__Cliente').DataTable({
+            $('#tabla__Tecnico').DataTable({
                 "language": {
                 	"sSearch":"Buscar",
                 	"oPaginate":{

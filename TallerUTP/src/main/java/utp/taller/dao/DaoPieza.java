@@ -20,7 +20,7 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 		List<Pieza> lst = new ArrayList<Pieza>();
 		Pieza p = null;
 
-		String sql = "select * from f_listar_piezas()";
+		String sql = "select * from v_piezas";
 		// (1) id_pieza | (2) nomPieza | (3) nom_cat | (4) precio_pieza | (5) stock
 		
 		cnx = getConnection();

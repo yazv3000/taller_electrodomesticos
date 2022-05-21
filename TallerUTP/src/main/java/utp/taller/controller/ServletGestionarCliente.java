@@ -23,7 +23,7 @@ public class ServletGestionarCliente extends HttpServlet {
        
 	DaoCliente dao = new DaoCliente();
 	
- 
+	
     public ServletGestionarCliente() {
         super();
     }
@@ -48,7 +48,7 @@ public class ServletGestionarCliente extends HttpServlet {
 				break;
 			
 			default:
-				throw new IllegalArgumentException("Unexpected value: " + accion);
+				request.getRequestDispatcher("ServletGestionarCliente?accion=listar").forward(request, response);
 		}
     	
     	request.getRequestDispatcher("Vista/mantenimiento/gestionCliente.jsp").forward(request, response);

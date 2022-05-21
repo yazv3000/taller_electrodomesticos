@@ -8,7 +8,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="../../css/tabla.css">
+    <c:set var="context" value="${pageContext.request.contextPath}" /> 
+    <link rel="stylesheet" type="text/css" href="${context}/css/tabla.css">
     <link rel="icon" href="img/Logo.png" type="image/png">
     <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
@@ -37,9 +38,9 @@
 	                        <th>ID</th>
 							<th>NOMBRES Y APELLIDOS</th>
 							<th>TELEFONO</th>
+							<th>DISTRITO</th>
 							<th>DIRECCION</th>
 							<th>EMAIL</th>
-
 	                    </tr>
 	                </thead>
 	                <tbody class="tabla__info">
@@ -48,6 +49,7 @@
 	                        <td> <c:out value="${c.getIdCliente()}"></c:out> </td>
 							<td> <c:out value="${c.getNombreCompleto()}"></c:out> </td>
 							<td> <c:out value="${c.getTelefono()}"></c:out> </td>
+							<td> <c:out value="${c.getDistrito()}"></c:out> </td>
 							<td> <c:out value="${c.getDireccion()}"></c:out> </td>
 							<td> <c:out value="${c.getEmail()}"></c:out> </td>		
 	                    </tr>
@@ -66,33 +68,41 @@
 	<!-- Modal -->
 	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right: 350px;">
 	  <div class="modal-dialog" >
-	    <div class="modal-content text-center" style="width: 800px; height: 550px">
-	    <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal"> cerrar</button>
+	    <div class="modal-content text-center" style="width: 800px; height: 550px;">
+	                 
 	      <div class="modal-body">
 	        	<!-- ===== DATOS ===== -->
-				<form  class="formulario" action="">
-			        <div class="form__contenedor">
-			            <div class="form__titulo">
-			                <p>INFORMACION DEL CLIENTE</p>
+				<form  class="formulario" >
+					<div class="row align-items-center pt-1">
+				      	<div class="form__grupo col-11">
+				      		<div class="form__titulo">
+				                <p>INFORMACION DEL TECNICO</p>
+				            </div>
 			            </div>
+			            <div class="form__grupo col-1">
+			            	<input class="btn__cerrar" type="button" data-bs-dismiss="modal" value="X">
+			            </div>
+			        </div>
+			        <div class="form__contenedor">
+			        	
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" ">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getNombrePrin()}">
 			                <label for="name" class="form__label">Primer nombre:</label>
 			                <span class="form__line"></span>
 			            </div>
 			            
 			            <div class="form__grupo">
-			                <input type="text" class="form__input"  placeholder=" ">
+			                <input type="text" class="form__input"  placeholder=" " value="${cli.getNombreSec()}">
 			                <label for="name" class="form__label">Segundo nombre:</label>
 			                <span class="form__line"></span>
 			            </div>
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" ">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getApePrin()}">
 			                <label for="name" class="form__label">Primer apellido:</label>
 			                <span class="form__line"></span>
 			            </div>
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" ">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getApeSec()}">
 			                <label for="" class="form__label">Segundo Apellido:</label>
 			                <span class="form__line"></span>
 			            </div>
@@ -102,36 +112,32 @@
 			                <option class="form__opcion" value=3  ${cli.getTipo_doc() == 3 ? 'selected' : ''}>Otros</option>
 			            </select>
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" ">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getNro_doc()}">
+			                <label for="name" class="form__label">Número de Documento:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getTelefono()}">
 			                <label for="name" class="form__label">Teléfono:</label>
 			                <span class="form__line"></span>
 			            </div>
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" ">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getDireccion()}">
 			                <label for="" class="form__label">Direccion:</label>
 			                <span class="form__line"></span>
 			            </div>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" ">
+			            <div class="form__grupo" align="center">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getEmail()}">
 			                <label for="" class="form__label">Correo Electronico:</label>
 			                <span class="form__line"></span>
 			            </div>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" ">
-			                <label for="" class="form__label">Primer nombre</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" ">
-			                <label for="" class="form__label">Primer nombre</label>
-			                <span class="form__line"></span>
-			            </div>
-			
-			            <div class="form__grupo">
+			        </div>
+			        <div class="row align-items-center pt-4">
+				      	<div class="form__grupo col-6">
 			                <input class="btn__insertar" type="submit" value="INSERTAR">           
 			            </div>
 			
-			            <div class="form__grupo">
+			            <div class="form__grupo col-6">
 			                <input class="btn__modificar" type="submit" value="MODIFICAR">
 			            </div>
 			        </div>

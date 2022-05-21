@@ -49,7 +49,7 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 	public List<DtoClienteConsulta> listarDtoClientes() {
 		List<DtoClienteConsulta> lst = new ArrayList<DtoClienteConsulta>();
 		DtoClienteConsulta tc = null;
-		String sql = "select * from f_listar_clientes()";
+		String sql = "select * from v_clientes";
 		
 		cnx = getConnection();
 		ResultSet rs = null;
@@ -64,8 +64,9 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 				tc.setIdCliente(rs.getString(2));
 				tc.setNombreCompleto(rs.getString(3));
 				tc.setTelefono(rs.getString(4));
-				tc.setDireccion(rs.getString(5));
-				tc.setEmail(rs.getString(6));
+				tc.setDistrito(rs.getString(6));			
+				tc.setDireccion(rs.getString(7));
+				tc.setEmail(rs.getString(8));
 				lst.add(tc);
 			}
 			

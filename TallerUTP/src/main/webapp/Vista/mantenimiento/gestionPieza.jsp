@@ -8,7 +8,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="./css/tabla.css">
+    <c:set var="context" value="${pageContext.request.contextPath}" /> 
+    <link rel="stylesheet" type="text/css" href="${context}/css/tabla.css">
     <link rel="icon" href="img/Logo.png" type="image/png">
     <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
@@ -63,51 +64,77 @@
 	<!-- Button trigger modal -->
 	
 	<!-- Modal -->
-	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-	  <div class="modal-dialog">
-	    <div class="modal-content" style="width:600px">
-	      <div class="modal-header">
-	        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-	      </div>
+	<!-- Modal -->
+	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right: 350px;">
+	  <div class="modal-dialog" >
+	    <div class="modal-content text-center" style="width: 800px; height: 550px">
+	    <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal"> cerrar</button>
 	      <div class="modal-body">
 	        	<!-- ===== DATOS ===== -->
-		<div class="card col-sm-4"  id="formServPrest" style="width: 100%">
-			<div class="card-body">
-				<form class="justify-content-center needs-validation"  align="center" action="Validar" novalidate>
-					
-					<div class="form-group pt-2">
-						<label class="formuTecTit">PIEZA</label>
-						<input type="text" value="${pi.getNomPieza()}"  name="txt_nomCli" class="form-control" placeholder="Nombres" required>
-					</div>
-					<div class="form-group pt-2">
-						<label class="formuTecTit">CATEGORIA</label>
-						<input type="text" value="${pi.getCategoria()}"  name="txt_nomCli" class="form-control" placeholder="Nombres" required>
-					</div>
-					<div class="form-group pt-2">
-						<label class="formuTecTit">COSTO (S/.)</label>
-						<input id="campo-numerico" type="number"  value="${pi.getPrecio()}" min="1" pattern="^[0-9]+" onpaste="return false;" onDrop="return false;" autocomplete=off
-						class="form-control estinputs" placeholder="Ingreso Monto" required>
-					</div>
-					<div class="form-group pt-2">
-						<label class="formuTecTit">STOCK</label>
-						<input id="campo-numerico" type="number" value="${pi.getStock()}" class="form-control estinputs" name="ape_princ_tec" placeholder="Ingrese una cantidad" required>
-					</div>
-										
-					<!--  BOTONES -->
-					<div class="form-group text-center pt-2">
-						<button type="submit" class="btn btn-warning"><b>Agregar</b></button>
-						<button type="submit" class="btn btn-info"><b>Modificar</b></button>
-					</div>
-					
-				</form>
-			</div><!--  /.card-body -->
-		</div>
+				<form  class="formulario" action="">
+			        <div class="form__contenedor">
+			            <div class="form__titulo">
+			                <p>INFORMACION DEL Tecnico</p>
+			            </div>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getNombrePrin()}">
+			                <label for="name" class="form__label">Primer nombre:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            
+			            <div class="form__grupo">
+			                <input type="text" class="form__input"  placeholder=" " value="${cli.getNombreSec()}">
+			                <label for="name" class="form__label">Segundo nombre:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getApePrin()}">
+			                <label for="name" class="form__label">Primer apellido:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getApeSec()}">
+			                <label for="" class="form__label">Segundo Apellido:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <select class="form__seleccion" name="tipo_docid">
+			                <option class="form__opcion" value=1  ${cli.getTipo_doc() == 1 ? 'selected' : ''}>DNI</option>
+			                <option class="form__opcion" value=2  ${cli.getTipo_doc() == 2 ? 'selected' : ''}>Carne de Extranjería</option>
+			                <option class="form__opcion" value=3  ${cli.getTipo_doc() == 3 ? 'selected' : ''}>Otros</option>
+			            </select>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getNro_doc()}">
+			                <label for="name" class="form__label">Número de Documento:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getTelefono()}">
+			                <label for="name" class="form__label">Teléfono:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getDireccion()}">
+			                <label for="" class="form__label">Direccion:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo" align="center">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getEmail()}">
+			                <label for="" class="form__label">Correo Electronico:</label>
+			                <span class="form__line"></span>
+			            </div>
+			        </div>
+			        <div class="row align-items-center">
+				      	<div class="form__grupo col-6">
+			                <input class="btn__insertar" type="submit" value="INSERTAR">           
+			            </div>
+			
+			            <div class="form__grupo col-6">
+			                <input class="btn__modificar" type="submit" value="MODIFICAR">
+			            </div>
+			        </div>
+			    </form>
+			
 	<!-- =====  FIN DATOS ===== -->
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Salir</button>
-	        <button type="button" class="btn btn-primary">Understood</button>
 	      </div>
 	    </div>
 	  </div>

@@ -229,7 +229,7 @@ label {
     transform: scale(1);
 }
 
-.btn__insertar,.btn__modificar {
+.btn__insertar,.btn__modificar{
     font-size: 1em;
     font-family: 'Audiowide';
     text-transform: uppercase;
@@ -242,7 +242,7 @@ label {
     padding: 10px;
 }
 
-.btn__insertar:hover,.btn__modificar:hover  {
+.btn__insertar:hover,.btn__modificar:hover{
     background: var(--primario);
     border: 1px solid var(--secundario);
     color: var(--secundario);
@@ -263,4 +263,18 @@ label {
     .form__seleccion {
         padding: 5px 5px;
     }
+}
+.btn__cerrar {
+	color: white;
+    font-size: 20px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    transition: 0.3s;
+    height: 48px;
+    width:48px;
+}
+
+.btn__cerrar:hover {
+	transform: scale(1.1);
+    cursor: pointer;
 }

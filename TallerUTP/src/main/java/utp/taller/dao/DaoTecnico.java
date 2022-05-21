@@ -19,7 +19,7 @@ public class DaoTecnico extends Conexion implements BaseDAO<Tecnico> {
 	public List<DtoTecnicoConsulta> listarDtoTecnicos(){
 		List<DtoTecnicoConsulta> lst = new ArrayList<DtoTecnicoConsulta>();
 		DtoTecnicoConsulta tc = null;
-		String sql = "select * from f_listar_tecnicos()";
+		String sql = "select * from v_tecnicos";
 		
 		cnx = getConnection();
 		ResultSet rs = null;
@@ -33,9 +33,11 @@ public class DaoTecnico extends Conexion implements BaseDAO<Tecnico> {
 				tc.setIdPersona(rs.getInt(1));
 				tc.setIdTecnico(rs.getString(2));
 				tc.setNombreCompleto(rs.getString(3));
-				tc.setTelefono(rs.getString(4));
-				tc.setDireccion(rs.getString(5));
-				tc.setEmail(rs.getString(6));
+				tc.setEspecialidad(rs.getString(4));
+				tc.setTelefono(rs.getString(5));
+				tc.setDistrito(rs.getString(7));
+				tc.setDireccion(rs.getString(8));
+				tc.setEmail(rs.getString(9));
 				lst.add(tc);
 			}
 			
