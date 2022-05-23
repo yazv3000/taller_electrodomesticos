@@ -24,10 +24,9 @@
 	    <div class="tabla">
 	        <div class="tabla__tools">
 	            <ul>
+	            	<li><button class="fa-solid fa-plus-square icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
 	                <li><button class="fa-solid fa-pen icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
 	                <li><button class="fa-solid fa-trash icono"></button></li>
-	                <li><button class="fa-solid fa-arrows-rotate icono"  data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
-
 	            </ul>
 	            <input class="tabla_buscar" type="text" placeholder="Filtrar">
 	        </div>
@@ -45,8 +44,8 @@
 	                </thead>
 	                <tbody class="tabla__info">
 	                	<c:forEach items="${lstConsultaClientes}" var="c">
-	                    <tr id="tabla__filas" onclick="location.href='ServletGestionarCliente?accion=editar&id=${c.getIdPersona()}'">
-	                        <td> <c:out value="${c.getIdCliente()}"></c:out> </td>
+	                    <tr id="tabla__filas" class="now-selected" <%-- onclick="location.href='ServletGestionarCliente?accion=editar&id=${c.getIdPersona()}'" --%>>
+	                        <td> <c:out value="${c.getIdUsuarioCliente()}"></c:out> </td>
 							<td> <c:out value="${c.getNombreCompleto()}"></c:out> </td>
 							<td> <c:out value="${c.getTelefono()}"></c:out> </td>
 							<td> <c:out value="${c.getDistrito()}"></c:out> </td>
@@ -126,6 +125,11 @@
 			                <label for="" class="form__label">Direccion:</label>
 			                <span class="form__line"></span>
 			            </div>
+			            <select class="form__seleccion" name="estado">
+			                <option class="form__opcion" value=1  ${cli.getEstado() ? 'selected' : ''}>DNI</option>
+			                <option class="form__opcion" value=2  ${cli.getEstado() ? 'selected' : ''}>Carne de Extranjería</option>
+			                <option class="form__opcion" value=3  ${cli.getEstado() ? 'selected' : ''}>Otros</option>
+			            </select>
 			            <div class="form__grupo" align="center">
 			                <input type="text" class="form__input" placeholder=" " value="${cli.getEmail()}">
 			                <label for="" class="form__label">Correo Electronico:</label>
@@ -169,7 +173,7 @@
 	
 	 <!-- ===== JS BOOSTRAP ===== -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-	
+	<script type="text/javascript" src="${context}/js/PruebaPermanenciavariable.js"></script>
     <script>
        $(document).ready(function () {
             $('#tabla__Cliente').DataTable({
@@ -186,7 +190,7 @@
 		
        $(function(){
     	   $('tr').click(function(e){
-    	     if($(this).hasClass('row-selected')){
+    	     if($(this).hasClass('.row-selected')){
     	       $(this).addClass('other-clic')
     	     }else{
     	       cleanTr()
@@ -202,9 +206,16 @@
     	     })
     	   }
     	 })
- 
-    </script>
+    var ashu = document.querySelectorAll("tr");
 
+		for (let i = 0; i < contenido.length; i++) {
+			ashu[i].addEventListener("click", () => {
+				ashu[i].style.backgroundColor="red";
+			});
+		
+		}
+    </script>
+	
 </body>
 
 </html>

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utp.config.Conexion;
+import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoTecnicoConsulta;
 import utp.taller.entidades.Tecnico;
 
@@ -15,6 +16,32 @@ public class DaoTecnico extends Conexion implements BaseDAO<Tecnico> {
 
 	Connection cnx = null;
 	PreparedStatement stm = null;
+	
+	public DtoTecnicoConsulta validar(String email, String contra) {
+		DtoTecnicoConsulta dtoTec = new DtoTecnicoConsulta();
+		String sql = "select * from f_validar_acceso(?,?,?)";
+		cnx = getConnection();
+		ResultSet rs = null;
+		
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, 3);
+			stm.setString(2, email);
+			stm.setString(3, contra);
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				dtoTec.setEmail(rs.getString(5));
+				System.out.println("llegue a qui");
+				//dtoClie.setContra(rs.getString("contra"));
+			}
+			cnx.close();
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		return dtoTec;
+	}
 	
 	public List<DtoTecnicoConsulta> listarDtoTecnicos(){
 		List<DtoTecnicoConsulta> lst = new ArrayList<DtoTecnicoConsulta>();
@@ -31,7 +58,7 @@ public class DaoTecnico extends Conexion implements BaseDAO<Tecnico> {
 			while (rs.next()) {
 				tc = new DtoTecnicoConsulta();
 				tc.setIdPersona(rs.getInt(1));
-				tc.setIdTecnico(rs.getString(2));
+				tc.setIdUsuarioTecnico(rs.getString(2));
 				tc.setNombreCompleto(rs.getString(3));
 				tc.setEspecialidad(rs.getString(4));
 				tc.setTelefono(rs.getString(5));

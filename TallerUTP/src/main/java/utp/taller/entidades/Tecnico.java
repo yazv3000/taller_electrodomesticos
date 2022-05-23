@@ -8,17 +8,17 @@ import java.util.Set;
 public class Tecnico extends Persona{
 
 		// ATRIBUTOS
-		private Set<Especialidad> especialidades;
+		private String especialidad;
 		private List<Horario> horariosDisponibles;
 		private int anios_experiencia;
 		
 		// CONSTRUCTORES
 		public Tecnico() {}
 		
-		public Tecnico(String idTecnico, String nombrePrin, String nombreSec, String apePrin, String apeSec, String nro_doc, int anios_experiencia, String telefono, String direccion, String email,
-				String contrasena) {
-			super(idTecnico, nombrePrin, nombreSec, apePrin, apeSec, nro_doc, telefono, direccion, email, contrasena);
-			especialidades = new HashSet<Especialidad>();
+		public Tecnico(String idTecnico, String nombrePrin, String nombreSec, String apePrin, String apeSec, String nro_doc, int anios_experiencia, String telefono, String distrito, String direccion, boolean estado, String email,
+				String contrasena, String especialidad) {
+			super(idTecnico, nombrePrin, nombreSec, apePrin, apeSec, nro_doc, telefono, distrito, direccion, estado, email, contrasena);
+			this.especialidad = especialidad;
 			this.anios_experiencia = anios_experiencia;
 			horariosDisponibles = new ArrayList<Horario>();
 		}
@@ -31,6 +31,9 @@ public class Tecnico extends Persona{
 		public int getAnios_experiencia() {			return anios_experiencia;		}
 		public void setAnios_experiencia(int anios_experiencia) {			this.anios_experiencia = anios_experiencia;		}
 		
+		public String getEspecialidad() {return especialidad;	}
+		public void setEspecialidad(String especialidad) {	this.especialidad = especialidad;	}
+
 		// falta setter horariosDisponibles
 		public List<Horario> getHorariosDisponibles() {			return horariosDisponibles;		}
 

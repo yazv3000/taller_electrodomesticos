@@ -5,9 +5,9 @@ public class Encargado extends Persona{
     // CONSTRUCTORES
 	public Encargado() {}
 
-	public Encargado(String idEncargado, String nombrePrin, String nombreSec, String apePrin, String apeSec, String nro_doc, String telefono, String direccion, String email,
+	public Encargado(String idEncargado, String nombrePrin, String nombreSec, String apePrin, String apeSec, String nro_doc, String telefono, String distrito, String direccion,boolean estado, String email,
 			String contrasena) {
-		super(idEncargado, nombrePrin, nombreSec, apePrin, apeSec, nro_doc, telefono, direccion, email, contrasena);
+		super(idEncargado, nombrePrin, nombreSec, apePrin, apeSec, nro_doc, telefono, distrito, direccion, estado, email, contrasena);
 	}
 
 	// MÉTODOS GETTER & SETTER

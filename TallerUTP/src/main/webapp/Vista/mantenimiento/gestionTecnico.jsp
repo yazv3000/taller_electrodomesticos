@@ -26,7 +26,6 @@
 	            <ul>
 	                <li><button class="fa-solid fa-pen icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
 	                <li><button class="fa-solid fa-trash icono"></button></li>
-	                <li><button class="fa-solid fa-arrows-rotate icono"  data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
 	            </ul>
 	            <input class="tabla_buscar" type="text" placeholder="Filtrar">
 	        </div>
@@ -46,7 +45,7 @@
 	                <tbody class="tabla__info">
 	                	<c:forEach items="${lstConsultaTecnicos}" var="t">
 	                    <tr id="tabla__filas" onclick="location.href='ServletGestionarTecnico?accion=editar&id=${t.getIdPersona()}'">
-	                   		<td> <c:out value="${t.getIdTecnico()}"></c:out> </td>
+	                   		<td> <c:out value="${t.getIdUsuarioTecnico()}"></c:out> </td>
 							<td> <c:out value="${t.getNombreCompleto()}"></c:out> </td>
 							<td> <c:out value="${t.getEspecialidad()}"></c:out> </td>
 							<td> <c:out value="${t.getTelefono()}"></c:out> </td>
@@ -66,91 +65,94 @@
 	<!-- Button trigger modal -->
 	
 	<!-- Modal -->
-	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-	  <div class="modal-dialog">
-	    <div class="modal-content" style="width:600px">
-	      <div class="modal-header">
-	        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-	      </div>
+	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right: 350px;">
+	  <div class="modal-dialog" >
+	    <div class="modal-content text-center" style="width: 800px; height: 550px;">
+	                 
 	      <div class="modal-body">
 	        	<!-- ===== DATOS ===== -->
-		<div class="card col-sm-12"  id="formServPrest" style="width: 100%">
-			<div class="card-body">
-				<form class="justify-content-center needs-validation"  align="center" action="Validar" novalidate>
-					
-					<div class="form-group pt-2">
-						<label class="formuTecTit">NOMBRES</label>
-					</div>
-					<div class="form-group pt-1">
-						<div style="float:left; width: 190px;">
-						<input type="text" value="${tec.getNombrePrin()}" name="txt_nom1Tec" class="form-control" placeholder="Principal" required>
-						</div>
-						<div style="float:right; width: 190px;">
-						<input type="text" value="${tec.getNombreSec()}" name="txt_nom2Tec" class="form-control" placeholder="Secundario" required>
-						</div>
-						<div style="clear:both"></div>
-					</div>
-					
-					<div class="form-group pt-2">
-						<label class="formuTecTit">APELLIDOS</label>
-					</div>
-					<div class="form-group pt-1">
-						<div style="float:left; width: 190px;">
-						<input type="text" value="${tec.getApePrin()}" name="txt_ape1Tec" class="form-control" placeholder="Principal" required>
-						</div>
-						<div style="float:right; width: 190px;">
-						<input type="text" value="${tec.getApeSec()}" name="txt_ape2Tec" class="form-control" placeholder="Secundario" required>
-						</div>
-						<div style="clear:both"></div>
-					</div>
-
-					<div class="form-group pt-2">
-						<label class="formuTecTit" style="padding: 10px">DOCUMENTO DE IDENTIDAD</label>
-						<select class="form-control" name="tipo_docid" style="color:black; padding: 10px;">
-							<option value=1  ${tec.getTipo_doc() == 1 ? 'selected' : ''}>DNI</option>
-							<option value=2  ${tec.getTipo_doc() == 2 ? 'selected' : ''}>Carne de Extranjería</option>
-							<option value=3  ${tec.getTipo_doc() == 3 ? 'selected' : ''}>Otros</option>
-						</select>
-						<input type="text" value="${tec.getNro_doc()}"  name="txt_docCli" class="form-control" required>
-					</div>
-					
-					<div class="form-group pt-2">
-						<label class="formuTecTit">TELEFONO</label>
-					</div>
-					<div class="form-group pt-1">
-						<input id="phone"  value="${tec.getTelefono()}" name="txt_telefCli" class="form-control" required>
-					</div>
-					
-					<div class="form-group pt-2">
-						<label class="formuTecTit">DIRECCION</label>
-						<input type="text" value="${tec.getDireccion()}"  name="txt_direcCli" class="form-control" placeholder="Direccion" required>
-					</div>
-					
-					<div class="form-group pt-2">
-						<label class="formuTecTit">EXPERIENCIA</label>
-						<input id="campo-numerico" type="number" value="${tec.getAnios_experiencia()}" class="form-control" name="txt_anios_experiencia" placeholder="Experiencia" required>
-					</div>
-					
-					<div class="form-group pt-2">
-						<label class="formuTecTit">CORREO ELECTRONICO</label>
-						<input type="email" value="${tec.getEmail()}" name="txt_emailCli" class="form-control" placeholder="Correo Electronico" required>
-					</div>
-							
-					<!--  BOTONES -->
-					<div class="form-group text-center pt-2">
-						<button type="submit" class="btn btn-warning"><b>Agregar</b></button>
-						<button type="submit" class="btn btn-info"><b>Modificar</b></button>
-					</div>
-					
-				</form>
-			</div><!--  /.card-body -->
-		</div>
+				<form  class="formulario" >
+					<div class="row align-items-center pt-1">
+				      	<div class="form__grupo col-11">
+				      		<div class="form__titulo">
+				                <p>INFORMACION DEL TECNICO</p>
+				            </div>
+			            </div>
+			            <div class="form__grupo col-1">
+			            	<input class="btn__cerrar" type="button" data-bs-dismiss="modal" value="X">
+			            </div>
+			        </div>
+			        <div class="form__contenedor">
+			        	
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="${tec.getNombrePrin()}">
+			                <label for="name" class="form__label">Primer nombre:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            
+			            <div class="form__grupo">
+			                <input type="text" class="form__input"  placeholder=" " value="${tec.getNombreSec()}">
+			                <label for="name" class="form__label">Segundo nombre:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="${tec.getApePrin()}">
+			                <label for="name" class="form__label">Primer apellido:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="${tec.getApeSec()}">
+			                <label for="" class="form__label">Segundo Apellido:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <select class="form__seleccion" name="tipo_docid">
+			                <option class="form__opcion" value=1  ${tec.getTipo_doc() == 1 ? 'selected' : ''}>DNI</option>
+			                <option class="form__opcion" value=2  ${tec.getTipo_doc() == 2 ? 'selected' : ''}>Carne de Extranjería</option>
+			                <option class="form__opcion" value=3  ${tec.getTipo_doc() == 3 ? 'selected' : ''}>Otros</option>
+			            </select>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="${tec.getNro_doc()}">
+			                <label for="name" class="form__label">Número de Documento:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <select class="form__seleccion" name="especialidad">
+			                <option class="form__opcion" value=1  ${tec.getEspecialidad().equals("Especialista en termas eléctricas") ? 'selected' : ''}>Especialista en termas eléctricas</option>
+			                <option class="form__opcion" value=2  ${tec.getEspecialidad().equals("Reparación de aire acondicionado") ? 'selected' : ''}>Reparación de aire acondicionado</option>
+			            </select>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="${tec.getTelefono()}">
+			                <label for="name" class="form__label">Teléfono:</label>
+			                <span class="form__line"></span>
+			            </div>
+			           <select class="form__seleccion" name="especialidad">
+			                <option class="form__opcion" value=1  ${tec.getDistrito().equals("Alto Selva Alegre") ? 'selected' : ''}>Alto Selva Alegre</option>
+			                <option class="form__opcion" value=2  ${tec.getDistrito().equals("Arequipa") ? 'selected' : ''}>Arequipa</option>
+			           		<option class="form__opcion" value=3  ${tec.getDistrito().equals("Cayma") ? 'selected' : ''}>Cayma</option>
+			            </select>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="${tec.getDireccion()}">
+			                <label for="" class="form__label">Direccion:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo" align="center">
+			                <input type="number" class="form__input" placeholder=" " value="${tec.getAnios_experiencia()}">
+			                <label for="" class="form__label">Años de Experiencia:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo" align="center">
+			                <input type="text" class="form__input" placeholder=" " value="${tec.getEmail()}">
+			                <label for="" class="form__label">Correo Electronico:</label>
+			                <span class="form__line"></span>
+			            </div>
+			        </div>
+			        <div class="row align-items-center pt-4">
+				      	<div class="form__grupo col-6">
+			                <input class="btn__insertar" type="submit" value="INSERTAR">           
+			            </div>
+			        </div>
+			    </form>
+			
 	<!-- =====  FIN DATOS ===== -->
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Salir</button>
-	        <button type="button" class="btn btn-primary">Understood</button>
 	      </div>
 	    </div>
 	  </div>

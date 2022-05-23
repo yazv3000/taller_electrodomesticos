@@ -8,13 +8,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utp.config.Conexion;
+import utp.taller.dto.DtoClienteConsulta;
+import utp.taller.dto.DtoEncargadoConsulta;
 import utp.taller.entidades.Encargado;
 
 public class DaoEncargado extends Conexion implements BaseDAO<Encargado> {
 
 	Connection cnx = null;
 	PreparedStatement stm = null;
-
+	
+	public DtoEncargadoConsulta validar(String email, String contra) {
+		DtoEncargadoConsulta dtoEnc = new DtoEncargadoConsulta();
+		String sql = "select * from f_validar_acceso(?,?,?)";
+		cnx = getConnection();
+		ResultSet rs = null;
+		
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, 2);
+			stm.setString(2, email);
+			stm.setString(3, contra);
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				dtoEnc.setEmail(rs.getString(5));
+				System.out.println("llegue a qui");
+				//dtoClie.setContra(rs.getString("contra"));
+			}
+			cnx.close();
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		return dtoEnc;
+	}
+	
 	@Override
 	public Encargado consultarId(int id) {
 		return null;

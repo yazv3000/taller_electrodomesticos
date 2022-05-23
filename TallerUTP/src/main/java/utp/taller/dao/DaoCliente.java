@@ -20,20 +20,22 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
-	public DtoUsuario validar(String email, String contra) {
-		DtoUsuario dtoClie = new DtoUsuario();
-		String sql = "select * from usuario where email=? and contra=?";
+	public DtoClienteConsulta validar(String email, String contra) {
+		DtoClienteConsulta dtoClie = new DtoClienteConsulta();
+		String sql = "select * from f_validar_acceso(?,?,?)";
 		cnx = getConnection();
 		ResultSet rs = null;
 		
 		try {
 			stm = cnx.prepareStatement(sql);
-			stm.setString(1, email);
-			stm.setString(2, contra);
+			stm.setInt(1, 1);
+			stm.setString(2, email);
+			stm.setString(3, contra);
 			rs = stm.executeQuery();
-			while (rs.next()) {
-				dtoClie.setCorreo(rs.getString("email"));
-				dtoClie.setContra(rs.getString("contra"));
+			if (rs.next()) {
+				dtoClie.setEmail(rs.getString(5));
+				System.out.println("llegue a qui");
+				//dtoClie.setContra(rs.getString("contra"));
 			}
 			cnx.close();
 			
@@ -61,7 +63,7 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 			while (rs.next()) {
 				tc = new DtoClienteConsulta();
 				tc.setIdPersona(rs.getInt(1));
-				tc.setIdCliente(rs.getString(2));
+				tc.setIdUsuarioCliente(rs.getString(2));
 				tc.setNombreCompleto(rs.getString(3));
 				tc.setTelefono(rs.getString(4));
 				tc.setDistrito(rs.getString(6));			

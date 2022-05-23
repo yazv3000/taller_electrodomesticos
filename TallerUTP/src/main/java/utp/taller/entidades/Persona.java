@@ -8,14 +8,16 @@ public abstract class Persona {
 		private int tipo_doc;
 		private String nro_doc;
 		private String telefono;
+		private String distrito;
 		private String direccion;
 		private String email;
 		private String contrasena;
+		private boolean estado;
 
 		// CONSTRUCTORES
 		public Persona(){}
 
-		public Persona(String id_persona, String nombrePrin,String nombreSec, String apePrin, String apeSec, String nro_doc, String telefono, String direccion, String email,
+		public Persona(String id_persona, String nombrePrin,String nombreSec, String apePrin, String apeSec, String nro_doc, String telefono, String distrito, String direccion, boolean estado, String email,
 				String contrasena) {
 			this.idPersona = id_persona;
 			this.nombrePrin = nombrePrin;
@@ -24,9 +26,11 @@ public abstract class Persona {
 			this.apeSec = apeSec;
 			this.nro_doc = nro_doc;
 			this.telefono = telefono;
+			this.distrito = distrito;
 			this.direccion = direccion;
 			this.email = email;
 			this.contrasena = contrasena;
+			this.estado = estado;
 		}
 
 		// MÉTODOS GETTER & SETTER
@@ -54,13 +58,21 @@ public abstract class Persona {
 		public String getTelefono() {			return telefono;		}
 		public void setTelefono(String telefono) {			this.telefono = telefono;		}
 
+		public String getDistrito() {	return distrito;	}
+		public void setDistrito(String distrito) {	this.distrito = distrito;		}
+
 		public String getDireccion() {		return direccion;	}
 		public void setDireccion(String direccion) {		this.direccion = direccion;	}
+		
+		public boolean getEstado() {		return estado;		}
+		public void setEstado(boolean estado) {		this.estado = estado;	}
 		
 		public String getEmail() {		return email;	}
 		public void setEmail(String email) {		this.email = email;	}
 
 		public String getContrasena() {		return contrasena;	}
 		public void setContrasena(String contrasena) {		this.contrasena = contrasena;	}
-	
+
+		
+		
 }

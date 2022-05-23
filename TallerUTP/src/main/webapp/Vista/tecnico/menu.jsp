@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,9 +8,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/menu.css">
+    <c:set var="context" value="${pageContext.request.contextPath}" /> 
+    <link rel="stylesheet" type="text/css" href="${context}/css/menu.css">
     <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
-	<link rel="icon" href="../../img/Logoa.png" type="image/png" >
+    <link rel="icon" type="image/png" href="${context}/img/Logoa.png">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <!-- CSS only -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -34,12 +36,16 @@
                      <div class="logo">
                         <i class="fa-solid fa-bars  logo__icono"></i>
                         <div class="logo__img">
-                            <img src="../../img/Logoa.png" alt="">
+                            <img src="img/Logoa.png" alt="">
                         </div>
                         <h2>U<span>T</span>P</h2>
                     </div>
                     <!-- ===== LINK ===== -->
                     <div class="nav__lista">
+                        <a href="<%=request.getContextPath()%>/ServletGestionarCliente?accion=listar" class="nav__link" target="marco">
+                            <i class="fa-solid fa-user nav__icono"></i>
+                            <span class="nav__nombre">Clientes</span>
+                        </a>
                         <a href="<%=request.getContextPath()%>/ServletGestionarCliente?accion=listar" class="nav__link" target="marco">
                             <i class="fa-solid fa-user nav__icono"></i>
                             <span class="nav__nombre">Clientes</span>
@@ -50,7 +56,11 @@
                         </a>
                         <a href="#" class="nav__link">
                             <i class="fas fa-calendar-check nav__icono"></i>
-                            <span class="nav__nombre">Citas</span>
+                            <span class="nav__nombre">Atenciones</span>
+                        </a>
+                        <a href="#" class="nav__link">
+                            <i class="fas fa-wrench nav__icono"></i>
+                            <span class="nav__nombre">Electrodemésticos</span>
                         </a>
                         <a href="#" class="nav__link">
                             <i class="fa-solid fa-calendar-days nav__icono"></i>
