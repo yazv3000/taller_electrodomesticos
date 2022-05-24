@@ -5,7 +5,6 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <c:set var="context" value="${pageContext.request.contextPath}" /> 
@@ -40,6 +39,7 @@
 							<th>DISTRITO</th>
 							<th>DIRECCION</th>
 							<th>EMAIL</th>
+							<th>ESTADO</th>
 	                    </tr>
 	                </thead>
 	                <tbody class="tabla__info">
@@ -51,6 +51,7 @@
 							<td> <c:out value="${c.getDistrito()}"></c:out> </td>
 							<td> <c:out value="${c.getDireccion()}"></c:out> </td>
 							<td> <c:out value="${c.getEmail()}"></c:out> </td>		
+							<td> <c:out value="${c.isEstadoActivo()}"></c:out> </td>		
 	                    </tr>
 	                    </c:forEach>
 	                </tbody>
@@ -60,22 +61,105 @@
 	        </div>
 	    </div>
 	    
-	    <!-- ===== MODAL INSERTAR ===== -->
+	 	<!-- ===== MODAL INSERTAR ===== -->
+		<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right: 350px;">
+	  	<div class="modal-dialog" >
+	    <div class="modal-content text-center" style="width: 800px; height: 550px;">
+	                 
+	      <div class="modal-body">
+	        	<!-- ===== DATOS DEL NUEVO CLIENTE===== -->
+				<form class="formulario needs-validation" action="<%=request.getContextPath()%>/ServletGestionarCliente" method="post" novalidate>
+					<div class="row align-items-center pt-1">
+				      	<div class="form__grupo col-11">
+				      		<div class="form__titulo">
+				                <p>INFORMACION DEL CLIENTE</p>
+				            </div>
+			            </div>
+			            <div class="form__grupo col-1">
+			            	<input class="btn__cerrar" type="button" data-bs-dismiss="modal" value="X" required>
+			            </div>
+			        </div>
+			        <div class="form__contenedor">
+			        	
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="" name="txt_nom1" required>
+			                <label for="name" class="form__label">Primer nombre:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            
+			            <div class="form__grupo">
+			                <input type="text" class="form__input"  placeholder=" " value="" name="txt_nom2" required>
+			                <label for="name" class="form__label">Segundo nombre:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="" name="txt_ape1" required>
+			                <label for="name" class="form__label">Primer apellido:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " value="" name="txt_ape2" required>
+			                <label for="" class="form__label">Segundo Apellido:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <select class="form__seleccion" name="cbx_tipodoc">
+			                <option class="form__opcion" value=1 >DNI</option>
+			                <option class="form__opcion" value=2 >Carne de Extranjería</option>
+			                <option class="form__opcion" value=3 >Otros</option>
+			            </select>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " name="num_doc" required>
+			                <label for="name" class="form__label">Número de Documento:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" " name="num_telef" required>
+			                <label for="name" class="form__label">Teléfono:</label>
+			                <span class="form__line"></span>
+			            </div>
+						<select class="form__seleccion" name="cbx_distritos">
+						<c:forEach items="${lstDistritos}" var="d">
+			                <option class="form__opcion" value="${d.getIdDistrito()}">${d.getNombreDistrito()}</option>
+						</c:forEach>
+						</select>
+			            <div class="form__grupo" >
+			                <input type="text" class="form__input" placeholder=" " name="txt_direcc" required>
+			                <label for="" class="form__label">Direccion:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo" align="center">
+			                <input type="text" class="form__input" placeholder=" " name="txt_correo" required>
+			                <label for="" class="form__label">Correo Electronico:</label>
+			                <span class="form__line"></span>
+			            </div>
+			        </div>
+			        <div class="row align-items-center pt-4">
+				      	<div class="form__grupo col-12">
+			                <input name="accion" value="insertar"  class="btn__insertar" type="submit" >INSERTAR      
+			            </div>
+			        </div>
+			    </form>
+				<!-- =====  FIN DATOS ===== -->
+	      </div><!-- /.modal-body -->
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal-fade -->
 	
-	<!-- Button trigger modal -->
+	<!-- ===== FINAL MODAL INSERTAR ===== -->    
 	
-	<!-- Modal -->
+	
+	 <!-- ===== MODAL MODIFICAR ===== -->
 	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right: 350px;">
 	  <div class="modal-dialog" >
 	    <div class="modal-content text-center" style="width: 800px; height: 550px;">
 	                 
 	      <div class="modal-body">
-	        	<!-- ===== DATOS ===== -->
-				<form  class="formulario needs-validation" action="<%=request.getContextPath()%>/ServletGestionarCliente?accion=" method="post" novalidate>
+	        	<!-- ===== DATOS DEL CLIENTE A MODIFICAR ===== -->
+				<form  class="formulario needs-validation" action="<%=request.getContextPath()%>/ServletGestionarCliente" method="post" novalidate>
 					<div class="row align-items-center pt-1">
 				      	<div class="form__grupo col-11">
 				      		<div class="form__titulo">
-				                <p>INFORMACION DEL TECNICO</p>
+				                <p>INFORMACION DEL CLIENTE</p>
 				            </div>
 			            </div>
 			            <div class="form__grupo col-1">
@@ -144,23 +228,21 @@
 			        </div>
 			        <div class="row align-items-center pt-4">
 			            <div class="form__grupo col-12">
-			                <a href="<%=request.getContextPath()%>/ServletGestionarCliente?accion=actualizar"  class="btn__modificar" type="submit" >MODIFICAR</a>
+			                <input name="accion" value="actualizar"  class="btn__modificar" type="submit" >MODIFICAR
 			            </div>
 			        </div>
 			    </form>
-			
-	<!-- =====  FIN DATOS ===== -->
-	      </div>
-	    </div>
-	  </div>
-	</div>
+				<!-- =====  FIN DATOS ===== -->
+	      </div><!-- /.modal-body -->
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal-fade -->
 	
-	<!-- ===== FINAL MODAL ===== -->
+	<!-- ===== FINAL MODAL MODIFICAR ===== -->    
 
-	</div>
 
-	
-	
+	</div><!-- /.contenido -->
+
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 	<!-- ESTILOS PARA VALIDAR FORM -->

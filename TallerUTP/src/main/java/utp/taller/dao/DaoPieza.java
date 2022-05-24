@@ -23,7 +23,6 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 		Pieza p = null;
 
 		String sql = "select * from v_piezas";
-		// (1) id_pieza | (2) nomPieza | (3) nom_cat | (4) precio_pieza | (5) stock
 		
 		cnx = getConnection();
 		ResultSet rs = null;
@@ -34,11 +33,12 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 
 			while (rs.next()) {
 				p = new Pieza();
-				p.setIdPieza(rs.getInt(1));
-				p.setNomPieza(rs.getString(2));
-				p.setCategoria(rs.getString(3));
-				p.setPrecio(rs.getDouble(4));
-				p.setStock(rs.getLong(5));
+				p.setIdPieza(rs.getInt("id_pieza"));
+				p.setNomPieza(rs.getString("nombre_pieza"));
+				p.setCategoria(new CategoriaPieza(rs.getInt("id_categoria"), rs.getString("nombre_cat")));
+				p.setPrecio(rs.getDouble("precio_pieza"));
+				p.setStock(rs.getLong("stock"));
+				p.setEstadoActivo(rs.getBoolean("estado_activ"));
 				
 				lst.add(p);
 			}
@@ -57,7 +57,7 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 	public Pieza consultarId(int id) {
 		Pieza p = null;
 
-		String sql = "select P.id_pieza, P.nombre_pieza, C.nombre_cat, P.precio_pieza, P.stock from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria where id_pieza=?;";
+		String sql = "select * from f_consultar_pieza(?)";
 
 		cnx = getConnection();
 		ResultSet rs = null;
@@ -69,11 +69,12 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 
 			if (rs.next()) {
 				p = new Pieza();
-				p.setIdPieza(rs.getInt(1));
-				p.setNomPieza(rs.getString(2));
-				p.setCategoria(rs.getString(3));
-				p.setPrecio(rs.getDouble(4));
-				p.setStock(rs.getLong(5));
+				p.setIdPieza(rs.getInt("id"));
+				p.setNomPieza(rs.getString("nombre_pieza"));
+				p.setCategoria(new CategoriaPieza(rs.getInt("id_categoria"), rs.getString("nombre_cat")));
+				p.setPrecio(rs.getDouble("precio"));
+				p.setStock(rs.getLong("stock"));
+				p.setEstadoActivo(rs.getBoolean("estado"));
 			}
 			
 			cnx.close();
@@ -86,20 +87,18 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 	
 	@Override
 	public int insertar(Pieza p) {		
-		String sql = "insert into pieza(nom_pieza, stock, precio_pieza, id_cat) values (?, ?, ?, ?)";
+		String sql = "call sp_nueva_pieza(?, ?, ?, ?)";
 		cnx = getConnection();
 		try {
-			cnx.setAutoCommit(false);
+
 			stm = cnx.prepareStatement(sql);
 			stm.setString(1, p.getNomPieza());
-			stm.setLong(2, p.getStock());
+			stm.setInt(2, p.getCategoria().getIdCategoria());
 			stm.setDouble(3, p.getPrecio());
-			stm.setInt(4, 1);	// falta cambiar id_cat a consulta
+			stm.setLong(4, p.getStock());
 			
-			stm.executeUpdate();
-			cnx.commit();
+			stm.execute();
 			cnx.close();
-			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -108,16 +107,17 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 
 	@Override
 	public int modificar(Pieza p) {
-		String sql = "update pieza set nom_pieza=?, stock=?, precio_pieza=?, id_cat=? where id_pieza=?";
+		String sql = "call sp_actualizar_pieza(?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
 		try {
 			cnx.setAutoCommit(false);
 			stm = cnx.prepareStatement(sql);
-			stm.setString(1, p.getNomPieza());
-			stm.setLong(2, p.getStock());
-			stm.setDouble(3, p.getPrecio());
-			stm.setInt(4, 1);	// falta cambiar id_cat a consulta
-			stm.setInt(5, p.getIdPieza());
+			stm.setInt(1, p.getIdPieza());
+			stm.setString(2, p.getNomPieza());
+			stm.setInt(3, p.getCategoria().getIdCategoria());
+			stm.setDouble(4, p.getPrecio());
+			stm.setLong(5, p.getStock());
+			stm.setBoolean(6, p.isEstadoActivo());
 			
 			stm.executeUpdate();
 			cnx.commit();
@@ -162,8 +162,8 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 
 			while (rs.next()) {
 				cat = new CategoriaPieza();
-				cat.setIdCategoriaPiezad(rs.getInt(1));
-				cat.setNomCategoria(rs.getString(2));
+				cat.setIdCategoria(rs.getInt(1));
+				cat.setNombreCat(rs.getString(2));
 
 				lst.add(cat);
 			}

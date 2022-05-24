@@ -1,4 +1,3 @@
---casi casi
 /*********************************************************
    SCRIPT : CREACIÓN DE LA BD: taller_utp (POSTGRESQL)
 *********************************************************/
@@ -225,7 +224,8 @@ WITH (
   security_barrier=true
 ) 
 AS
-select P.id_pieza, P.nombre_pieza, C.nombre_cat, P.precio_pieza, P.stock from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria;
+select P.id_pieza, P.nombre_pieza, P.id_categoria, C.nombre_cat, P.precio_pieza, P.stock, P.estado_activ
+from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria;
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_horarios
 WITH (
@@ -319,12 +319,14 @@ $$
 LANGUAGE SQL;
 ----------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.f_consultar_pieza(id_pieza integer)
-RETURNS TABLE(id integer, nom character varying(200), categoria character varying(50), precio numeric, sotck bigint, estado boolean)
+RETURNS TABLE
+(	id integer,	nombre_pieza character varying, id_categoria integer, nom_categoria character varying,
+ 	precio numeric, stock bigint, estado boolean)
 AS 
 $$ 
-select P.id_pieza, P.nombre_pieza, C.nombre_cat, P.precio_pieza, P.stock, P.estado_activ
-from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria 
-where id_pieza=1
+select P.id_pieza, P.nombre_pieza, P.id_categoria, C.nombre_cat, P.precio_pieza, P.stock, P.estado_activ
+from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria
+where id_pieza=$1
 $$
 LANGUAGE SQL;
 ----------------------------------------------------------
@@ -351,9 +353,18 @@ $$
 LANGUAGE plpgsql;
 ----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_nuevo_cliente
-(nom_1 character varying(30),  nom_2 character varying(30), ape_1 character varying(30), ape_2 character varying(30),
-id_tdoc integer, nro_doc character varying(15), tel character varying(9), id_distrito integer, 
-direccion text,  correo character varying(254), contrasena text, foto bytea DEFAULT NULL) 
+(	nom_1 character varying default null,
+	nom_2 character varying default null,
+	ape_1 character varying default null,
+	ape_2 character varying default null,
+	id_tdoc integer default null,
+	nro_doc character varying default null,
+	tel character varying default null,
+	id_distrito integer default null, 
+	direccion text default null,
+	correo character varying default null,
+	contrasena text default null,
+	foto bytea  default null) 
 AS 
 $$
 DECLARE
@@ -365,10 +376,10 @@ BEGIN
 		id_tipo_doc, nro_doc, telefono, id_distrito, direccion, foto)
 	VALUES
 		($1, $2, $3, $4, $5, $6, $7, $8, $9, $12);
-	select max(id_persona) into id_per_cli from public.persona;
-	select f_generar_id_usuario(1) into id_user_cli;
+	SELECT max(id_persona) into id_per_cli from public.persona;
+	SELECT f_generar_id_usuario(1) into id_user_cli;
 	INSERT INTO public.usuario
-	(	id_user, id_rol, id_persona, email, contra)
+		(id_user, id_rol, id_persona, email, contra)
 	VALUES 
 		(id_user_cli, 1, id_per_cli, $10, $11);
 END
@@ -376,9 +387,19 @@ $$
 LANGUAGE plpgsql;
 ----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_nuevo_encargado
-(nom_1 character varying(30),  nom_2 character varying(30), ape_1 character varying(30), ape_2 character varying(30),
-id_tdoc integer, nro_doc character varying(15), tel character varying(9), id_distrito integer, 
-direccion text,  correo character varying(254), contrasena text, fec_ingreso date DEFAULT CURRENT_DATE, foto bytea DEFAULT NULL) 
+(	nom_1 character varying default null,
+	nom_2 character varying default null,
+	ape_1 character varying default null,
+	ape_2 character varying default null,
+	id_tdoc integer default null,
+	nro_doc character varying default null,
+	tel character varying default null,
+	id_distrito integer default null, 
+	direccion text default null,
+	correo character varying default null,
+	contrasena text default null, 
+ 	fec_ingreso date default CURRENT_DATE,
+ 	foto bytea default null) 
 AS 
 $$
 DECLARE
@@ -390,10 +411,10 @@ BEGIN
 		id_tipo_doc, nro_doc, telefono, id_distrito, direccion, fecha_ingreso, foto)
 	VALUES
 		($1, $2, $3, $4, $5, $6, $7, $8, $9, $12, $13);
-	select max(id_persona) into id_per_enc from public.persona;
-	select f_generar_id_usuario(2) into id_user_enc;
+	SELECT max(id_persona) into id_per_enc from public.persona;
+	SELECT f_generar_id_usuario(2) into id_user_enc;
 	INSERT INTO public.usuario
-	(	id_user, id_rol, id_persona, email, contra)
+		(id_user, id_rol, id_persona, email, contra)
 	VALUES 
 		(id_user_enc, 2, id_per_enc, $10, $11);
 END
@@ -401,10 +422,21 @@ $$
 LANGUAGE plpgsql;
 ----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_nuevo_tecnico
-(nom_1 character varying(30),  nom_2 character varying(30), ape_1 character varying(30), ape_2 character varying(30),
-id_tdoc integer, nro_doc character varying(15), tel character varying(9), id_distrito integer, direccion text, 
-correo character varying(254), contrasena text, 
-id_esp integer, a_exp integer, fec_ingreso date DEFAULT CURRENT_DATE, foto bytea DEFAULT NULL)
+(	nom_1 character varying default null,
+	nom_2 character varying default null,
+	ape_1 character varying default null,
+	ape_2 character varying default null,
+	id_tdoc integer default null,
+	nro_doc character varying default null,
+	tel character varying default null,
+	id_distrito integer default null, 
+	direccion text default null,
+	correo character varying default null,
+	contrasena text default null,
+ 	id_esp integer default null,
+ 	a_exp integer default null,
+ 	fec_ingreso date default CURRENT_DATE,
+ 	foto bytea default null)
 AS 
 $$
 DECLARE
@@ -416,18 +448,39 @@ BEGIN
 		id_tipo_doc, nro_doc, telefono, id_distrito, direccion, id_especialidad, anios_experiencia, fecha_ingreso, foto)
 	VALUES
 		($1, $2, $3, $4, $5, $6, $7, $8, $9, $12, $13, $14, $15);
-	select max(id_persona) into id_per_tec from public.persona;
-	select f_generar_id_usuario(3) into id_user_tec;
+	SELECT max(id_persona) into id_per_tec from public.persona;
+	SELECT f_generar_id_usuario(3) into id_user_tec;
 	INSERT INTO public.usuario
-	(	id_user, id_rol, id_persona, email, contra)
+		(id_user, id_rol, id_persona, email, contra)
 	VALUES 
 		(id_user_enc, 3, id_per_tec, $10, $11);
 END
 $$
 LANGUAGE plpgsql;
 ----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_nueva_pieza
+(	nombre character varying,
+ 	id_cat integer,
+ 	precio numeric, 
+ 	stock bigint)
+AS 
+$$
+INSERT INTO public.pieza
+(nombre_pieza, id_categoria, precio_pieza, stock)
+VALUES
+($1, $2, $3, $4);
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_nueva_cita
-(id_cliente integer, id_electro integer, id_tecnico integer, tipo character varying(30), fecha_atencion date, hora_atencion time, id_horario integer, fecha_reserva date DEFAULT CURRENT_DATE)
+(	id_cliente integer,
+ 	id_electro integer,
+ 	id_tecnico integer,
+ 	lugar character varying,
+ 	fecha_atencion date,
+ 	hora_atencion time,
+ 	id_horario integer,
+ 	fecha_reserva date default CURRENT_DATE)
 AS 
 $$
 INSERT INTO public.atencion
@@ -442,9 +495,21 @@ LANGUAGE SQL;
 --	ACTUALIZACIONES
 ----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_actualizar_cliente
-(id_cliente integer, id_usuario char(10), nom_1 character varying(30),  nom_2 character varying(30), ape_1 character varying(30), ape_2 character varying(30),
-id_tdoc integer, doc character varying(15), tel character varying(9), id_distr integer, 
-direcc text,  correo character varying(254), contrasena text, estado boolean, new_foto bytea DEFAULT NULL) 
+(	id_cliente integer,
+ 	id_usuario character,
+ 	nom_1 character varying default null,
+	nom_2 character varying default null,
+	ape_1 character varying default null,
+	ape_2 character varying default null,
+	id_tdoc integer default null,
+ 	doc character varying default null,
+ 	tel character varying default null,
+ 	id_distr integer default null, 
+	direcc text default null,
+ 	correo character varying default null,
+ 	contrasena text default null,
+ 	estado boolean default true,
+ 	new_foto bytea default null) 
 AS 
 $$
 BEGIN
@@ -460,11 +525,61 @@ END
 $$
 LANGUAGE plpgsql;
 ----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_actualizar_encargado
+(	id_encargado integer,
+ 	id_usuario character,  	
+ 	nom_1 character varying default null,
+	nom_2 character varying default null,
+	ape_1 character varying default null,
+	ape_2 character varying default null,
+	id_tdoc integer default null,
+ 	doc character varying default null,
+ 	tel character varying default null,
+ 	id_distr integer default null, 
+	direcc text default null,
+ 	correo character varying default null,
+ 	contrasena text default null,
+ 	fec_ingreso date default null,	
+ 	fec_baja date default null,	
+ 	estado boolean default true,
+ 	new_foto bytea default null)
+AS 
+$$
+BEGIN
+	UPDATE public.persona
+	set nombre_1=nom_1, nombre_2=nom_2, apellido_1=ape_1, apellido_2=ape_2, 
+	id_tipo_doc=id_tdoc, nro_doc=doc, telefono=tel, id_distrito=id_distr, direccion=direcc, 
+	fecha_ingreso=fec_ingreso, fecha_baja=fec_baja,
+	foto=new_foto, estado_activ=estado
+	where id_persona = id_encargado;
+
+	UPDATE public.usuario
+	set email=correo, contra=contrasena, estado_activ=estado
+	where id_user = id_usuario;
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_actualizar_tecnico
-(id_tecnico integer, id_usuario char(10), nom_1 character varying(30),  nom_2 character varying(30), ape_1 character varying(30), ape_2 character varying(30),
-id_tdoc integer, doc character varying(15), tel character varying(9), id_distr integer, 
-direcc text,  correo character varying(254), contrasena text, 
-id_esp integer, a_exp integer, fec_ingreso date, estado boolean, fec_baja date DEFAULT NULL, new_foto bytea DEFAULT NULL)
+(	id_tecnico integer,
+ 	id_usuario character,  	
+ 	nom_1 character varying default null,
+	nom_2 character varying default null,
+	ape_1 character varying default null,
+	ape_2 character varying default null,
+	id_tdoc integer default null,
+ 	doc character varying default null,
+ 	tel character varying default null,
+ 	id_distr integer default null, 
+	direcc text default null,
+ 	correo character varying default null,
+ 	contrasena text default null,
+	id_esp integer default null,
+ 	a_exp integer default null,	 
+ 	fec_ingreso date default null,	
+ 	fec_baja date default null,	
+ 	estado boolean default true,
+ 	new_foto bytea default null)
 AS 
 $$
 BEGIN
@@ -482,27 +597,20 @@ END
 $$
 LANGUAGE plpgsql;
 ----------------------------------------------------------
-CREATE OR REPLACE PROCEDURE public.sp_actualizar_encargado
-(id_encargado integer, id_usuario char(10), nom_1 character varying(30),  nom_2 character varying(30), ape_1 character varying(30), ape_2 character varying(30),
-id_tdoc integer, doc character varying(15), tel character varying(9), id_distr integer, 
-direcc text,  correo character varying(254), contrasena text, fec_ingreso date,
-estado boolean, fec_baja date DEFAULT NULL, new_foto bytea DEFAULT NULL)
+CREATE OR REPLACE PROCEDURE public.sp_actualizar_pieza
+(	id_pieza integer,
+ 	nombre character varying,
+ 	id_cat integer,
+ 	precio numeric, 
+ 	stock bigint,
+ 	estado boolean default true)
 AS 
 $$
-BEGIN
-	UPDATE public.persona
-	set nombre_1=nom_1, nombre_2=nom_2, apellido_1=ape_1, apellido_2=ape_2, 
-	id_tipo_doc=id_tdoc, nro_doc=doc, telefono=tel, id_distrito=id_distr, direccion=direcc, 
-	fecha_ingreso=fec_ingreso, fecha_baja=fec_baja,
-	foto=new_foto, estado_activ=estado
-	where id_persona = id_encargado;
-
-	UPDATE public.usuario
-	set email=correo, contra=contrasena, estado_activ=estado
-	where id_user = id_usuario;
-END
+UPDATE public.pieza
+set nombre_pieza=$2, id_categoria=$3, precio_pieza=$4, stock=$5, estado_activ=$6
+where id_pieza=$1;
 $$
-LANGUAGE plpgsql;
+LANGUAGE SQL;
 ----------------------------------------------------------
 --	BORRADO LÓGICO
 ----------------------------------------------------------

@@ -102,7 +102,8 @@ public class DaoEncargado extends Conexion implements CRUD<Encargado> {
 			stm.setInt(8, enc.getIdDistrito());
 			stm.setString(9, enc.getDireccion());
 			stm.setString(10, enc.getEmail());
-			stm.setString(11, enc.getContrasena());
+			//stm.setString(11, enc.getContrasena());
+			stm.setString(11, "por defecto");
 			stm.setObject(12, LocalDate.now());
 			stm.setBytes(13, enc.getFoto());
 			
@@ -116,7 +117,7 @@ public class DaoEncargado extends Conexion implements CRUD<Encargado> {
 
 	@Override
 	public int modificar(Encargado enc) {
-		String sql = "call sp_actualizar_encargado(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "call sp_actualizar_encargado(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
 		try {
 			stm = cnx.prepareCall(sql);
@@ -134,8 +135,9 @@ public class DaoEncargado extends Conexion implements CRUD<Encargado> {
 			stm.setString(12, enc.getEmail());
 			stm.setString(13, enc.getContrasena());
 			stm.setObject(14, LocalDate.now());
-			stm.setBoolean(15, enc.isEstadoActivo());
-			stm.setBytes(16, enc.getFoto());
+			stm.setObject(15, null);
+			stm.setBoolean(16, enc.isEstadoActivo());
+			stm.setBytes(17, enc.getFoto());
 
 			stm.execute();
 			cnx.close();

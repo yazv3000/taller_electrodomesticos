@@ -22,8 +22,9 @@ import utp.taller.entidades.Pieza;
 public class ServletGestionarPieza extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	DaoPieza dao = new DaoPieza();
-	Pieza pieza;
+	private DaoPieza dao = new DaoPieza();
+	private Pieza pieza = new Pieza();
+	private int idPieza;
  
     public ServletGestionarPieza() {
         super();
@@ -40,14 +41,28 @@ public class ServletGestionarPieza extends HttpServlet {
 			 	request.setAttribute("lstConsultaPiezas", lst);
 			break;
 		case "editar":
-		    int id= Integer.parseInt(request.getParameter("id"));
-			pieza = dao.consultarId(id);
+		    idPieza = Integer.parseInt(request.getParameter("id"));
+			pieza = dao.consultarId(idPieza);
 			request.setAttribute("pi", pieza);
 			request.getRequestDispatcher("ServletGestionarPieza?accion=listar").forward(request, response);
 			break;
+
+		case "actualizar":
+			recuperarDatos(request);
+			dao.modificar(pieza);
+			
+			request.getRequestDispatcher("ServletGestionarPieza?accion=listar").include(request, response);
+		break;
+
+		case "desactivar":
+				idPieza = Integer.parseInt(request.getParameter("id"));
+				dao.desactivar(idPieza);
+			break;
+			
 		default:
-			throw new IllegalArgumentException("Unexpected value: " + accion);
-		}
+			request.getRequestDispatcher("ServletGestionarCliente?accion=listar").forward(request, response);
+    	}
+
     	listarCategorias(request);
     	request.getRequestDispatcher("vista/encargado/gestionPiezas.jsp").forward(request, response);
     }
@@ -57,13 +72,22 @@ public class ServletGestionarPieza extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		processRequest(request, response);
 	}
+	
 	private void listarCategorias(HttpServletRequest request) {
 		DaoPieza daoPi = new DaoPieza();
 		List<CategoriaPieza> lst = daoPi.listarCategorias();
 		request.getSession().getServletContext().setAttribute("lstCategorias", lst);
 	}
 	
+	private void recuperarDatos(HttpServletRequest request) {
+		
+		pieza.setNomPieza(request.getParameter("txt_nombrePieza"));
+		pieza.getCategoria().setIdCategoria(Integer.parseInt(request.getParameter("cbx_categoriaPieza")));
+		pieza.setPrecio(Double.parseDouble(request.getParameter("precio")));
+		pieza.setStock(Long.parseLong(request.getParameter("stock")));
+		pieza.setEstadoActivo(Boolean.parseBoolean(request.getParameter("estado")));
+	}
 
 }

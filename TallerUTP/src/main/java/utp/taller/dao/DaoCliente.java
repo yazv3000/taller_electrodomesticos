@@ -137,7 +137,8 @@ public class DaoCliente extends Conexion  implements CRUD<Cliente>{
 			stm.setInt(8, cli.getIdDistrito());
 			stm.setString(9, cli.getDireccion());
 			stm.setString(10, cli.getEmail());
-			stm.setString(11, cli.getContrasena());
+			//stm.setString(11, cli.getContrasena());
+			stm.setString(11, "por defecto");
 			stm.setBytes(12, cli.getFoto());
 			
 			stm.execute();

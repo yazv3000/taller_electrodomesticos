@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,7 +127,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 
 	@Override
 	public int insertar(Tecnico tec) {
-		String sql = "call sp_nuevo_tecnico(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "call sp_nuevo_tecnico(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
 		try {
 			stm = cnx.prepareStatement(sql);
@@ -140,9 +141,12 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 			stm.setInt(8, tec.getIdDistrito());
 			stm.setString(9, tec.getDireccion());
 			stm.setString(10, tec.getEmail());
-			stm.setString(11, tec.getContrasena());
-			stm.setInt(12, tec.getAniosExperiencia());
-			stm.setBytes(12, tec.getFoto());
+			//stm.setString(11, tec.getContrasena());
+			stm.setString(11, "por defecto");
+			stm.setInt(12, tec.getIdEspecialidad());
+			stm.setInt(13, tec.getAniosExperiencia());
+			stm.setObject(14, LocalDate.now());
+			stm.setBytes(15, tec.getFoto());
 			
 			stm.execute();
 			cnx.close();
@@ -154,7 +158,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 
 	@Override
 	public int modificar(Tecnico tec) {
-		String sql = "call sp_actualizar_tecnico(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "call sp_actualizar_tecnico(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
 		try {
 			stm = cnx.prepareCall(sql);
@@ -171,8 +175,12 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 			stm.setString(11, tec.getDireccion());
 			stm.setString(12, tec.getEmail());
 			stm.setString(13, tec.getContrasena());
-			stm.setBoolean(14, tec.isEstadoActivo());
-			stm.setBytes(15, tec.getFoto());
+			stm.setInt(14, tec.getIdEspecialidad());
+			stm.setInt(15, tec.getAniosExperiencia());
+			stm.setObject(16, LocalDate.now());
+			stm.setObject(17, null);
+			stm.setBoolean(18, tec.isEstadoActivo());
+			stm.setBytes(19, tec.getFoto());
 
 			stm.execute();
 			cnx.close();
