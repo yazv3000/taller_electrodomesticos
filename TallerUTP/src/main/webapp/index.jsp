@@ -1,13 +1,13 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java"	contentType="text/html; charset=ISO-8859-1"		pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<c:set var="context" value="${pageContext.request.contextPath}" /> 
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es-PE">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <c:set var="context" value="${pageContext.request.contextPath}" /> 
     <link rel="stylesheet" type="text/css" href="${context}/css/index.css">
     <link rel="icon" type="image/png" href="${context}/img/Logoa.png">
 
@@ -18,13 +18,13 @@
 </head>
 <body>
     <!-- ===== IMAGEN DE FONDO ===== -->
-    <img class="inicio_fondo" src="img/fondo.png" alt="Logotipo de HTML5"  />
+    <img class="inicio_fondo" src="${context}/img/fondo.png" alt="Logotipo de HTML5"  />
 
     <!-- ===== BARRA DE NAVEGACION ===== -->
     <div class="menu">
         <nav class="navi">
             <div class="logo">
-                <img src="img/Logoa.png" alt="">
+                <img src="${context}/img/Logoa.png" alt="">
                 <h2>U<span>T</span>P</h2>
             </div>
             <ul>
@@ -78,28 +78,32 @@
 
     </div>
 
+
+    <!-- ===== MODAL INICIAR SESION ===== -->
     <section class="modal__sesion">
         <div class="modal__contenedor">
             <div class="modal__cont__cerrar">
                 <button class="modal__cerrar">x</button>
             </div>
-            <form  class="modal__formulario needs-validation" action="<%=request.getContextPath()%>/ServletValidar" method="GET" novalidate>
+            <form class="modal__formulario needs-validation" action="<%=request.getContextPath()%>/ServletIniciarSesion" method="post" novalidate>
                 <h3 class="form__titulo">Iniciar Sesión</h3>
                 <img  class="form__logo" src="img/Logo.png" alt="">
-                <input type="email" class="correo form-control" placeholder="Correo" name="txtuser" required>
-                <input type="password" class="pass form-control" placeholder="Contraseña" name="txtpass" required>
-                <select class="form__selector" name="op_rol" id="" >
+                <input type="email" class="correo form-control" placeholder="Email" name="txt_user" required>
+                <input type="password" class="pass form-control" placeholder="Contraseña" name="txt_pass" required>
+                <select class="form__selector" name="cbx_rol" id="" >
                     <option value="1">Cliente</option>
-                    <option value="2">Administrador</option>
+                    <option value="2">Encargado</option>
                     <option value="3">Técnico</option>
                 </select>
-                <input type="submit" class="btn__ingresar" name="accion" value="Ingresar">Ingresar</input>
+                <input type="submit" class="btn__ingresar" name="accion" value="Ingresar"></input>
+                <a style="color:aqua;">¿No tiene cuenta?</a>
             </form>
         </div>
     </section>
-    <script src="js/index.js"></script>  
-    <script src="js/validForm.js"></script> 
-    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="${context}/js/index.js"></script>  
+    <script src="${context}/js/validForm.js"></script> 
+    
+    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>  
 </body>
 </html>

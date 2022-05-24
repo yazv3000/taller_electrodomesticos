@@ -1,3 +1,4 @@
+--casi casi
 /*********************************************************
    SCRIPT : CREACIÓN DE LA BD: taller_utp (POSTGRESQL)
 *********************************************************/
@@ -9,7 +10,8 @@ CREATE TABLE IF NOT EXISTS public.servicio
     descripcion text NOT NULL,
     precio_ref numeric NOT NULL,
 	estado_activ boolean NOT NULL DEFAULT true,
-    PRIMARY KEY (id_servicio)
+	foto_serv bytea,
+	PRIMARY KEY (id_servicio)
 );
 ---------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.tipo_documento
@@ -58,6 +60,7 @@ CREATE TABLE IF NOT EXISTS public.persona
 	anios_experiencia integer,
 	fecha_ingreso date,
 	fecha_baja date,
+	foto bytea,
     estado_activ boolean NOT NULL DEFAULT true,
     PRIMARY KEY (id_persona),
 	CONSTRAINT fk_tdoc FOREIGN KEY (id_tipo_doc) REFERENCES public.tipo_documento(id_tipo_doc) ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -84,8 +87,7 @@ CREATE TABLE IF NOT EXISTS public.horario_atencion
     id_tecnico integer NOT NULL,
     fecha_atencion date NOT NULL,
     hora_inicio time NOT NULL,
-    hora_fin time NOT NULL,
-	estado integer NOT NULL,
+	estado character varying(30) NOT NULL,
     PRIMARY KEY (id_horario),
     CONSTRAINT fk_hat FOREIGN KEY (id_tecnico) REFERENCES public.persona(id_persona) ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -126,7 +128,8 @@ CREATE TABLE IF NOT EXISTS public.atencion
     id_cliente integer NOT NULL,
     id_electro integer NOT NULL,
     id_tecnico integer NOT NULL,
-    fecha_atencion DATE NOT NULL DEFAULT CURRENT_DATE,
+    fecha_reserva_cita date,
+    fecha_atencion date NOT NULL DEFAULT CURRENT_DATE,
     hora_atencion time NOT NULL,
     tipo character varying(30) NOT NULL,		-- En taller / A domicilio
 	estado_atencion character varying(30) NOT NULL,
@@ -171,6 +174,411 @@ CREATE TABLE IF NOT EXISTS public.detalle_atencion
 	CONSTRAINT fk_ser FOREIGN KEY (id_servicio) REFERENCES public.servicio(id_servicio) ON UPDATE CASCADE ON DELETE RESTRICT,
 	CONSTRAINT fk_pieza FOREIGN KEY (id_pieza) REFERENCES public.pieza(id_pieza) ON UPDATE CASCADE ON DELETE RESTRICT
 );
+----------------------------------------------------------
+/*********************************************************
+  SCRIPT : VISTAS: taller_utp (POSTGRESQL)
+*********************************************************/
+----------------------------------------------------------
+--	PERSONAS
+----------------------------------------------------------
+CREATE OR REPLACE VIEW public.v_clientes
+WITH (
+  security_barrier=true
+) 
+AS
+select C.id_persona, U.id_user, 
+Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2),'  ',' ')) as nombres,
+C.telefono, D.nombre_distrito, C.direccion, U.email, C.estado_activ
+from public.persona C inner join public.usuario U on C.id_persona = U.id_persona
+left join public.distrito D on C.id_distrito = D.id_distrito
+where U.id_rol=1;
+----------------------------------------------------------
+CREATE OR REPLACE VIEW public.v_encargados
+WITH (
+  security_barrier=true
+) 
+AS
+select E.id_persona, U.id_user, 
+Rtrim(replace(concat(E.nombre_1,' ',E.nombre_2,' ',E.apellido_1,' ',E.apellido_2),'  ',' ')) as nombres,
+E.telefono, D.nombre_distrito, E.direccion, U.email, E.estado_activ
+from public.persona E inner join public.usuario U on E.id_persona = U.id_persona
+left join public.distrito D on E.id_distrito = D.id_distrito
+where U.id_rol=2;
+----------------------------------------------------------
+CREATE OR REPLACE VIEW public.v_tecnicos
+WITH (
+  security_barrier=true
+) 
+AS
+select T.id_persona, U.id_user, 
+Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as nombres,
+E.nombre_esp as especialidad,
+T.telefono, D.nombre_distrito, T.direccion, U.email, T.estado_activ
+from public.persona T inner join public.usuario U on T.id_persona = U.id_persona
+left join public.especialidad E on E.id_especialidad = T.id_especialidad
+left join public.distrito D on T.id_distrito = D.id_distrito
+where U.id_rol=3;
+----------------------------------------------------------
+----------------------------------------------------------
+CREATE OR REPLACE VIEW public.v_piezas
+WITH (
+  security_barrier=true
+) 
+AS
+select P.id_pieza, P.nombre_pieza, C.nombre_cat, P.precio_pieza, P.stock from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria;
+----------------------------------------------------------
+CREATE OR REPLACE VIEW public.v_horarios
+WITH (
+  security_barrier=true
+) 
+AS
+select H.* from persona T inner join horario_atencion H on H.id_tecnico = T.id_persona
+left join usuario U on U.id_persona = T.id_persona where U.id_rol = 3 and H.fecha_atencion >= CURRENT_DATE;
+----------------------------------------------------------
+CREATE OR REPLACE VIEW public.v_citas
+WITH (
+  security_barrier=true
+) 
+AS
+select id_atencion, id_cliente, id_electro, id_tecnico, fecha_reserva_cita, fecha_atencion, hora_atencion, tipo 
+from atencion 
+where estado_atencion = 'Pendiente' and estado_activ;
+/*********************************************************
+  SCRIPT : FUNCIONES: taller_utp (POSTGRESQL)
+*********************************************************/
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_validar_acceso(user_rol integer, correo character varying(254), contrasena text)
+RETURNS TABLE(id_persona integer, id_user char(10), rol character varying(30), nombre_completo character varying(112), correo character varying(254), foto bytea)
+AS 
+$$ 
+select 
+P.id_persona, U.id_user, R.nombre_rol,
+Rtrim(replace(concat(P.nombre_1,' ',P.nombre_2,' ',P.apellido_1,' ',P.apellido_2),'  ',' ')) as nombres,
+U.email, P.foto
+from public.usuario U inner join public.persona P on P.id_persona = U.id_persona
+inner join public.roles R on U.id_rol = R.id_rol
+where U.id_rol = user_rol and U.email = correo and U.contra = contrasena and U.estado_activ;
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
+--	CONSULTAS
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_consultar_cliente(id_cliente integer)
+RETURNS TABLE(id_cliente integer, id_user char(10), nom1 character varying(30), nom2 character varying(30), ape1 character varying(30), ape2 character varying(30),
+			  id_tdoc integer, nro_doc character varying(15), telefono character varying(9), id_distrito integer, direccion text,
+			  email character varying(254), contra text, foto bytea, estado boolean)
+AS 
+$$ 
+select
+C.id_persona, U.id_user,
+C.nombre_1,C.nombre_2,C.apellido_1,C.apellido_2,
+C.id_tipo_doc, C.nro_doc,
+C.telefono,
+C.id_distrito, C.direccion,
+U.email, U.contra, C.foto, C.estado_activ
+from persona C inner join usuario U on C.id_persona = U.id_persona
+where U.id_rol=1 and C.id_persona = id_cliente
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_consultar_encargado(id_encargado integer)
+RETURNS TABLE(id_enc integer, id_user char(10), nom1 character varying(30), nom2 character varying(30), ape1 character varying(30), ape2 character varying(30),
+			  id_tdoc integer, nro_doc character varying(15), telefono character varying(9), id_distrito integer, direccion text,
+			  email character varying(254), contra text, foto bytea, estado boolean)
+AS 
+$$ 
+select
+E.id_persona, U.id_user,
+E.nombre_1,E.nombre_2,E.apellido_1,E.apellido_2,
+E.id_tipo_doc, E.nro_doc,
+E.telefono,
+E.id_distrito, E.direccion,
+U.email, U.contra, E.foto, E.estado_activ
+from persona E inner join usuario U on E.id_persona = U.id_persona
+where U.id_rol=2 and E.id_persona = id_encargado
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_consultar_tecnico(id_tecnico integer)
+RETURNS TABLE(id_tec integer, id_user char(10), nom1 character varying(30), nom2 character varying(30), ape1 character varying(30), ape2 character varying(30),
+			  id_tdoc integer, nro_doc character varying(15), especialidad integer, a_exp integer,
+			  telefono character varying(9), id_distrito integer, direccion text,
+			  email character varying(254), contra text, foto bytea, estado boolean)
+AS 
+$$ 
+select
+T.id_persona, U.id_user,
+T.nombre_1, T.nombre_2, T.apellido_1, T.apellido_2,
+T.id_tipo_doc, T.nro_doc,
+T.id_especialidad, T.anios_experiencia,
+T.telefono, T.id_distrito, T.direccion,
+U.email, U.contra, T.foto, T.estado_activ
+from persona T inner join usuario U on T.id_persona = U.id_persona
+where U.id_rol=3 and T.id_persona = id_tecnico
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_consultar_pieza(id_pieza integer)
+RETURNS TABLE(id integer, nom character varying(200), categoria character varying(50), precio numeric, sotck bigint, estado boolean)
+AS 
+$$ 
+select P.id_pieza, P.nombre_pieza, C.nombre_cat, P.precio_pieza, P.stock, P.estado_activ
+from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria 
+where id_pieza=1
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
+--	INSERCIONES
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_generar_id_usuario(rol integer)
+RETURNS char(10)
+AS 
+$$
+DECLARE
+	prefix char(3);
+	numero integer;
+	cifras integer;
+BEGIN
+	IF rol = 1	THEN prefix = 'CLI';
+	ELSEIF rol = 2	THEN prefix = 'ENC';
+	ELSEIF rol = 3	THEN prefix = 'TEC';
+	END IF;
+	select max(cast(right(id_user, 6) as integer))+1 into numero from usuario where id_rol = rol;
+	cifras = length(numero||'');
+	return concat(prefix,'-',repeat('0',6-cifras),numero);
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_nuevo_cliente
+(nom_1 character varying(30),  nom_2 character varying(30), ape_1 character varying(30), ape_2 character varying(30),
+id_tdoc integer, nro_doc character varying(15), tel character varying(9), id_distrito integer, 
+direccion text,  correo character varying(254), contrasena text, foto bytea DEFAULT NULL) 
+AS 
+$$
+DECLARE
+	id_per_cli integer;
+	id_user_cli char(10);
+BEGIN
+	INSERT INTO public.persona
+	(	nombre_1, nombre_2, apellido_1, apellido_2, 
+		id_tipo_doc, nro_doc, telefono, id_distrito, direccion, foto)
+	VALUES
+		($1, $2, $3, $4, $5, $6, $7, $8, $9, $12);
+	select max(id_persona) into id_per_cli from public.persona;
+	select f_generar_id_usuario(1) into id_user_cli;
+	INSERT INTO public.usuario
+	(	id_user, id_rol, id_persona, email, contra)
+	VALUES 
+		(id_user_cli, 1, id_per_cli, $10, $11);
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_nuevo_encargado
+(nom_1 character varying(30),  nom_2 character varying(30), ape_1 character varying(30), ape_2 character varying(30),
+id_tdoc integer, nro_doc character varying(15), tel character varying(9), id_distrito integer, 
+direccion text,  correo character varying(254), contrasena text, fec_ingreso date DEFAULT CURRENT_DATE, foto bytea DEFAULT NULL) 
+AS 
+$$
+DECLARE
+	id_per_enc integer;
+	id_user_enc char(10);
+BEGIN
+	INSERT INTO public.persona
+	(	nombre_1, nombre_2, apellido_1, apellido_2, 
+		id_tipo_doc, nro_doc, telefono, id_distrito, direccion, fecha_ingreso, foto)
+	VALUES
+		($1, $2, $3, $4, $5, $6, $7, $8, $9, $12, $13);
+	select max(id_persona) into id_per_enc from public.persona;
+	select f_generar_id_usuario(2) into id_user_enc;
+	INSERT INTO public.usuario
+	(	id_user, id_rol, id_persona, email, contra)
+	VALUES 
+		(id_user_enc, 2, id_per_enc, $10, $11);
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_nuevo_tecnico
+(nom_1 character varying(30),  nom_2 character varying(30), ape_1 character varying(30), ape_2 character varying(30),
+id_tdoc integer, nro_doc character varying(15), tel character varying(9), id_distrito integer, direccion text, 
+correo character varying(254), contrasena text, 
+id_esp integer, a_exp integer, fec_ingreso date DEFAULT CURRENT_DATE, foto bytea DEFAULT NULL)
+AS 
+$$
+DECLARE
+	id_per_tec integer;
+	id_user_tec char(10);
+BEGIN
+	INSERT INTO public.persona
+	(	nombre_1, nombre_2, apellido_1, apellido_2, 
+		id_tipo_doc, nro_doc, telefono, id_distrito, direccion, id_especialidad, anios_experiencia, fecha_ingreso, foto)
+	VALUES
+		($1, $2, $3, $4, $5, $6, $7, $8, $9, $12, $13, $14, $15);
+	select max(id_persona) into id_per_tec from public.persona;
+	select f_generar_id_usuario(3) into id_user_tec;
+	INSERT INTO public.usuario
+	(	id_user, id_rol, id_persona, email, contra)
+	VALUES 
+		(id_user_enc, 3, id_per_tec, $10, $11);
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_nueva_cita
+(id_cliente integer, id_electro integer, id_tecnico integer, tipo character varying(30), fecha_atencion date, hora_atencion time, id_horario integer, fecha_reserva date DEFAULT CURRENT_DATE)
+AS 
+$$
+INSERT INTO public.atencion
+(id_cliente, id_electro, id_tecnico, tipo, fecha_atencion, hora_atencion, fecha_reserva_cita, estado_atencion)
+VALUES
+($1, $2, $3, $4, $5, $6, $8, 'Pendiente');
+UPDATE public.horario_atencion
+set estado = 'Ocupado' where id_horario = $7;
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
+--	ACTUALIZACIONES
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_actualizar_cliente
+(id_cliente integer, id_usuario char(10), nom_1 character varying(30),  nom_2 character varying(30), ape_1 character varying(30), ape_2 character varying(30),
+id_tdoc integer, doc character varying(15), tel character varying(9), id_distr integer, 
+direcc text,  correo character varying(254), contrasena text, estado boolean, new_foto bytea DEFAULT NULL) 
+AS 
+$$
+BEGIN
+	UPDATE public.persona
+	set nombre_1=nom_1, nombre_2=nom_2, apellido_1=ape_1, apellido_2=ape_2, 
+	id_tipo_doc=id_tdoc, nro_doc=doc, telefono=tel, id_distrito=id_distr, direccion=direcc, foto=new_foto, estado_activ=estado
+	where id_persona = id_cliente;
+
+	UPDATE public.usuario
+	set email=correo, contra=contrasena, estado_activ=estado
+	where id_user = id_usuario;
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_actualizar_tecnico
+(id_tecnico integer, id_usuario char(10), nom_1 character varying(30),  nom_2 character varying(30), ape_1 character varying(30), ape_2 character varying(30),
+id_tdoc integer, doc character varying(15), tel character varying(9), id_distr integer, 
+direcc text,  correo character varying(254), contrasena text, 
+id_esp integer, a_exp integer, fec_ingreso date, estado boolean, fec_baja date DEFAULT NULL, new_foto bytea DEFAULT NULL)
+AS 
+$$
+BEGIN
+	UPDATE public.persona
+	set nombre_1=nom_1, nombre_2=nom_2, apellido_1=ape_1, apellido_2=ape_2, 
+	id_tipo_doc=id_tdoc, nro_doc=doc, telefono=tel, id_distrito=id_distr, direccion=direcc,
+	id_especialidad=id_esp, anios_experiencia=a_exp, fecha_ingreso=fec_ingreso, fecha_baja=fec_baja,
+	foto=new_foto, estado_activ=estado
+	where id_persona = id_tecnico;
+
+	UPDATE public.usuario
+	set email=correo, contra=contrasena, estado_activ=estado
+	where id_user = id_usuario;
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_actualizar_encargado
+(id_encargado integer, id_usuario char(10), nom_1 character varying(30),  nom_2 character varying(30), ape_1 character varying(30), ape_2 character varying(30),
+id_tdoc integer, doc character varying(15), tel character varying(9), id_distr integer, 
+direcc text,  correo character varying(254), contrasena text, fec_ingreso date,
+estado boolean, fec_baja date DEFAULT NULL, new_foto bytea DEFAULT NULL)
+AS 
+$$
+BEGIN
+	UPDATE public.persona
+	set nombre_1=nom_1, nombre_2=nom_2, apellido_1=ape_1, apellido_2=ape_2, 
+	id_tipo_doc=id_tdoc, nro_doc=doc, telefono=tel, id_distrito=id_distr, direccion=direcc, 
+	fecha_ingreso=fec_ingreso, fecha_baja=fec_baja,
+	foto=new_foto, estado_activ=estado
+	where id_persona = id_encargado;
+
+	UPDATE public.usuario
+	set email=correo, contra=contrasena, estado_activ=estado
+	where id_user = id_usuario;
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
+--	BORRADO LÓGICO
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_desactivar_persona(id_per integer)
+AS 
+$$
+BEGIN
+	UPDATE public.persona
+	set estado_activ = false
+	where id_persona = id_per;
+
+	UPDATE public.usuario
+	set estado_activ = false
+	where id_persona = id_per;
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
+--	REPORTES
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_reportes_x_tecnico(id_tec integer, fecha_1 date, fecha_2 date DEFAULT CURRENT_DATE)
+RETURNS TABLE(id_atencion integer, fecha_atencion date, tecnico character varying(112), cliente character varying(112), 
+			  electrodomestico character varying(50), marca character varying(50), servicio_realizado character varying(50))
+AS 
+$$
+select A.id_atencion, A.fecha_atencion,
+Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as tecnico,
+Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2),'  ',' ')) as propietario,
+TE.nom_tipo_electro, M.nombre_marca,
+S.nombre_serv
+from atencion A
+inner join persona T on A.id_tecnico = T.id_persona
+inner join persona C on A.id_cliente = C.id_persona
+inner join electrodomestico E on A.id_electro = E.id_electrodomestico
+left join tipo_electrodomestico TE on TE.id_tipo_electro = E.id_tipo_electro
+left join marca M on M.id_marca = E.id_marca
+left join detalle_atencion D on A.id_atencion = D.id_atencion
+left join servicio S on D.id_servicio = S.id_servicio
+
+where estado_atencion = 'Finalizado' 
+and A.id_tecnico = id_tec
+and A.fecha_atencion between fecha_1 and fecha_2
+and A.estado_activ
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_reportes_x_cliente(id_cli integer, fecha_1 date, fecha_2 date DEFAULT CURRENT_DATE, monto_1 numeric DEFAULT 0.00, monto_2 numeric DEFAULT 99999999.99)
+RETURNS TABLE(id_atencion integer, fecha_atencion date, cliente character varying(112),  
+			  electrodomestico character varying(50), marca character varying(50), 
+			  servicio_realizado character varying(50), monto numeric,
+			  tecnico character varying(112))
+AS 
+$$
+select A.id_atencion, A.fecha_atencion,
+Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2),'  ',' ')) as cliente,
+TE.nom_tipo_electro, M.nombre_marca,
+S.nombre_serv,
+D.monto,
+Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as tecnico
+from atencion A
+inner join persona T on A.id_tecnico = T.id_persona
+inner join persona C on A.id_cliente = C.id_persona
+inner join electrodomestico E on A.id_electro = E.id_electrodomestico
+left join tipo_electrodomestico TE on TE.id_tipo_electro = E.id_tipo_electro
+left join marca M on M.id_marca = E.id_marca
+left join detalle_atencion D on A.id_atencion = D.id_atencion
+left join servicio S on D.id_servicio = S.id_servicio
+
+where estado_atencion = 'Finalizado' 
+and A.id_cliente = id_cli
+and A.fecha_atencion between fecha_1 and fecha_2
+and D.monto between monto_1 and monto_2
+and A.estado_activ
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
 /*********************************************************
   SCRIPT : INSERCIÓN DE DATOS: taller_utp (POSTGRESQL)
 *********************************************************/
@@ -294,12 +702,14 @@ INSERT INTO public.usuario(id_user, id_rol, id_persona, email, contra)
 	 ('CLI-000010', 1, 21, 'tookha.garcia@gmail.com', 'def456'),
 	 ('CLI-000011', 1, 22, 'gloria.smith@gmail.com', 'def456');
 ---------------------------------------------------------
-INSERT INTO public.horario_atencion(id_tecnico, fecha_atencion, hora_inicio, hora_fin, estado)
+INSERT INTO public.horario_atencion(id_tecnico, fecha_atencion, hora_inicio, estado)
 	VALUES
-	(3, '2022-05-12', '08:30', '10:00', 1),
-	(3, '2022-05-12', '12:00', '14:00', 1),
-	(3, '2022-05-12', '09:45', '11:00', 1),
-	(4, '2022-05-13', '16:00', '17:30', 1);
+	(3, CURRENT_DATE, '07:00', 1),
+	(3, CURRENT_DATE, '08:00', 1),
+	(3, CURRENT_DATE + INTERVAL '1 day', '09:00', 1),
+	(4, CURRENT_DATE, '16:00', 1),
+	(4, CURRENT_DATE + INTERVAL '1 day', '07:00', 1),
+	(20, CURRENT_DATE+ INTERVAL '2 day', '09:00', 1);
 ---------------------------------------------------------
 INSERT INTO public.tipo_electrodomestico(nom_tipo_electro)
 	VALUES
@@ -394,208 +804,3 @@ INSERT INTO public.pieza(nombre_pieza, stock, precio_pieza, id_categoria)
 	('Kit Instalacion Lavaplatos', 500, 58.90, 7),
 	('Condensador para horno microondas Sharp', 120, 146.00, 8),
 	('Botón plateado para horno microondas Bosch', 280, 24.00, 8);
-----------------------------------------------------------
-/*********************************************************
-  SCRIPT : VISTAS: taller_utp (POSTGRESQL)
-*********************************************************/
-----------------------------------------------------------
-CREATE OR REPLACE VIEW public.v_clientes
-WITH (
-  security_barrier=true
-) 
-AS
-select P.id_persona, U.id_user, 
-Rtrim(replace(concat(P.nombre_1,' ',P.nombre_2,' ',P.apellido_1,' ',P.apellido_2),'  ',' ')) as nombres,
-P.telefono, P.id_distrito, D.nombre_distrito, P.direccion, U.email 
-from public.persona P inner join public.usuario U on P.id_persona = U.id_persona
-left join public.distrito D on P.id_distrito = D.id_distrito
-where U.id_rol=1;
-----------------------------------------------------------
-CREATE OR REPLACE VIEW public.v_encargados
-WITH (
-  security_barrier=true
-) 
-AS
-select P.id_persona, U.id_user, 
-Rtrim(replace(concat(P.nombre_1,' ',P.nombre_2,' ',P.apellido_1,' ',P.apellido_2),'  ',' ')) as nombres,
-P.telefono, P.id_distrito, D.nombre_distrito, P.direccion, U.email 
-from public.persona P inner join public.usuario U on P.id_persona = U.id_persona
-left join public.distrito D on P.id_distrito = D.id_distrito
-where U.id_rol=2;
-----------------------------------------------------------
-CREATE OR REPLACE VIEW public.v_tecnicos
-WITH (
-  security_barrier=true
-) 
-AS
-select P.id_persona, U.id_user, 
-Rtrim(replace(concat(P.nombre_1,' ',P.nombre_2,' ',P.apellido_1,' ',P.apellido_2),'  ',' ')) as nombres,
-P.telefono, P.id_distrito, D.nombre_distrito, P.direccion, U.email 
-from public.persona P inner join public.usuario U on P.id_persona = U.id_persona
-left join public.distrito D on P.id_distrito = D.id_distrito
-where U.id_rol=3;
-----------------------------------------------------------
-CREATE OR REPLACE VIEW public.v_piezas
-WITH (
-  security_barrier=true
-) 
-AS
-select P.id_pieza, P.nombre_pieza, C.nombre_cat, P.precio_pieza, P.stock from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria;
-----------------------------------------------------------
-CREATE OR REPLACE VIEW public.v_horarios
-WITH (
-  security_barrier=true
-) 
-AS
-select H.* from persona T inner join horario_atencion H on H.id_tecnico = T.id_persona
-left join usuario U on U.id_persona = T.id_persona where U.id_rol = 3 and H.fecha_atencion >= CURRENT_DATE;
-----------------------------------------------------------
-CREATE OR REPLACE VIEW public.v_citas
-WITH (
-  security_barrier=true
-) 
-AS
-select id_atencion, id_cliente, id_electro, id_tecnico, fecha_atencion, hora_atencion, tipo 
-from atencion 
-where estado_atencion = 'Pendiente' and estado_activ;
-----------------------------------------------------------
-/*********************************************************
-  SCRIPT : FUNCIONES: db_taller_utp (POSTGRESQL)
-*********************************************************/
-----------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_validar_acceso(user_rol integer, correo character varying(254), contrasena text)
-RETURNS TABLE(id_persona integer, id_user char(10), rol character varying(30), nom_ape character varying(112), email character varying(254))
-AS 
-$$ 
-select 
-P.id_persona, U.id_user, R.nombre_rol,
-Rtrim(replace(concat(P.nombre_1,' ',P.nombre_2,' ',P.apellido_1,' ',P.apellido_2),'  ',' ')) as nombres,
-U.email
-from public.usuario U inner join public.persona P on P.id_persona = U.id_persona
-inner join public.roles R on U.id_rol = R.id_rol
-where U.id_rol = user_rol and U.email = correo and U.contra = contrasena and U.estado_activ;
-$$
-LANGUAGE SQL;
-----------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_consultar_cliente(id_cliente integer)
-RETURNS TABLE(id_per integer, nom1 character varying(30), nom2 character varying(30), ape1 character varying(30), ape2 character varying(30),
-			  id_tdoc integer, nro_doc character varying(15), telefono character varying(9), id_distrito integer, direccion text, email character varying(254), contra text
-)
-AS 
-$$ 
-select
-P.id_persona, 
-P.nombre_1,P.nombre_2,P.apellido_1,P.apellido_2,
-P.id_tipo_doc, P.nro_doc,
-P.telefono,
-P.id_distrito,
-P.direccion,
-U.email, U.contra 
-from persona P inner join usuario U on P.id_persona = U.id_persona
-where U.id_rol=1 and P.id_persona=id_cliente
-$$
-LANGUAGE SQL;
-----------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_consultar_tecnico(id_tecnico integer)
-RETURNS TABLE(id_per integer, nom1 character varying(30), nom2 character varying(30), ape1 character varying(30), ape2 character varying(30),
-			  id_tdoc integer, nro_doc character varying(15), telefono character varying(9), id_distrito integer, direccion text, exp integer, email character varying(254), contra text
-)
-AS 
-$$ 
-select
-P.id_persona, 
-P.nombre_1,P.nombre_2,P.apellido_1,P.apellido_2,
-P.id_tipo_doc, P.nro_doc,
-P.telefono,
-P.id_distrito,
-P.direccion,
-P.anios_experiencia,
-U.email, U.contra 
-from persona P inner join usuario U on P.id_persona = U.id_persona
-where U.id_rol=3 and P.id_persona=id_tecnico
-$$
-LANGUAGE SQL;
-----------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_consultar_encargado(id_encargado integer)
-RETURNS TABLE(id_per integer, nom1 character varying(30), nom2 character varying(30), ape1 character varying(30), ape2 character varying(30),
-			  id_tdoc integer, nro_doc character varying(15), telefono character varying(9), id_distrito integer, direccion text, email character varying(254), contra text
-)
-AS 
-$$ 
-select
-P.id_persona, 
-P.nombre_1,P.nombre_2,P.apellido_1,P.apellido_2,
-P.id_tipo_doc, P.nro_doc,
-P.telefono,
-P.id_distrito,
-P.direccion,
-U.email, U.contra 
-from persona P inner join usuario U on P.id_persona = U.id_persona
-where U.id_rol=2 and P.id_persona=id_encargado
-$$
-LANGUAGE SQL;
-----------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_consultar_pieza(id_pieza integer)
-RETURNS TABLE(id integer, nom character varying(200), categoria character varying(50), precio numeric, sotck bigint)
-AS 
-$$ 
-select P.id_pieza, P.nombre_pieza, C.nombre_cat, P.precio_pieza, P.stock from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria 
-where id_pieza=1
-$$
-LANGUAGE SQL;
-----------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_reportes_x_tecnico(id_tec integer, fecha_1 date, fecha_2 date DEFAULT CURRENT_DATE)
-RETURNS TABLE(id_atencion integer, fecha_atencion date, tecnico character varying(112), cliente character varying(112), 
-			  electrodomestico character varying(50), marca character varying(50), servicio_realizado character varying(50))
-AS 
-$$
-select A.id_atencion, A.fecha_atencion,
-Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as tecnico,
-Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2),'  ',' ')) as propietario,
-TE.nom_tipo_electro, M.nombre_marca,
-S.nombre_serv
-from atencion A
-inner join persona T on A.id_tecnico = T.id_persona
-inner join persona C on A.id_cliente = C.id_persona
-inner join electrodomestico E on A.id_electro = E.id_electrodomestico
-left join tipo_electrodomestico TE on TE.id_tipo_electro = E.id_tipo_electro
-left join marca M on M.id_marca = E.id_marca
-left join detalle_atencion D on A.id_atencion = D.id_atencion
-left join servicio S on D.id_servicio = S.id_servicio
-
-where estado_atencion = 'Finalizado' 
-and A.id_tecnico = id_tec
-and A.fecha_atencion between fecha_1 and fecha_2
-and A.estado_activ
-$$
-LANGUAGE SQL;
-----------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_reportes_x_cliente(id_cli integer, fecha_1 date, fecha_2 date DEFAULT CURRENT_DATE, monto_1 numeric DEFAULT 0.00, monto_2 numeric DEFAULT 99999999.99)
-RETURNS TABLE(id_atencion integer, fecha_atencion date, cliente character varying(112),  
-			  electrodomestico character varying(50), marca character varying(50), 
-			  servicio_realizado character varying(50), monto numeric,
-			  tecnico character varying(112))
-AS 
-$$
-select A.id_atencion, A.fecha_atencion,
-Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2),'  ',' ')) as cliente,
-TE.nom_tipo_electro, M.nombre_marca,
-S.nombre_serv,
-D.monto,
-Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as tecnico
-from atencion A
-inner join persona T on A.id_tecnico = T.id_persona
-inner join persona C on A.id_cliente = C.id_persona
-inner join electrodomestico E on A.id_electro = E.id_electrodomestico
-left join tipo_electrodomestico TE on TE.id_tipo_electro = E.id_tipo_electro
-left join marca M on M.id_marca = E.id_marca
-left join detalle_atencion D on A.id_atencion = D.id_atencion
-left join servicio S on D.id_servicio = S.id_servicio
-
-where estado_atencion = 'Finalizado' 
-and A.id_cliente = id_cli
-and A.fecha_atencion between fecha_1 and fecha_2
-and D.monto between monto_1 and monto_2
-and A.estado_activ
-$$
-LANGUAGE SQL;

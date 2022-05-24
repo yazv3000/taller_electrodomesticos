@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import utp.taller.dao.DaoPieza;
+import utp.taller.entidades.CategoriaPieza;
 import utp.taller.entidades.Cliente;
 import utp.taller.entidades.Pieza;
 
@@ -22,7 +23,7 @@ public class ServletGestionarPieza extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	DaoPieza dao = new DaoPieza();
-	
+	Pieza pieza;
  
     public ServletGestionarPieza() {
         super();
@@ -40,17 +41,17 @@ public class ServletGestionarPieza extends HttpServlet {
 			break;
 		case "editar":
 		    int id= Integer.parseInt(request.getParameter("id"));
-			Pieza pieza = dao.consultarId(id);
+			pieza = dao.consultarId(id);
 			request.setAttribute("pi", pieza);
 			request.getRequestDispatcher("ServletGestionarPieza?accion=listar").forward(request, response);
 			break;
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + accion);
 		}
-    	
-    	request.getRequestDispatcher("Vista/mantenimiento/gestionPieza.jsp").forward(request, response);
+    	listarCategorias(request);
+    	request.getRequestDispatcher("vista/encargado/gestionPiezas.jsp").forward(request, response);
     }
-
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		processRequest(request, response);
 	}
@@ -58,5 +59,11 @@ public class ServletGestionarPieza extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 	}
+	private void listarCategorias(HttpServletRequest request) {
+		DaoPieza daoPi = new DaoPieza();
+		List<CategoriaPieza> lst = daoPi.listarCategorias();
+		request.getSession().getServletContext().setAttribute("lstCategorias", lst);
+	}
+	
 
 }

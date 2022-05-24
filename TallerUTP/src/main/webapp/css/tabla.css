@@ -279,5 +279,5 @@ label {
     cursor: pointer;
 }
 .row-selected {
-	background-color: green;
+/* 	background-color: green; */
 }

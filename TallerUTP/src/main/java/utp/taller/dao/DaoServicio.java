@@ -10,7 +10,7 @@ import java.util.List;
 import utp.config.Conexion;
 import utp.taller.entidades.Servicio;
 
-public class DaoServicio extends Conexion implements BaseDAO<Servicio> {
+public class DaoServicio extends Conexion implements CRUD<Servicio> {
 
 	/*
 	 * TABLA SERVICIO
@@ -100,7 +100,7 @@ public class DaoServicio extends Conexion implements BaseDAO<Servicio> {
 	}
 
 	@Override
-	public int eliminar(int id) {
+	public int desactivar(int id) {
 		
 		String sql = "delete from servicio where id_servicio=?";
 		cnx = getConnection();

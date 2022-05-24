@@ -10,7 +10,7 @@ import java.util.List;
 import utp.config.Conexion;
 import utp.taller.entidades.Especialidad;
 
-public class DaoEspecialidad extends Conexion implements BaseDAO<Especialidad> {
+public class DaoEspecialidad extends Conexion implements CRUD<Especialidad> {
 
 	/*
 	 * TABLA ESPECIALIDAD
@@ -65,7 +65,7 @@ public class DaoEspecialidad extends Conexion implements BaseDAO<Especialidad> {
 	public int modificar(Especialidad esp) {		return 0;	}
 
 	@Override
-	public int eliminar(int id) {		return 0;	}
+	public int desactivar(int id) {		return 0;	}
 	
 	
 }

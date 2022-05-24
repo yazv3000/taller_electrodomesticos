@@ -7,9 +7,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/menu.css">
+    <c:set var="context" value="${pageContext.request.contextPath}" /> 
+    <link rel="stylesheet" href="${context}/css/menu.css">
     <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
-	<link rel="icon" href="img/Logoa.png" type="image/png" >
+	<link rel="icon" href="${context}/img/Logoa.png" type="image/png" >
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <!-- CSS only -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -34,7 +35,7 @@
                      <div class="logo">
                         <i class="fa-solid fa-bars  logo__icono"></i>
                         <div class="logo__img">
-                            <img src="img/Logoa.png" alt="">
+                            <img src="${context}/img/Logoa.png" alt="">
                         </div>
                         <h2>U<span>T</span>P</h2>
                     </div>
@@ -56,9 +57,9 @@
                             <i class="fa-solid fa-calendar-days nav__icono"></i>
                             <span class="nav__nombre">Horarios</span>
                         </a>
-                        <a href="ServletGestionarPieza?accion=listar" class="nav__link" target="marco">
+                        <a href="<%=request.getContextPath()%>/ServletGestionarPieza?accion=listar" class="nav__link" target="marco">
                             <i class="fa-solid fa-bag-shopping nav__icono"></i>
-                            <span class="nav__nombre">Accesorios</span>
+                            <span class="nav__nombre">Piezas</span>
                         </a>
                         <a href="#" class="nav__link">
                             <i class="fa-solid fa-arrow-trend-up nav__icono"></i>
@@ -93,7 +94,7 @@
     </div>
     <!-- ===== JAVASCRIPT ===== -->
 
-    <script src="../js/menu.js"></script>
+    <script src="${context}/js/menu.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>

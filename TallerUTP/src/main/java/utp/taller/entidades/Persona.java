@@ -3,76 +3,98 @@ package utp.taller.entidades;
 public abstract class Persona {
 
 		// ATRIBUTOS
-		private String idPersona;
+		private String idUsuario;
+		private int idPersona;
 		private String nombrePrin, nombreSec, apePrin, apeSec;
-		private int tipo_doc;
+		private int tipoDocumento;
 		private String nro_doc;
 		private String telefono;
-		private String distrito;
+		private int idDistrito;
 		private String direccion;
-		private String email;
-		private String contrasena;
-		private boolean estado;
+		private String email, contrasena;
+		private byte[] foto;
+		private boolean estadoActivo;
 
 		// CONSTRUCTORES
 		public Persona(){}
 
-		public Persona(String id_persona, String nombrePrin,String nombreSec, String apePrin, String apeSec, String nro_doc, String telefono, String distrito, String direccion, boolean estado, String email,
-				String contrasena) {
-			this.idPersona = id_persona;
-			this.nombrePrin = nombrePrin;
-			this.nombreSec = nombreSec;
-			this.apePrin = apePrin;
-			this.apeSec = apeSec;
-			this.nro_doc = nro_doc;
-			this.telefono = telefono;
-			this.distrito = distrito;
-			this.direccion = direccion;
-			this.email = email;
-			this.contrasena = contrasena;
-			this.estado = estado;
-		}
-
 		// MÉTODOS GETTER & SETTER
-		public String getIdPersona() {			return idPersona;		}
-		public void setIdPersona(String idPersona) {			this.idPersona = idPersona;		}
+		public String getIdUsuario()	
+			{return idUsuario;	}
+		public void setIdUsuario(String idUsuario) 		
+			{this.idUsuario = idUsuario;	}
 		
-		public String getNombrePrin() {		return nombrePrin;	}
-		public void setNombrePrin(String nombrePrin) {		this.nombrePrin = nombrePrin;	}
+		public int getIdPersona() 		
+			{return idPersona;}
+		public void setIdPersona(int idPersona) 			
+			{this.idPersona = idPersona;	}
 		
-		public String getNombreSec() {	return nombreSec;	}
-		public void setNombreSec(String nombreSec) {this.nombreSec = nombreSec;	}
-
-		public String getApePrin() {		return apePrin;	}
-		public void setApePrin(String apePrin) {		this.apePrin = apePrin;	}
-
-		public String getApeSec() {		return apeSec;	}
-		public void setApeSec(String apeSec) {		this.apeSec = apeSec;	}
-
-		public int getTipo_doc() {		return tipo_doc;		}
-		public void setTipo_doc(int tipo_doc) {			this.tipo_doc = tipo_doc;		}
-
-		public String getNro_doc() {		return nro_doc;	}
-		public void setNro_doc(String nro_doc) {		this.nro_doc = nro_doc;	}
+		// Datos personales
+		public String getNombrePrin() 
+			{return nombrePrin;}
+		public void setNombrePrin(String nombrePrin) 
+			{this.nombrePrin = nombrePrin;}
 		
-		public String getTelefono() {			return telefono;		}
-		public void setTelefono(String telefono) {			this.telefono = telefono;		}
-
-		public String getDistrito() {	return distrito;	}
-		public void setDistrito(String distrito) {	this.distrito = distrito;		}
-
-		public String getDireccion() {		return direccion;	}
-		public void setDireccion(String direccion) {		this.direccion = direccion;	}
+		public String getNombreSec() 	
+			{return nombreSec;}
+		public void setNombreSec(String nombreSec) 
+			{this.nombreSec = nombreSec;}
 		
-		public boolean getEstado() {		return estado;		}
-		public void setEstado(boolean estado) {		this.estado = estado;	}
+		public String getApePrin() 		
+			{return apePrin;}	
+		public void setApePrin(String apePrin) 			
+			{this.apePrin = apePrin;}
 		
-		public String getEmail() {		return email;	}
-		public void setEmail(String email) {		this.email = email;	}
+		public String getApeSec() 		
+			{return apeSec;}
+		public void setApeSec(String apeSec) 				
+			{this.apeSec = apeSec;}
 
-		public String getContrasena() {		return contrasena;	}
-		public void setContrasena(String contrasena) {		this.contrasena = contrasena;	}
+		public int getTipoDocumento() 
+			{	return tipoDocumento;	}
+		public void setTipoDocumento(int tipo_doc) 
+			{this.tipoDocumento = tipo_doc;}
 
+		public String getNroDocumento() 		
+			{return nro_doc;}
+		public void setNroDocumento(String nro_doc)			
+			{this.nro_doc = nro_doc;}
 		
+		public byte[] getFoto() 
+			{return foto;}
+		public void setFoto(byte[] foto)
+			{this.foto = foto;}
+
+		public String getTelefono() 		
+			{return telefono;}
+		public void setTelefono(String telefono)			
+			{this.telefono = telefono;}
+
+		public int getIdDistrito()			 
+			{	return idDistrito;	}
+		public void setIdDistrito(int idDistrito) 			
+			{this.idDistrito = idDistrito;	}
 		
+		public String getDireccion() 		
+			{return direccion;}
+		public void setDireccion(String direccion) 		
+			{this.direccion = direccion;}
+		
+		// Datos del Usuario
+		public String getEmail() 			
+			{return email;}
+		public void setEmail(String email) 					
+			{this.email = email;	}
+
+		public String getContrasena() 	
+			{return contrasena;	}
+		public void setContrasena(String contrasena) 
+			{this.contrasena = contrasena;}
+
+		// Estado
+		public boolean isEstadoActivo() 
+			{return estadoActivo;	}
+		public void setEstadoActivo(boolean estadoActivo) 
+			{this.estadoActivo = estadoActivo;}
+
 }

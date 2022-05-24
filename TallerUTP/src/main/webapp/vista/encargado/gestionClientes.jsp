@@ -21,21 +21,21 @@
 
 <body>
 	<div class="contenido">
-	    <div class="tabla">
+	    <div class="tabla" id="myTable">
 	        <div class="tabla__tools">
 	            <ul>
+	            	<li><button class="fa-solid fa-plus-square icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"></button></li>
 	                <li><button class="fa-solid fa-pen icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
 	                <li><button class="fa-solid fa-trash icono"></button></li>
 	            </ul>
 	            <input class="tabla_buscar" type="text" placeholder="Filtrar">
 	        </div>
 	        <div class="tabla__contenido">
-	            <table id="tabla__Tecnico" >
+	            <table id="tabla__Cliente" >
 	                <thead class="tabla__titulo">
 	                    <tr>
 	                        <th>ID</th>
 							<th>NOMBRES Y APELLIDOS</th>
-							<th>ESPECIALIDAD</th>
 							<th>TELEFONO</th>
 							<th>DISTRITO</th>
 							<th>DIRECCION</th>
@@ -43,15 +43,14 @@
 	                    </tr>
 	                </thead>
 	                <tbody class="tabla__info">
-	                	<c:forEach items="${lstConsultaTecnicos}" var="t">
-	                    <tr id="tabla__filas" onclick="location.href='ServletGestionarTecnico?accion=editar&id=${t.getIdPersona()}'">
-	                   		<td> <c:out value="${t.getIdUsuarioTecnico()}"></c:out> </td>
-							<td> <c:out value="${t.getNombreCompleto()}"></c:out> </td>
-							<td> <c:out value="${t.getEspecialidad()}"></c:out> </td>
-							<td> <c:out value="${t.getTelefono()}"></c:out> </td>
-							<td> <c:out value="${t.getDistrito()}"></c:out> </td>
-							<td> <c:out value="${t.getDireccion()}"></c:out> </td>
-							<td> <c:out value="${t.getEmail()}"></c:out> </td>			
+	                	<c:forEach items="${lstConsultaClientes}" var="c">
+	                    <tr id="tabla__filas" class="now-selected" onclick="location.href='ServletGestionarCliente?accion=editar&id=${c.getIdPersona()}'">
+	                        <td> <c:out value="${c.getIdUsuarioCliente()}"></c:out> </td>
+							<td> <c:out value="${c.getNombreCompleto()}"></c:out> </td>
+							<td> <c:out value="${c.getTelefono()}"></c:out> </td>
+							<td> <c:out value="${c.getDistrito()}"></c:out> </td>
+							<td> <c:out value="${c.getDireccion()}"></c:out> </td>
+							<td> <c:out value="${c.getEmail()}"></c:out> </td>		
 	                    </tr>
 	                    </c:forEach>
 	                </tbody>
@@ -60,6 +59,7 @@
 	        <div class="tabla__especificacion">
 	        </div>
 	    </div>
+	    
 	    <!-- ===== MODAL INSERTAR ===== -->
 	
 	<!-- Button trigger modal -->
@@ -71,7 +71,7 @@
 	                 
 	      <div class="modal-body">
 	        	<!-- ===== DATOS ===== -->
-				<form  class="formulario" >
+				<form  class="formulario needs-validation" action="<%=request.getContextPath()%>/ServletGestionarCliente?accion=" method="post" novalidate>
 					<div class="row align-items-center pt-1">
 				      	<div class="form__grupo col-11">
 				      		<div class="form__titulo">
@@ -85,69 +85,66 @@
 			        <div class="form__contenedor">
 			        	
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" " value="${tec.getNombrePrin()}">
-			                <label for="name" class="form__label">Primer nombre:</label>
+			                <input type="text" class="form__input" placeholder=" "  value="${cli.getNombrePrin()}" name="txt_nom1" required>
+			                <label for="name" class="form__label" >Primer nombre:</label>
 			                <span class="form__line"></span>
 			            </div>
 			            
 			            <div class="form__grupo">
-			                <input type="text" class="form__input"  placeholder=" " value="${tec.getNombreSec()}">
+			                <input type="text" class="form__input"  placeholder=" " value="${cli.getNombreSec()}" name="txt_nom2" required>
 			                <label for="name" class="form__label">Segundo nombre:</label>
 			                <span class="form__line"></span>
 			            </div>
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" " value="${tec.getApePrin()}">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getApePrin()}" name="txt_ape1" required>
 			                <label for="name" class="form__label">Primer apellido:</label>
 			                <span class="form__line"></span>
 			            </div>
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" " value="${tec.getApeSec()}">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getApeSec()}" name="txt_ape2" required>
 			                <label for="" class="form__label">Segundo Apellido:</label>
 			                <span class="form__line"></span>
 			            </div>
-			            <select class="form__seleccion" name="tipo_docid">
-			                <option class="form__opcion" value=1  ${tec.getTipo_doc() == 1 ? 'selected' : ''}>DNI</option>
-			                <option class="form__opcion" value=2  ${tec.getTipo_doc() == 2 ? 'selected' : ''}>Carne de Extranjería</option>
-			                <option class="form__opcion" value=3  ${tec.getTipo_doc() == 3 ? 'selected' : ''}>Otros</option>
+			            <select class="form__seleccion" name="cbx_tipodoc">
+			                <option class="form__opcion" value=1  ${cli.getTipoDocumento() == 1 ? 'selected' : ''}>DNI</option>
+			                <option class="form__opcion" value=2  ${cli.getTipoDocumento() == 2 ? 'selected' : ''}>Carne de Extranjería</option>
+			                <option class="form__opcion" value=3  ${cli.getTipoDocumento() == 3 ? 'selected' : ''}>Otros</option>
 			            </select>
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" " value="${tec.getNro_doc()}">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getNroDocumento()}" name="num_doc" required>
 			                <label for="name" class="form__label">Número de Documento:</label>
 			                <span class="form__line"></span>
 			            </div>
-			            <select class="form__seleccion" name="especialidad">
-			                <option class="form__opcion" value=1  ${tec.getEspecialidad().equals("Especialista en termas eléctricas") ? 'selected' : ''}>Especialista en termas eléctricas</option>
-			                <option class="form__opcion" value=2  ${tec.getEspecialidad().equals("Reparación de aire acondicionado") ? 'selected' : ''}>Reparación de aire acondicionado</option>
-			            </select>
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" " value="${tec.getTelefono()}">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getTelefono()}" name="num_telef" required>
 			                <label for="name" class="form__label">Teléfono:</label>
 			                <span class="form__line"></span>
 			            </div>
-			           <select class="form__seleccion" name="especialidad">
-			                <option class="form__opcion" value=1  ${tec.getDistrito().equals("Alto Selva Alegre") ? 'selected' : ''}>Alto Selva Alegre</option>
-			                <option class="form__opcion" value=2  ${tec.getDistrito().equals("Arequipa") ? 'selected' : ''}>Arequipa</option>
-			           		<option class="form__opcion" value=3  ${tec.getDistrito().equals("Cayma") ? 'selected' : ''}>Cayma</option>
-			            </select>
+						<select class="form__seleccion" name="cbx_distritos">
+						<c:forEach items="${lstDistritos}" var="d">
+			                <option class="form__opcion" value="${d.getIdDistrito()}"  ${cli.getIdDistrito()==d.getIdDistrito() ? 'selected' : ''}>${d.getNombreDistrito()}</option>
+						</c:forEach>
+						</select>
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" " value="${tec.getDireccion()}">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getDireccion()}" name="txt_direcc" required>
 			                <label for="" class="form__label">Direccion:</label>
 			                <span class="form__line"></span>
 			            </div>
+
+			            <select class="form__seleccion" name="estado">
+			                <option class="form__opcion" value=true  ${cli.isEstadoActivo() ? 'selected' : ''}>Activo</option>
+			                <option class="form__opcion" value=false  ${!cli.isEstadoActivo() ? 'selected' : ''}>Inactivo</option>
+			            </select>
+			            
 			            <div class="form__grupo" align="center">
-			                <input type="number" class="form__input" placeholder=" " value="${tec.getAnios_experiencia()}">
-			                <label for="" class="form__label">Años de Experiencia:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo" align="center">
-			                <input type="text" class="form__input" placeholder=" " value="${tec.getEmail()}">
+			                <input type="text" class="form__input" placeholder=" " value="${cli.getEmail()}" name="txt_correo" required>
 			                <label for="" class="form__label">Correo Electronico:</label>
 			                <span class="form__line"></span>
 			            </div>
 			        </div>
 			        <div class="row align-items-center pt-4">
-				      	<div class="form__grupo col-6">
-			                <input class="btn__insertar" type="submit" value="INSERTAR">           
+			            <div class="form__grupo col-12">
+			                <a href="<%=request.getContextPath()%>/ServletGestionarCliente?accion=actualizar"  class="btn__modificar" type="submit" >MODIFICAR</a>
 			            </div>
 			        </div>
 			    </form>
@@ -159,29 +156,22 @@
 	</div>
 	
 	<!-- ===== FINAL MODAL ===== -->
-	    
-	    
-	    
-	    
-	    
-	</div>
-	
-	
 
-	
-		
+	</div>
 
 	
 	
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-	
+	<!-- ESTILOS PARA VALIDAR FORM -->
+	<script type="text/javascript" src="${context}/validForm.js"></script>
 	 <!-- ===== JS BOOSTRAP ===== -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-	
-    <script>
+	<script type="text/javascript" src="${context}/js/PruebaPermanenciavariable.js"></script>
+ 
+	<script>
        $(document).ready(function () {
-            $('#tabla__Tecnico').DataTable({
+            $('#tabla__Cliente').DataTable({
                 "language": {
                 	"sSearch":"Buscar",
                 	"oPaginate":{
@@ -195,7 +185,7 @@
 		
        $(function(){
     	   $('tr').click(function(e){
-    	     if($(this).hasClass('row-selected')){
+    	     if($(this).hasClass('.row-selected')){
     	       $(this).addClass('other-clic')
     	     }else{
     	       cleanTr()
@@ -211,7 +201,14 @@
     	     })
     	   }
     	 })
- 
+    var ashu = document.querySelectorAll("tr");
+
+		for (let i = 0; i < contenido.length; i++) {
+			ashu[i].addEventListener("click", () => {
+				ashu[i].style.backgroundColor="red";
+			});
+		
+		}
     </script>
 
 </body>

@@ -5,37 +5,36 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import utp.config.Conexion;
 import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoUsuario;
 import utp.taller.entidades.Cliente;
 
-public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
-
+public class DaoCliente extends Conexion  implements CRUD<Cliente>{
 
 	Connection cnx = null;
 	PreparedStatement stm = null;
-
-	public DtoClienteConsulta validar(String email, String contra) {
-		DtoClienteConsulta dtoClie = new DtoClienteConsulta();
-		String sql = "select * from f_validar_acceso(?,?,?)";
+	
+	public DtoUsuario validar(String email, String contra) {
+		DtoUsuario dtoClie = new DtoUsuario();
+		String sql = "select * from f_validar_acceso(1,?,?)";
 		cnx = getConnection();
 		ResultSet rs = null;
-		
+
 		try {
 			stm = cnx.prepareStatement(sql);
-			stm.setInt(1, 1);
-			stm.setString(2, email);
-			stm.setString(3, contra);
+			stm.setString(1, email);
+			stm.setString(2, contra);
 			rs = stm.executeQuery();
 			if (rs.next()) {
-				dtoClie.setEmail(rs.getString(5));
-				System.out.println("llegue a qui");
-				//dtoClie.setContra(rs.getString("contra"));
+				dtoClie.setIdPersona(rs.getInt("id_persona"));
+				dtoClie.setUsername(rs.getString("id_user"));
+				dtoClie.setRol(rs.getString("nombre_completo"));
+				dtoClie.setEmail(rs.getString("correo"));
+				dtoClie.setProfilePic(rs.getBytes("foto"));
+				dtoClie.setUsername(sql);
 			}
 			cnx.close();
 			
@@ -46,11 +45,9 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 		return dtoClie;
 	}
 	
-	
-	
 	public List<DtoClienteConsulta> listarDtoClientes() {
 		List<DtoClienteConsulta> lst = new ArrayList<DtoClienteConsulta>();
-		DtoClienteConsulta tc = null;
+		DtoClienteConsulta clie = null;
 		String sql = "select * from v_clientes";
 		
 		cnx = getConnection();
@@ -61,17 +58,17 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 			rs = stm.executeQuery();
 
 			while (rs.next()) {
-				tc = new DtoClienteConsulta();
-				tc.setIdPersona(rs.getInt(1));
-				tc.setIdUsuarioCliente(rs.getString(2));
-				tc.setNombreCompleto(rs.getString(3));
-				tc.setTelefono(rs.getString(4));
-				tc.setDistrito(rs.getString(6));			
-				tc.setDireccion(rs.getString(7));
-				tc.setEmail(rs.getString(8));
-				lst.add(tc);
-			}
-			
+				clie = new DtoClienteConsulta();
+				clie.setIdPersonaCliente(rs.getInt("id_persona"));
+				clie.setIdUsuarioCliente(rs.getString("id_user"));
+				clie.setNombreCompleto(rs.getString("nombres"));
+				clie.setTelefono(rs.getString("telefono"));
+				clie.setDistrito(rs.getString("nombre_distrito"));			
+				clie.setDireccion(rs.getString("direccion"));
+				clie.setEmail(rs.getString("email"));
+				clie.setEstadoActivo(rs.getBoolean("estado_activ"));
+				lst.add(clie);
+			}	
 			cnx.close();
 
 		} catch (SQLException e) {
@@ -83,7 +80,7 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 	@Override
 	public Cliente consultarId(int idCliente) {
 
-		Cliente c = null;
+		Cliente cli = null;
 
 		String sql = "select * from f_consultar_cliente(?)";
 
@@ -96,18 +93,22 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 			rs = stm.executeQuery();
 
 			if (rs.next()) {
-				c = new Cliente();
-				c.setIdCliente(rs.getString(1));
-				c.setNombrePrin(rs.getString(2));
-				c.setNombreSec(rs.getString(3));
-				c.setApePrin(rs.getString(4));
-				c.setApeSec(rs.getString(5));
-				c.setTipo_doc(rs.getInt(6));
-				c.setNro_doc(rs.getString(7));
-				c.setTelefono(rs.getString(8));
-				c.setDireccion(rs.getString(10));
-				c.setEmail(rs.getString(11));
-				c.setContrasena(rs.getString(12));
+				cli = new Cliente();
+				cli.setIdPersonaCliente(rs.getInt(1));
+				cli.setIdUsuarioCliente(rs.getString(2));
+				cli.setNombrePrin(rs.getString(3));
+				cli.setNombreSec(rs.getString(4));
+				cli.setApePrin(rs.getString(5));
+				cli.setApeSec(rs.getString(6));
+				cli.setTipoDocumento(rs.getInt(7));
+				cli.setNroDocumento(rs.getString(8));
+				cli.setTelefono(rs.getString(9));
+				cli.setIdDistrito(rs.getInt(10));
+				cli.setDireccion(rs.getString(11));
+				cli.setEmail(rs.getString(12));
+				cli.setContrasena(rs.getString(13));
+				cli.setFoto(rs.getBytes(14));
+				cli.setEstadoActivo(rs.getBoolean(15));
 			}
 			
 			cnx.close();
@@ -115,31 +116,31 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		return c;
+		return cli;
 
 	}
 	
-
-
 	@Override
-	public int insertar(Cliente c) {
-		String sql = "insert into cliente(nom_cli, ape1_cli, ape2_cli, id_tdoc, nro_doc, direccion, email_cli, contra_cli) values (?, ?, ?, ?, ?, ?, ?, ?)";
+	public int insertar(Cliente cli) {
+		String sql = "call sp_nuevo_cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
+		
 		try {
-			cnx.setAutoCommit(false);
-			stm = cnx.prepareStatement(sql);
-			stm.setString(1, c.getNombrePrin());
-			stm.setString(2, c.getNombreSec());
-			stm.setString(3, c.getApePrin());
-			stm.setString(4, c.getApeSec());
-			stm.setInt(5, 1);		// 1 = dni
-			stm.setString(6, c.getNro_doc());
-			stm.setString(7, c.getDireccion());
-			stm.setString(8, c.getEmail());
-			stm.setString(9, c.getContrasena());
+			stm = cnx.prepareCall(sql);
+			stm.setString(1, cli.getNombrePrin());
+			stm.setString(2, cli.getNombreSec());
+			stm.setString(3, cli.getApePrin());
+			stm.setString(4, cli.getApeSec());
+			stm.setInt(5, cli.getTipoDocumento());
+			stm.setString(6, cli.getNroDocumento());
+			stm.setString(7, cli.getTelefono());
+			stm.setInt(8, cli.getIdDistrito());
+			stm.setString(9, cli.getDireccion());
+			stm.setString(10, cli.getEmail());
+			stm.setString(11, cli.getContrasena());
+			stm.setBytes(12, cli.getFoto());
 			
-			stm.executeUpdate();
-			cnx.commit();
+			stm.execute();
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -149,23 +150,27 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 
 	@Override
 	public int modificar(Cliente c) {
-		String sql = "update cliente set nom_cli=?, ape1_cli=?, ape2_cli=?, id_tdoc=?, nro_doc=?, direccion=?, email_cli=?, contra_cli=? where id_cliente=?";
+		String sql = "call sp_actualizar_cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
 		try {
-			cnx.setAutoCommit(false);
-			stm = cnx.prepareStatement(sql);
-			stm.setString(1, c.getNombrePrin());
-			stm.setString(2, c.getNombreSec());
-			stm.setString(3, c.getApePrin());
-			stm.setString(4, c.getApeSec());
-			stm.setInt(5, 1);		// 1 = dni
-			stm.setString(6, c.getNro_doc());
-			stm.setString(7, c.getDireccion());
-			stm.setString(8, c.getEmail());
-			stm.setString(9, c.getContrasena());
-			//stm.setInt(9, c.getIdCliente());
-			stm.executeUpdate();
-			cnx.commit();
+			stm = cnx.prepareCall(sql);
+			stm.setInt(1, c.getIdPersonaCliente());
+			stm.setString(2, c.getIdUsuarioCliente());
+			stm.setString(3, c.getNombrePrin());
+			stm.setString(4, c.getNombreSec());
+			stm.setString(5, c.getApePrin());
+			stm.setString(6, c.getApeSec());
+			stm.setInt(7, c.getTipoDocumento());
+			stm.setString(8, c.getNroDocumento());
+			stm.setString(9, c.getTelefono());
+			stm.setInt(10, c.getIdDistrito());
+			stm.setString(11, c.getDireccion());
+			stm.setString(12, c.getEmail());
+			stm.setString(13, c.getContrasena());
+			stm.setBoolean(14, c.isEstadoActivo());
+			stm.setBytes(15, c.getFoto());
+
+			stm.execute();
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -174,16 +179,14 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 	}
 
 	@Override
-	public int eliminar(int id) {
+	public int desactivar(int id) {
 		
-		String sql = "delete from cliente where id_cliente=?";
+		String sql = "call sp_desactivar_persona(?)";
 		cnx = getConnection();
 		try {
-			cnx.setAutoCommit(false);
-			stm = cnx.prepareStatement(sql);
+			stm = cnx.prepareCall(sql);
 			stm.setInt(1, id);
-			stm.executeUpdate();
-			cnx.commit();
+			stm.execute();
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -191,31 +194,4 @@ public class DaoCliente extends Conexion  implements BaseDAO<Cliente>{
 		return 0;
 	}
 	
-	// CONSULTAR TELÉFONOS POR id_cliente
-	public Set<String> telefonos_cliente(int idCliente) {
-		Set<String> tel = new HashSet<String>();
-		
-		String sql = "select * from cliente_contacto where id_cliente=?";
-		cnx = getConnection();
-		ResultSet rs = null;
-		
-		try {
-			stm = cnx.prepareStatement(sql);
-			stm.setInt(1, idCliente);
-			rs = stm.executeQuery();
-
-			while (rs.next()) {
-				tel.add(rs.getString(2));
-			}
-			
-			cnx.close();
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		
-		return tel;
-	}
-
-
 }

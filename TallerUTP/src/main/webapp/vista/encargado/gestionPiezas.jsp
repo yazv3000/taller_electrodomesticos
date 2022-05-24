@@ -24,7 +24,7 @@
 	    <div class="tabla">
 	        <div class="tabla__tools">
 	            <ul>
-	            	<li><button class="fa-solid fa-plus-square icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
+					<li><button class="fa-solid fa-plus-square icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"></button></li>
 	                <li><button class="fa-solid fa-pen icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
 	                <li><button class="fa-solid fa-trash icono"></button></li>
 	            </ul>
@@ -35,22 +35,20 @@
 	                <thead class="tabla__titulo">
 	                    <tr>
 	                        <th>ID</th>
-							<th>NOMBRES Y APELLIDOS</th>
-							<th>TELEFONO</th>
-							<th>DISTRITO</th>
-							<th>DIRECCION</th>
-							<th>EMAIL</th>
+							<th>PIEZA</th>
+							<th>CATEGORIA</th>
+							<th>PRECIO</th>
+							<th>STOCK</th>
 	                    </tr>
 	                </thead>
 	                <tbody class="tabla__info">
-	                	<c:forEach items="${lstConsultaClientes}" var="c">
-	                    <tr id="tabla__filas" class="now-selected" <%-- onclick="location.href='ServletGestionarCliente?accion=editar&id=${c.getIdPersona()}'" --%>>
-	                        <td> <c:out value="${c.getIdUsuarioCliente()}"></c:out> </td>
-							<td> <c:out value="${c.getNombreCompleto()}"></c:out> </td>
-							<td> <c:out value="${c.getTelefono()}"></c:out> </td>
-							<td> <c:out value="${c.getDistrito()}"></c:out> </td>
-							<td> <c:out value="${c.getDireccion()}"></c:out> </td>
-							<td> <c:out value="${c.getEmail()}"></c:out> </td>		
+	                	<c:forEach items="${lstConsultaPiezas}" var="p">
+	                    <tr id="tabla__filas" onclick="location.href='ServletGestionarPieza?accion=editar&id=${p.getIdPieza()}'">
+		                    <td><c:out value="${p.getIdPieza()}"></c:out></td>
+							<td><c:out value="${p.getNomPieza()}"></c:out></td>
+							<td><c:out value="${p.getCategoria()}"></c:out></td>
+							<td>S/. <c:out value="${p.getPrecio()}"></c:out></td>
+							<td><c:out value="${p.getStock()}"></c:out></td>		
 	                    </tr>
 	                    </c:forEach>
 	                </tbody>
@@ -65,83 +63,48 @@
 	<!-- Button trigger modal -->
 	
 	<!-- Modal -->
+	<!-- Modal -->
 	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right: 350px;">
 	  <div class="modal-dialog" >
-	    <div class="modal-content text-center" style="width: 800px; height: 550px;">
-	                 
+	    <div class="modal-content text-center" style="width: 800px; height: 550px">
+	    <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal"> cerrar</button>
 	      <div class="modal-body">
 	        	<!-- ===== DATOS ===== -->
-				<form  class="formulario" >
+				<form  class="formulario" action="">
 					<div class="row align-items-center pt-1">
 				      	<div class="form__grupo col-11">
 				      		<div class="form__titulo">
-				                <p>INFORMACION DEL TECNICO</p>
+				                <p>INFORMACION DE LA PIEZA</p>
 				            </div>
 			            </div>
 			            <div class="form__grupo col-1">
 			            	<input class="btn__cerrar" type="button" data-bs-dismiss="modal" value="X">
 			            </div>
 			        </div>
-			        <div class="form__contenedor">
-			        	
+			        <div class="form__contenedor pt-4">
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" " value="${cli.getNombrePrin()}">
-			                <label for="name" class="form__label">Primer nombre:</label>
+			                <input type="text" class="form__input" placeholder=" " value="${pi.getNomPieza()}">
+			                <label for="name" class="form__label">Nombre Pieza:</label>
 			                <span class="form__line"></span>
 			            </div>
-			            
-			            <div class="form__grupo">
-			                <input type="text" class="form__input"  placeholder=" " value="${cli.getNombreSec()}">
-			                <label for="name" class="form__label">Segundo nombre:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" " value="${cli.getApePrin()}">
-			                <label for="name" class="form__label">Primer apellido:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" " value="${cli.getApeSec()}">
-			                <label for="" class="form__label">Segundo Apellido:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <select class="form__seleccion" name="tipo_docid">
-			                <option class="form__opcion" value=1  ${cli.getTipo_doc() == 1 ? 'selected' : ''}>DNI</option>
-			                <option class="form__opcion" value=2  ${cli.getTipo_doc() == 2 ? 'selected' : ''}>Carne de Extranjería</option>
-			                <option class="form__opcion" value=3  ${cli.getTipo_doc() == 3 ? 'selected' : ''}>Otros</option>
+			            <select class="form__seleccion" name="categorias">
+				            <c:forEach items="${lstCategorias}" var="cat">
+				                <option class="form__opcion" value="${cat.getIdCategoria()}"  ${pi.getIdCategoria()==cat.getIdCategoria() ? 'selected' : ''}>${cat.getNomCategoria()}</option>
+							</c:forEach>
 			            </select>
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" " value="${cli.getNro_doc()}">
-			                <label for="name" class="form__label">Número de Documento:</label>
+			                <input type="number" class="form__input"  placeholder=" " value="${pi.getPrecio()}">
+			                <label for="name" class="form__label">Precio:</label>
 			                <span class="form__line"></span>
 			            </div>
 			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" " value="${cli.getTelefono()}">
-			                <label for="name" class="form__label">Teléfono:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input" placeholder=" " value="${cli.getDireccion()}">
-			                <label for="" class="form__label">Direccion:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <select class="form__seleccion" name="estado">
-			                <option class="form__opcion" value=1  ${cli.getEstado() ? 'selected' : ''}>DNI</option>
-			                <option class="form__opcion" value=2  ${cli.getEstado() ? 'selected' : ''}>Carne de Extranjería</option>
-			                <option class="form__opcion" value=3  ${cli.getEstado() ? 'selected' : ''}>Otros</option>
-			            </select>
-			            <div class="form__grupo" align="center">
-			                <input type="text" class="form__input" placeholder=" " value="${cli.getEmail()}">
-			                <label for="" class="form__label">Correo Electronico:</label>
+			                <input type="number" class="form__input" placeholder=" " value="${pi.getStock()}">
+			                <label for="name" class="form__label">Stock:</label>
 			                <span class="form__line"></span>
 			            </div>
 			        </div>
 			        <div class="row align-items-center pt-4">
-				      	<div class="form__grupo col-6">
-			                <input class="btn__insertar" type="submit" value="INSERTAR">           
-			            </div>
-			
-			            <div class="form__grupo col-6">
+			            <div class="form__grupo col-12">
 			                <input class="btn__modificar" type="submit" value="MODIFICAR">
 			            </div>
 			        </div>
@@ -154,6 +117,63 @@
 	</div>
 	
 	<!-- ===== FINAL MODAL ===== -->
+	
+	<!-- ===== FINAL MODAL ===== -->
+	
+	<!-- Modal2 -->
+	<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right: 350px;">
+	  <div class="modal-dialog" >
+	    <div class="modal-content text-center" style="width: 800px; height: 550px">
+	    <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal"> cerrar</button>
+	      <div class="modal-body">
+	        	<!-- ===== DATOS ===== -->
+				<form  class="formulario" action="">
+					<div class="row align-items-center pt-1">
+				      	<div class="form__grupo col-11">
+				      		<div class="form__titulo">
+				                <p>INFORMACION DE LA PIEZA</p>
+				            </div>
+			            </div>
+			            <div class="form__grupo col-1">
+			            	<input class="btn__cerrar" type="button" data-bs-dismiss="modal" value="X">
+			            </div>
+			        </div>
+			        <div class="form__contenedor pt-4">
+			            <div class="form__grupo">
+			                <input type="text" class="form__input" placeholder=" ">
+			                <label for="name" class="form__label">Nombre Pieza:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <select class="form__seleccion" name="categoria_pieza">
+			            	<c:forEach items="${lstCategorias}" var="cat">
+				                <option class="form__opcion" value="${cat.getIdCategoria()}">${cat.getNomCategoria()}</option>
+							</c:forEach>
+			            </select>
+			            <div class="form__grupo">
+			                <input type="number" class="form__input"  placeholder=" " >
+			                <label for="name" class="form__label">Precio:</label>
+			                <span class="form__line"></span>
+			            </div>
+			            <div class="form__grupo">
+			                <input type="number" class="form__input" placeholder=" " >
+			                <label for="name" class="form__label">Stock:</label>
+			                <span class="form__line"></span>
+			            </div>
+			        </div>
+			        <div class="row align-items-center pt-4">
+				      	<div class="form__grupo col-12">
+			                <input class="btn__insertar" type="submit" value="INSERTAR">           
+			            </div>
+			        </div>
+			    </form>
+			
+	<!-- =====  FIN DATOS ===== -->
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<!-- ===== FINAL MODAL ===== -->    
 	    
 	    
 	    
@@ -173,7 +193,7 @@
 	
 	 <!-- ===== JS BOOSTRAP ===== -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-	<script type="text/javascript" src="${context}/js/PruebaPermanenciavariable.js"></script>
+	<script src="js/piezas.js"></script>
     <script>
        $(document).ready(function () {
             $('#tabla__Cliente').DataTable({
@@ -190,7 +210,7 @@
 		
        $(function(){
     	   $('tr').click(function(e){
-    	     if($(this).hasClass('.row-selected')){
+    	     if($(this).hasClass('row-selected')){
     	       $(this).addClass('other-clic')
     	     }else{
     	       cleanTr()
@@ -206,16 +226,9 @@
     	     })
     	   }
     	 })
-    var ashu = document.querySelectorAll("tr");
-
-		for (let i = 0; i < contenido.length; i++) {
-			ashu[i].addEventListener("click", () => {
-				ashu[i].style.backgroundColor="red";
-			});
-		
-		}
+ 
     </script>
-	
+
 </body>
 
 </html>

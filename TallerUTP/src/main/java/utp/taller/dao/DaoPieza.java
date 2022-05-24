@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utp.config.Conexion;
+import utp.taller.entidades.CategoriaPieza;
+import utp.taller.entidades.Especialidad;
 import utp.taller.entidades.Pieza;
 
-public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
+public class DaoPieza extends Conexion implements CRUD<Pieza> {
 
 	Connection cnx = null;
 	PreparedStatement stm = null;
@@ -127,7 +129,7 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 	}
 
 	@Override
-	public int eliminar(int id) {
+	public int desactivar(int id) {
 		
 		String sql = "delete from pieza where id_pieza=?";
 		cnx = getConnection();
@@ -142,6 +144,38 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 			throw new RuntimeException(e);
 		}
 		return 0;
+	}
+	
+	public List<CategoriaPieza> listarCategorias(){
+		
+		List<CategoriaPieza> lst = new ArrayList<CategoriaPieza>();
+		CategoriaPieza cat = null;
+
+		String sql = "select * from categoria_pieza";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				cat = new CategoriaPieza();
+				cat.setIdCategoriaPiezad(rs.getInt(1));
+				cat.setNomCategoria(rs.getString(2));
+
+				lst.add(cat);
+			}
+			
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return lst;
+	
 	}
 	
 }

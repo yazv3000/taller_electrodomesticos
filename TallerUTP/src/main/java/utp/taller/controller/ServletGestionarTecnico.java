@@ -9,8 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import utp.taller.dao.DaoDistrito;
+import utp.taller.dao.DaoEspecialidad;
 import utp.taller.dao.DaoTecnico;
 import utp.taller.dto.DtoTecnicoConsulta;
+import utp.taller.entidades.Distrito;
+import utp.taller.entidades.Especialidad;
 import utp.taller.entidades.Tecnico;
 
 /**
@@ -42,14 +46,17 @@ public class ServletGestionarTecnico extends HttpServlet {
 				    int id= Integer.parseInt(request.getParameter("id"));
 					Tecnico tecnico = dao.consultarId(id);
 					request.setAttribute("tec", tecnico);
-					request.getRequestDispatcher("ServletGestionarTecnico?accion=listar").forward(request, response);
+					
+					//request.getRequestDispatcher("ServletGestionarTecnico?accion=listar").include(request, response);
 					break;
 			
 			default:
 				throw new IllegalArgumentException("Unexpected value: " + accion);
 		}
     	
-    	request.getRequestDispatcher("Vista/mantenimiento/gestionTecnico.jsp").forward(request, response);
+    	listarEpescialidades(request);
+		listarDistritos(request);
+    	request.getRequestDispatcher("vista/encargado/gestionTecnicos.jsp").forward(request, response);
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -59,5 +66,14 @@ public class ServletGestionarTecnico extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 	}
-
+	private void listarEpescialidades(HttpServletRequest request) {
+		DaoEspecialidad daoDistr = new DaoEspecialidad();
+		List<Especialidad> lstEspecialidades = daoDistr.listar();
+		request.getSession().getServletContext().setAttribute("lstEspecialidades", lstEspecialidades);
+	}
+	private void listarDistritos(HttpServletRequest request) {
+		DaoDistrito daoDistr = new DaoDistrito();
+		List<Distrito> lst = daoDistr.listar();
+		request.getSession().getServletContext().setAttribute("lstDistritos", lst);
+	}
 }

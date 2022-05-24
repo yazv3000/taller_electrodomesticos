@@ -1,6 +1,6 @@
 package utp.taller.dao;
 
-public interface BaseDAO<T> {
+public interface CRUD<T> {
 	
 	public T consultarId(int id);
 	
@@ -8,6 +8,6 @@ public interface BaseDAO<T> {
 	
 	public int modificar(T obj_modificar);
 	
-	public int eliminar(int id);
+	public int desactivar(int id);
  
 }

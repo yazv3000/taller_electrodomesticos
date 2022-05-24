@@ -10,7 +10,7 @@ import java.util.List;
 import utp.config.Conexion;
 import utp.taller.entidades.Electrodomestico;
 
-public class DaoElectrodomestico extends Conexion implements BaseDAO<Electrodomestico> {
+public class DaoElectrodomestico extends Conexion implements CRUD<Electrodomestico> {
 
 	/*
 	 * TABLA electrodomestico
@@ -108,7 +108,7 @@ public class DaoElectrodomestico extends Conexion implements BaseDAO<Electrodome
 	}
 
 	@Override
-	public int eliminar(int id) {
+	public int desactivar(int id) {
 		
 		String sql = "delete from electrodomestico where id_electrodomestico=?";
 		cnx = getConnection();
