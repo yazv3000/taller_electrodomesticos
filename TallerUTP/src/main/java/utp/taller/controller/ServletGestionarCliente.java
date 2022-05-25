@@ -37,6 +37,7 @@ public class ServletGestionarCliente extends HttpServlet {
     	
     	String accion = request.getParameter("accion");
     	
+
     	switch (accion) {
 			case "listar": 
 				 	List<DtoClienteConsulta> lst = dao.listarDtoClientes();
@@ -67,9 +68,16 @@ public class ServletGestionarCliente extends HttpServlet {
 
 			case "desactivar":
 					idPCliente = Integer.parseInt(request.getParameter("id"));
+					System.out.println("id we"+idPCliente);
 					dao.desactivar(idPCliente);
+					request.getRequestDispatcher("ServletGestionarCliente?accion=listar").include(request, response);
 				break;
-				
+			case "activar":
+					idPCliente = Integer.parseInt(request.getParameter("id"));
+					System.out.println("id we"+idPCliente);
+					dao.desactivar(idPCliente);
+					request.getRequestDispatcher("ServletGestionarCliente?accion=listar").include(request, response);
+					break;
 			default:
 				request.getRequestDispatcher("ServletGestionarCliente?accion=listar").forward(request, response);
 		}

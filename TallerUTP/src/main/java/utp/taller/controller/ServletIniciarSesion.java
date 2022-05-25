@@ -29,11 +29,12 @@ public class ServletIniciarSesion extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String accion = request.getParameter("accion");
-		
+			System.out.println("*************************************");
 		if (accion.equalsIgnoreCase("Ingresar")) {
 			String user = request.getParameter("txt_user");
 			String pass = request.getParameter("txt_pass");
 			int rol = Integer.parseInt(request.getParameter("cbx_rol")) ;
+			System.out.println(user+pass+rol+accion+"-------------------------");
 			DtoUsuario dto = new DtoUsuario();
 			
 			switch (rol) {
@@ -42,6 +43,7 @@ public class ServletIniciarSesion extends HttpServlet {
 					dto = daoCliente.validar(user, pass);
 					if (dto.getEmail() != null) {
 						request.getRequestDispatcher("vista/cliente/servicios.jsp").forward(request, response);
+						System.out.println("si exsite el cliente ----------------------------------------");
 					} else {
 						request.getRequestDispatcher("index.jsp").forward(request, response);
 					}

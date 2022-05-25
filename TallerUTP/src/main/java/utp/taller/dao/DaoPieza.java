@@ -71,7 +71,7 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 				p = new Pieza();
 				p.setIdPieza(rs.getInt("id"));
 				p.setNomPieza(rs.getString("nombre_pieza"));
-				p.setCategoria(new CategoriaPieza(rs.getInt("id_categoria"), rs.getString("nombre_cat")));
+				p.setCategoria(new CategoriaPieza(rs.getInt("id_categoria"), rs.getString("nom_categoria")));
 				p.setPrecio(rs.getDouble("precio"));
 				p.setStock(rs.getLong("stock"));
 				p.setEstadoActivo(rs.getBoolean("estado"));

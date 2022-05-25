@@ -168,20 +168,18 @@ label {
     position: relative;
 }
 .form__input {
-    font-family: "Noto sans";
-    height:40px;
-    width: 100%;
-    padding: .6em 0;
-    border: none;
-    border-bottom: 1px solid rgb(231, 224, 224);
-    outline: none;
-    color: white;
-    background-color:var(--primario);
+    width: 80%;
+    background-color: var(--fondo) !important;
+    border: 1px solid var(--fondo) !important ;
+    border-radius: 5px;
+    color: white !important;
+    font-size: 16px;
+    font-family: Poppins;
 }
 
 .form__input:focus + .form__label,
 .form__input:not(:placeholder-shown) + .form__label {
-    transform: translateY(-10px) scale(.7);
+    transform: translateY(-15px) scale(.7);
     transform-origin: left top;
     color: var(--secundario);
 }

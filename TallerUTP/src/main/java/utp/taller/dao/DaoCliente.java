@@ -140,8 +140,7 @@ public class DaoCliente extends Conexion  implements CRUD<Cliente>{
 			//stm.setString(11, cli.getContrasena());
 			stm.setString(11, "por defecto");
 			stm.setBytes(12, cli.getFoto());
-			
-			stm.execute();
+			stm.execute(); 
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -170,8 +169,7 @@ public class DaoCliente extends Conexion  implements CRUD<Cliente>{
 			stm.setString(13, c.getContrasena());
 			stm.setBoolean(14, c.isEstadoActivo());
 			stm.setBytes(15, c.getFoto());
-
-			stm.execute();
+			System.out.println(stm.execute()+"-".repeat(12)+"MODIFIQUE"); 
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -181,7 +179,6 @@ public class DaoCliente extends Conexion  implements CRUD<Cliente>{
 
 	@Override
 	public int desactivar(int id) {
-		
 		String sql = "call sp_desactivar_persona(?)";
 		cnx = getConnection();
 		try {
