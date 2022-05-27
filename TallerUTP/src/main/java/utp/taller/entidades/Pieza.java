@@ -7,17 +7,19 @@ public class Pieza {
 		private String nomPieza;
 		private long stock;
 		private double precio;
-		private String categoria;
+		private CategoriaPieza categoria;
+		private boolean estadoActivo;
 	
 		// CONSTRUCTORES
 		public Pieza() { }
 
-		public Pieza(int idPieza, String nomPieza, long stock, double precio, String categoria) {
+		public Pieza(int idPieza, String nomPieza, long stock, double precio, CategoriaPieza categoria, boolean estado) {
 			this.idPieza = idPieza;
 			this.nomPieza = nomPieza;
 			this.stock = stock;
 			this.precio = precio;
 			this.categoria = categoria;
+			this.estadoActivo = estado;
 		}
 
 		// MÉTODOS GETTER & SETTER
@@ -33,7 +35,10 @@ public class Pieza {
 		public double getPrecio() {			return precio;		}
 		public void setPrecio(double precio) {			this.precio = precio;		}
 
-		public String getCategoria() {			return categoria;		}
-		public void setCategoria(String categoria) {			this.categoria = categoria;		}
+		public CategoriaPieza getCategoria() {			return categoria;		}
+		public void setCategoria(CategoriaPieza categoria) {			this.categoria = categoria;		}
 
+		public boolean isEstadoActivo() {			return estadoActivo;		}
+		public void setEstadoActivo(boolean estadoActivo) {			this.estadoActivo = estadoActivo;		}
+		
 }

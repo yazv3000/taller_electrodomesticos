@@ -10,8 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import utp.taller.dao.DaoCliente;
+import utp.taller.dao.DaoDistrito;
 import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.entidades.Cliente;
+import utp.taller.entidades.Distrito;
 
 
 /**
@@ -21,44 +23,116 @@ import utp.taller.entidades.Cliente;
 public class ServletGestionarCliente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	DaoCliente dao = new DaoCliente();
+	private DaoCliente dao = new DaoCliente();
+	private Cliente cliente = new Cliente();
+	private int idPCliente;
+	private byte[] foto;
 	
- 
+	
     public ServletGestionarCliente() {
         super();
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	
+
     	String accion = request.getParameter("accion");
-    	
-    	switch (accion) {
-			case "listar": 
-				 	List<DtoClienteConsulta> lst = dao.listarDtoClientes();
-				 	request.setAttribute("lstConsultaClientes", lst);
-				break;
-			
-			case "editar":
-			    String id= request.getParameter("id");
-				Cliente cliente = dao.consultarId(id);
-				request.setAttribute("cli", cliente);
-				request.getRequestDispatcher("ServletGestionarCliente?accion=listar").forward(request, response);
-				break;
-			
-			default:
-				throw new IllegalArgumentException("Unexpected value: " + accion);
+    	String tipoLista = request.getParameter("lista");
+		
+		if (tipoLista == null) {
+			tipoLista = "todos";
 		}
     	
-    	request.getRequestDispatcher("Vista/mantenimiento/gestionCliente.jsp").forward(request, response);
+    	switch (accion) {
+
+    		case "listar":
+    				listar(request, tipoLista);
+    			break;
+    	
+			case "insertar":
+					recuperarDatos(request);
+					dao.insertar(cliente);
+					listar(request, tipoLista);
+				break;
+				
+			case "editar":
+					idPCliente = Integer.parseInt(request.getParameter("id"));
+					cliente = dao.consultarId(idPCliente);
+					request.setAttribute("cli", cliente);
+					listar(request, tipoLista);
+				break;
+			
+			case "actualizar":
+					recuperarDatos(request);
+					dao.modificar(cliente);	
+					listar(request, tipoLista);
+				break;
+
+			case "activar":
+				idPCliente = Integer.parseInt(request.getParameter("id"));
+				dao.cambiarEstado(idPCliente, true);
+				listar(request, tipoLista);
+			break;
+			
+			case "desactivar":
+					idPCliente = Integer.parseInt(request.getParameter("id"));
+					dao.cambiarEstado(idPCliente, false);
+					listar(request, tipoLista);
+				break;
+		}
+    	
+    	listarDistritos(request);
+    	request.getRequestDispatcher("vista/encargado/gestionClientes.jsp").forward(request, response);
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	
 		processRequest(request, response);
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		processRequest(request, response);
+	}
+	
+	private void listarDistritos(HttpServletRequest request) {
+		DaoDistrito daoDistr = new DaoDistrito();
+		List<Distrito> lst = daoDistr.listar();
+		request.getSession().getServletContext().setAttribute("lstDistritos", lst);
+	}
+
+	private void recuperarDatos(HttpServletRequest request) {
+		//foto = 
+		
+		cliente.setNombrePrin(request.getParameter("txt_nom1"));
+		cliente.setNombreSec(request.getParameter("txt_nom2"));
+		cliente.setApePrin(request.getParameter("txt_ape1"));
+		cliente.setApeSec(request.getParameter("txt_ape2"));
+		cliente.setTipoDocumento(Integer.parseInt(request.getParameter("cbx_tipodoc")));
+		cliente.setNroDocumento(request.getParameter("num_doc"));
+		cliente.setTelefono(request.getParameter("num_telef"));
+		cliente.setIdDistrito(Integer.parseInt(request.getParameter("cbx_distritos")));
+		cliente.setDireccion(request.getParameter("txt_direcc"));
+		cliente.setEmail(request.getParameter("txt_correo"));
+		cliente.setEstadoActivo(Boolean.parseBoolean(request.getParameter("estado")));
 
 	}
 
+	private void listar(HttpServletRequest request, String tipoLista) {
+
+		List<DtoClienteConsulta> lst;
+
+	 	switch (tipoLista) {
+		case "activos":
+			lst = dao.listarDtoClientes(true);
+			break;
+		case "inactivos":
+			lst = dao.listarDtoClientes(false);
+			break;	
+		default:
+			lst = dao.listarDtoClientes();
+		}
+	 	request.setAttribute("lstConsultaClientes", lst);
+	}
 }
