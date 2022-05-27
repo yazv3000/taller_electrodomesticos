@@ -9,8 +9,10 @@ import java.util.List;
 
 import utp.config.Conexion;
 import utp.taller.entidades.Electrodomestico;
+import utp.taller.entidades.ElectrodomesticoMarca;
+import utp.taller.entidades.ElectrodomesticoTipo;
 
-public class DaoElectrodomestico extends Conexion implements BaseDAO<Electrodomestico> {
+public class DaoElectrodomestico extends Conexion implements CRUD<Electrodomestico> {
 
 	/*
 	 * TABLA electrodomestico
@@ -60,7 +62,7 @@ public class DaoElectrodomestico extends Conexion implements BaseDAO<Electrodome
 	}
 	
 	@Override
-	public Electrodomestico consultarId(String id) {
+	public Electrodomestico consultarId(int id) {
 		return null;
 	}
 
@@ -108,7 +110,7 @@ public class DaoElectrodomestico extends Conexion implements BaseDAO<Electrodome
 	}
 
 	@Override
-	public int eliminar(int id) {
+	public int desactivar(int id) {
 		
 		String sql = "delete from electrodomestico where id_electrodomestico=?";
 		cnx = getConnection();
@@ -126,55 +128,65 @@ public class DaoElectrodomestico extends Conexion implements BaseDAO<Electrodome
 	}
 	
 	// CONSULTAR MARCAS
-	public List<String> listarMarcas() {
+		public List<ElectrodomesticoMarca> listarMarcas() {
 
-		List<String> lst = new ArrayList<String>();
-
-		String sql = "select * from marca";
-
-		cnx = getConnection();
-		ResultSet rs = null;
-
-		try {
-			stm = cnx.prepareStatement(sql);
-			rs = stm.executeQuery();
-
-			while (rs.next()) {
-				lst.add(rs.getString(2));
-			}
+			List<ElectrodomesticoMarca> lst = new ArrayList<>();
+			ElectrodomesticoMarca marca = null;
 			
-			cnx.close();
+			String sql = "select * from marca";
 
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return lst;
-	}
+			cnx = getConnection();
+			ResultSet rs = null;
 
-	// CONSULTAR TIPOS DE ELECTRODOMÉSTICOS
-	public List<String> listarTiposE() {
+			try {
+				stm = cnx.prepareStatement(sql);
+				rs = stm.executeQuery();
 
-		List<String> lst = new ArrayList<String>();
+				while (rs.next()) {
+					marca = new ElectrodomesticoMarca();
+					
+					marca.setId(rs.getInt(1));
+					marca.setNombre(rs.getString(2));
+					marca.setEstado(rs.getBoolean(3));
+					
+					lst.add(marca);
+				}
+				
+				cnx.close();
 
-		String sql = "select * from tipo_electro";
-
-		cnx = getConnection();
-		ResultSet rs = null;
-
-		try {
-			stm = cnx.prepareStatement(sql);
-			rs = stm.executeQuery();
-
-			while (rs.next()) {
-				lst.add(rs.getString(2));
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
 			}
-			
-			cnx.close();
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			return lst;
 		}
-		return lst;
-	}
+
+		// CONSULTAR TIPOS DE ELECTRODOMÉSTICOS
+		public List<ElectrodomesticoTipo> listarTiposE() {
+
+			List<ElectrodomesticoTipo> lst = new ArrayList<ElectrodomesticoTipo>();
+			ElectrodomesticoTipo tipo = null;
+			String sql = "select * from tipo_electrodomestico";
+
+			cnx = getConnection();
+			ResultSet rs = null;
+
+			try {
+				stm = cnx.prepareStatement(sql);
+				rs = stm.executeQuery();
+
+				while (rs.next()) {
+					tipo = new ElectrodomesticoTipo();
+					tipo.setId(rs.getInt(1));
+					tipo.setNombre(rs.getString(2));
+					tipo.setEstado(rs.getBoolean(3));
+					lst.add(tipo);
+				}
+				cnx.close();
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			return lst;
+		}
 	
 }

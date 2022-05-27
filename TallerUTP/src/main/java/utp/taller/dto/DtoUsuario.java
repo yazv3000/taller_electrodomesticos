@@ -3,20 +3,35 @@ package utp.taller.dto;
 
 public class DtoUsuario {
 
-	private String correo;
-	private String contra;
-
-	public DtoUsuario() {}
-
-	public DtoUsuario(String correo, String contra) {
-		this.correo = correo;
-		this.contra = contra;
-	}
-
-	public String getCorreo() {		return correo;	}
-	public void setCorreo(String correo) {		this.correo = correo;	}
+	// ATRIBUTOS
+	private int idPersona;
+	private String idUsuario;
+	private String rol;
+	private String username;
+	private String email;
+	private byte[] profilePic;
 	
-	public String getContra() {		return contra;	}
-	public void setContra(String contra) {		this.contra = contra;	}
+	// CONSTRUCTORES
+	public DtoUsuario() {	}
+	
+	// MÉTODOS GETTER & SETTER
+	public int getIdPersona() {		return idPersona;	}
+	public void setIdPersona(int idPersona) {		this.idPersona = idPersona;	}
+
+	public String getIdUsuario() {		return idUsuario;	}
+	public void setIdUsuario(String idUsuario) {		this.idUsuario = idUsuario;	}
+
+	public String getRol() {		return rol;	}
+	public void setRol(String rol) {		this.rol = rol;	}
+	
+	public String getUsername() {		return username;	}
+	public void setUsername(String username) {		this.username = username;	}
+	
+	public String getEmail() {		return email;	}
+	public void setEmail(String email) {		this.email = email;	}
+
+	public byte[] getProfilePic() {		return profilePic;	}
+	public void setProfilePic(byte[] profilePic) {		this.profilePic = profilePic;	}
+	
 
 }

@@ -1,0 +1,88 @@
+:root {
+	--color1: rgb(0, 0, 240);
+	--color2: #2186cc;
+}
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: helvetica;
+}
+
+.header {
+	background-color: rgb(0, 0, 0);
+	height: 60px;
+	border-bottom: black 3px solid;
+}
+
+.nav {
+	display: flex;
+	justify-content: space-between;
+	max-width: 992px;
+	margin: 0 auto;
+}
+
+.nav-link {
+	color: white;
+	text-decoration: none;
+}
+
+.logo {
+	font-size: 30px;
+	font-weight: bold;
+	padding: 0 40px;
+	line-height: 60px;
+	color: var(--color2);
+}
+
+.nav-menu {
+	display: flex;
+	margin-right: 40px;
+	list-style: none;
+}
+
+.nav-menu-item {
+	font-size: 15px;
+	margin: 0 10px;
+	line-height: 60px;
+	text-transform: uppercase;
+	width: max-content;
+}
+
+.nav-menu-link {
+	padding: 8px 12px;
+	border-radius: 3px;
+	font-weight: bold;
+}
+
+.nav-menu-link:hover {
+	background: linear-gradient(var(--color1), var(--color2));
+	transition: 0.5s;
+	opacity: 1;
+}
+.tamano {
+	border-radius: 10px; 
+	width: 100%;
+	height: 100vh;
+    display: flex;
+}
+.tamano2 {
+	width: 100%;
+	height: 100vh;
+    display: flex;
+}
+/* ESTILOS PARA TECNICO.JSP */
+.formuTec {
+	background-image: url(https://st4.depositphotos.com/4162325/24627/v/600/depositphotos_246271278-stock-illustration-hvac-cleaner-technician-leaning-washing.jpg);
+	background-size: cover;
+	background-repeat: no-repeat;
+	margin: 0;
+	height: 100%;
+	width: 100%;
+}
+.formuTecTit {
+	align-items: center;
+	font-family: "Arial Black";
+}

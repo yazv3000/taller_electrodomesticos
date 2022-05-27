@@ -1,0 +1,47 @@
+:root {
+    /* --primario :rgb(33, 42, 52); */
+    --primario: rgb(33, 33, 33);
+    --fondo: rgb(25, 23, 21);
+    --secundario: #2473cd ;
+}
+#body {
+	background: #000;
+	margin: 15px;
+}
+#formServPrest {
+	margin: 10px;
+	background-color: var(--primario) !important;
+    border-radius: 20px;
+    color: white;
+}
+#conjuntcard {
+	background-color: var(--primario) !important;
+    border-radius: 20px;
+    color: white;
+}
+.paddingsty {
+	padding: 10px;
+	background: #000;
+	color: white;
+}
+.estinputs {
+	background: #000;
+	color: white;
+}
+label {
+	color: white;
+}
+
+a {
+	color: white;
+}
+div {
+	color: white;
+}
+input {
+	color: white;
+}
+option {
+	color: white;
+	background-color: var(--primario) !important;
+}

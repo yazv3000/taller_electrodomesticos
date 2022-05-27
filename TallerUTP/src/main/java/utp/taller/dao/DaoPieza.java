@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utp.config.Conexion;
+import utp.taller.entidades.CategoriaPieza;
+import utp.taller.entidades.Especialidad;
 import utp.taller.entidades.Pieza;
 
-public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
+public class DaoPieza extends Conexion implements CRUD<Pieza> {
 
 	Connection cnx = null;
 	PreparedStatement stm = null;
@@ -20,8 +22,7 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 		List<Pieza> lst = new ArrayList<Pieza>();
 		Pieza p = null;
 
-		String sql = "select * from f_listar_piezas()";
-		// (1) id_pieza | (2) nomPieza | (3) nom_cat | (4) precio_pieza | (5) stock
+		String sql = "select * from v_piezas";
 		
 		cnx = getConnection();
 		ResultSet rs = null;
@@ -32,11 +33,12 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 
 			while (rs.next()) {
 				p = new Pieza();
-				p.setIdPieza(rs.getInt(1));
-				p.setNomPieza(rs.getString(2));
-				p.setCategoria(rs.getString(3));
-				p.setPrecio(rs.getDouble(4));
-				p.setStock(rs.getLong(5));
+				p.setIdPieza(rs.getInt("id_pieza"));
+				p.setNomPieza(rs.getString("nombre_pieza"));
+				p.setCategoria(new CategoriaPieza(rs.getInt("id_categoria"), rs.getString("nombre_cat")));
+				p.setPrecio(rs.getDouble("precio_pieza"));
+				p.setStock(rs.getLong("stock"));
+				p.setEstadoActivo(rs.getBoolean("estado_activ"));
 				
 				lst.add(p);
 			}
@@ -52,26 +54,51 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 	}
 
 	@Override
-	public Pieza consultarId(String id) {
-		return null;
+	public Pieza consultarId(int id) {
+		Pieza p = null;
+
+		String sql = "select * from f_consultar_pieza(?)";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, id);
+			rs = stm.executeQuery();
+
+			if (rs.next()) {
+				p = new Pieza();
+				p.setIdPieza(rs.getInt("id"));
+				p.setNomPieza(rs.getString("nombre_pieza"));
+				p.setCategoria(new CategoriaPieza(rs.getInt("id_categoria"), rs.getString("nom_categoria")));
+				p.setPrecio(rs.getDouble("precio"));
+				p.setStock(rs.getLong("stock"));
+				p.setEstadoActivo(rs.getBoolean("estado"));
+			}
+			
+			cnx.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return p;
 	}
 	
 	@Override
 	public int insertar(Pieza p) {		
-		String sql = "insert into pieza(nom_pieza, stock, precio_pieza, id_cat) values (?, ?, ?, ?)";
+		String sql = "call sp_nueva_pieza(?, ?, ?, ?)";
 		cnx = getConnection();
 		try {
-			cnx.setAutoCommit(false);
+
 			stm = cnx.prepareStatement(sql);
 			stm.setString(1, p.getNomPieza());
-			stm.setLong(2, p.getStock());
+			stm.setInt(2, p.getCategoria().getIdCategoria());
 			stm.setDouble(3, p.getPrecio());
-			stm.setInt(4, 1);	// falta cambiar id_cat a consulta
+			stm.setLong(4, p.getStock());
 			
-			stm.executeUpdate();
-			cnx.commit();
+			stm.execute();
 			cnx.close();
-			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -80,16 +107,17 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 
 	@Override
 	public int modificar(Pieza p) {
-		String sql = "update pieza set nom_pieza=?, stock=?, precio_pieza=?, id_cat=? where id_pieza=?";
+		String sql = "call sp_actualizar_pieza(?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
 		try {
 			cnx.setAutoCommit(false);
 			stm = cnx.prepareStatement(sql);
-			stm.setString(1, p.getNomPieza());
-			stm.setLong(2, p.getStock());
-			stm.setDouble(3, p.getPrecio());
-			stm.setInt(4, 1);	// falta cambiar id_cat a consulta
-			stm.setInt(5, p.getIdPieza());
+			stm.setInt(1, p.getIdPieza());
+			stm.setString(2, p.getNomPieza());
+			stm.setInt(3, p.getCategoria().getIdCategoria());
+			stm.setDouble(4, p.getPrecio());
+			stm.setLong(5, p.getStock());
+			stm.setBoolean(6, p.isEstadoActivo());
 			
 			stm.executeUpdate();
 			cnx.commit();
@@ -101,7 +129,7 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 	}
 
 	@Override
-	public int eliminar(int id) {
+	public int desactivar(int id) {
 		
 		String sql = "delete from pieza where id_pieza=?";
 		cnx = getConnection();
@@ -116,6 +144,38 @@ public class DaoPieza extends Conexion implements BaseDAO<Pieza> {
 			throw new RuntimeException(e);
 		}
 		return 0;
+	}
+	
+	public List<CategoriaPieza> listarCategorias(){
+		
+		List<CategoriaPieza> lst = new ArrayList<CategoriaPieza>();
+		CategoriaPieza cat = null;
+
+		String sql = "select * from categoria_pieza";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				cat = new CategoriaPieza();
+				cat.setIdCategoria(rs.getInt(1));
+				cat.setNombreCat(rs.getString(2));
+
+				lst.add(cat);
+			}
+			
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return lst;
+	
 	}
 	
 }
