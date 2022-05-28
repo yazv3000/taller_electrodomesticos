@@ -29,30 +29,35 @@
 	
 	<h1 class="titulo">Información del <span>Electrodoméstico</span></h1>
     <div class="contenedor-electro">
-        <div class="cont-electro">
-            <div class="electro" action="">
+        <form class="cont-electro" method="post" action="" novalidate>
+            <div class="electro">
+            
                 <div class="electro-1 formato">
                     <select class="electro__tipo" name="" id="">
                     	<c:forEach items="${lstMarcas}" var="marca">	
-                        	<option value=""><c:out value="${marca.getNombre()}"></c:out></option>
+                        	<option class="select-marca" value=""><c:out value="${marca.getNombre()}"></c:out></option>
                         </c:forEach>
                     </select>
                 </div>
+                
                 <div class="electro-2 formato">                
                     <input class="electro__serie" type="number" placeholder=" ">
-                    <label class="nombre" for="">Numero de serie: </label>
+                    <label class="numero" for="">Numero de serie: </label>
                 </div>
+                
                 <div class="electro-3 formato">
-                    <select class="electro__Marca" name="" id="">
+                    <select name="" id="">
                     	<c:forEach items="${lstTipos}" var="tipo">	
-                        <option value=""><c:out value="${tipo.getNombre()}"></c:out></option>
+                        	<option class="select-tipo" value=""><c:out value="${tipo.getNombre()}"></c:out></option>
                         </c:forEach>
                     </select>
                 </div>
+                
                 <div class="electro-4 formato">
-                    <input class="electro__modelo" type="text" placeholder=" ">
-                    <label class="nombre" for="">Modelo: </label>       
+                    <input class="input-modelo" type="text" placeholder=" ">
+                    <label for="">Modelo: </label>       
                 </div>
+                
                 <div class="electro-5 formato">
                     <textarea name="" id="" cols="30" rows="10" placeholder=" "></textarea>
                     <label class="nombre" for="">Descripcion de la falla: </label>
@@ -60,61 +65,65 @@
             </div>
 			<!--   	===== MODAL RESUMEN ===== -->
 			<!-- Boton del Modal -->
-			<button class="boton-modal" type="button" data-bs-toggle="modal"
-				data-bs-target="#exampleModal">Aceptar</button>
+			
+				<button id="btn-aceptar" type="button" class="btn btn-primary btn-aceptar boton" data-bs-toggle="modal" data-bs-target="#resumenModal">Aceptar</button>
+
+			
 			<!-- Modal -->
-			<div class="modal fade" id="exampleModal" tabindex="-1"
+			<div class="modal fade" id="resumenModal" tabindex="-1"
 				aria-labelledby="exampleModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered contenedor"
 					id="contededor">
 					<div class="modal-content contenido-modal ">
 						<h3 class="titulo-modal">DATOS GENERALES</h3>
 						<div class="cita">
-							<label class="etiqueta-1" for="">Solicitante:</label> 
-							<label class="etiqueta-2" for="">************</label> 
-							<label class="etiqueta-1" for="">Tecnico:</label> 
-							<label class="etiqueta-2" for="">************</label> 
-							<label class="etiqueta-1" for="">Direccion:</label> 
-								<label
-								class="etiqueta-2" for="">************</label> 
-								<label
-								class="etiqueta-1" for="">Telefono:</label> 
-								<label
-								class="etiqueta-2" for="">************</label> 
-								<label
-								class="etiqueta-1" for="">Servicio:</label> 
-								<label
-								class="etiqueta-2" for="">************</label> 
-								<label
-								class="etiqueta-1" for="">Fecha:</label> 
-								<label
-								class="etiqueta-2" for="">************</label> 
-								<label
-								class="etiqueta-1" for="">Hora:</label> 
-								<label
-								class="etiqueta-2" for="">************</label> 
-								<label
-								class="etiqueta-1" for="">E. tipo:</label> 
-								<label
-								class="etiqueta-2" for="">************</label> 
-								<label
-								class="etiqueta-1" for="">E. Marca:</label> 
-								<label
-								class="etiqueta-2" for="">************</label> 
-								<label
-								class="etiqueta-1" for="">Numero de serie:</label> 
-								<label
-								class="etiqueta-2" for="">************</label> 
-								<label
-								class="etiqueta-1" for="">Modelo:</label> 
-								<label
-								class="etiqueta-2" for="">************</label>
+						
+					        <label class="etiqueta-1" for="">Solicitante:</label>
+					        <label class="etiqueta-2" for="">************</label>
+					
+					        <label class="etiqueta-1" for="">Tecnico:</label>
+					        <label class="etiqueta-2" for="">
+					            <c:out value="${hora.getNombres()}" />
+					        </label>
+					
+					        <label class="etiqueta-1" for="">Direccion:</label>
+					        <label class="etiqueta-2" for="">************</label>
+					        
+					        <label class="etiqueta-1" for="">Telefono:</label>
+					        <label class="etiqueta-2" for="">************</label>
+					        
+					        <label class="etiqueta-1" for="">Servicio:</label>
+					        <label class="etiqueta-2" for="">
+					            <c:out value="${servicio}" />
+					        </label>
+					        
+					        <label class="etiqueta-1" for="">Fecha:</label>
+					        <label class="etiqueta-2" for="">
+					            <c:out value="${hora.getFormatoFecha()}" />
+					        </label>
+					        
+					        <label class="etiqueta-1" for="">Hora:</label>
+					        <label class="etiqueta-2" for="">
+					            <c:out value="${hora.getHora()}" />
+					        </label>
+					        
+					        <label class="etiqueta-1" for="">E. tipo:</label>
+					        <label class="etiqueta-2 etq-tipo" for="">************</label>
+					        
+					        <label class="etiqueta-1" for="">E. Marca:</label>
+					        <label class="etiqueta-2 etq-marca" for="">************</label>
+					        
+					        <label class="etiqueta-1" for="">Numero de serie:</label>
+					        <label class="etiqueta-2 num-serie" for="">************</label>
+					        
+					        <label class="etiqueta-1" for="">Modelo:</label>
+					        <label class="etiqueta-2 etq-modelo" for="">************</label>
 
 						</div>
 						<div class="controles">
 							<button type="button" class="btn btn-secondary"
 								data-bs-dismiss="modal">Cancelar</button>
-							<button type="button" class="btn btn-primary">Confirmar</button>
+							<input  type="submit" class="btn btn-primary" value="Confirmar">
 						</div>
 
 					</div>
@@ -122,18 +131,22 @@
 				</div>
 			</div>
 			<!--   	===== FIN MODAL ===== -->
-			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Aceptar</button>
-		</div>
+			
+		</form>
   	</div>
   	
 
 
-	
+	<script  src="${context}/js/c.js">
+		
+		
+	</script>
 	
 
 	<!-- ===== JS BOOSTRAP ===== -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-	<script type="text/javascript" src="${context}/js/PruebaPermanenciavariable.js"></script>
+	
+	
 	
 </body>
 </html>
