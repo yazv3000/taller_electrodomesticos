@@ -9,37 +9,33 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import utp.taller.dao.DaoCliente;
-import utp.taller.dao.DaoDistrito;
+import utp.taller.dao.DaoElectrodomestico;
 import utp.taller.dto.DtoClienteConsulta;
-import utp.taller.entidades.Cliente;
-import utp.taller.entidades.Distrito;
-
+import utp.taller.dto.DtoElectrodomesticoConsulta;
+import utp.taller.entidades.Electrodomestico;
 
 /**
- * Servlet implementation class ServletGestionarTecnico
+ * Servlet implementation class ServletGestionarElectrodomestico
  */
-@WebServlet("/ServletGestionarCliente")
-public class ServletGestionarCliente extends HttpServlet {
+@WebServlet("/ServletGestionarElectrodomestico")
+public class ServletGestionarElectrodomestico extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	private DaoCliente dao = new DaoCliente();
-	private Cliente cliente = new Cliente();
-	private int idPCliente;
-	private byte[] foto;
+    private DaoElectrodomestico dao = new DaoElectrodomestico();
+    private Electrodomestico electrodom = new Electrodomestico();
+    private int idElectrodomestico;
 	
-	
-    public ServletGestionarCliente() {
+    public ServletGestionarElectrodomestico() {
         super();
+        // TODO Auto-generated constructor stub
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
     	String accion = request.getParameter("accion");
     	String tipoLista = request.getParameter("lista");
-		
-		if (tipoLista == null) {
+    	
+    	if (tipoLista == null) {
 			tipoLista = "todos";
 		}
     	
@@ -87,54 +83,36 @@ public class ServletGestionarCliente extends HttpServlet {
     	
     	listarDistritos(request);
     	request.getRequestDispatcher("vista/encargado/gestionClientes.jsp").forward(request, response);
-    }
-
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
-		processRequest(request, response);
-		
+    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request, response);
+		// TODO Auto-generated method stub
+		doGet(request, response);
 	}
 	
-	private void listarDistritos(HttpServletRequest request) {
-		DaoDistrito daoDistr = new DaoDistrito();
-		List<Distrito> lst = daoDistr.listar();
-		request.getSession().setAttribute("lstDistritos", lst);
-	}
-
-	private void recuperarDatos(HttpServletRequest request) {
-		
-		cliente.setNombrePrin(request.getParameter("txt_nom1"));
-		cliente.setNombreSec(request.getParameter("txt_nom2"));
-		cliente.setApePrin(request.getParameter("txt_ape1"));
-		cliente.setApeSec(request.getParameter("txt_ape2"));
-		cliente.setTipoDocumento(Integer.parseInt(request.getParameter("cbx_tipodoc")));
-		cliente.setNroDocumento(request.getParameter("num_doc"));
-		cliente.setTelefono(request.getParameter("num_telef"));
-		cliente.setIdDistrito(Integer.parseInt(request.getParameter("cbx_distritos")));
-		cliente.setDireccion(request.getParameter("txt_direcc"));
-		cliente.setEmail(request.getParameter("txt_correo"));
-		cliente.setEstadoActivo(Boolean.parseBoolean(request.getParameter("estado")));
-
-	}
-
 	private void listar(HttpServletRequest request, String tipoLista) {
 
-		List<DtoClienteConsulta> lst;
+		List<DtoElectrodomesticoConsulta> lst;
 
 	 	switch (tipoLista) {
 		case "activos":
-			lst = dao.listarDtoClientes(true);
+			lst = dao.listarDtoElectrodomesticos(true);
 			break;
 		case "inactivos":
-			lst = dao.listarDtoClientes(false);
+			lst = dao.listarDtoElectrodomesticos(false);
 			break;	
 		default:
-			lst = dao.listarDtoClientes();
+			lst = dao.listarDtoElectrodomesticos();
 		}
-	 	request.setAttribute("lstConsultaClientes", lst);
+	 	request.setAttribute("lstConsultaElectrodomesticos", lst);
 	}
+
 }

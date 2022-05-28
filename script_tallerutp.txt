@@ -190,7 +190,8 @@ Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2
 C.telefono, D.nombre_distrito, C.direccion, U.email, C.estado_activ
 from public.persona C inner join public.usuario U on C.id_persona = U.id_persona
 left join public.distrito D on C.id_distrito = D.id_distrito
-where U.id_rol=1;
+where U.id_rol=1
+order by U.id_user;
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_encargados
 WITH (
@@ -453,7 +454,7 @@ BEGIN
 	INSERT INTO public.usuario
 		(id_user, id_rol, id_persona, email, contra)
 	VALUES 
-		(id_user_enc, 3, id_per_tec, $10, $11);
+		(id_user_tec, 3, id_per_tec, $10, $11);
 END
 $$
 LANGUAGE plpgsql;
@@ -488,7 +489,7 @@ INSERT INTO public.atencion
 VALUES
 ($1, $2, $3, $4, $5, $6, $8, 'Pendiente');
 UPDATE public.horario_atencion
-set estado = 'Ocupado' where id_horario = $7;
+set estado = 'Reservado' where id_horario = $7;
 $$
 LANGUAGE SQL;
 ----------------------------------------------------------
@@ -611,19 +612,20 @@ set nombre_pieza=$2, id_categoria=$3, precio_pieza=$4, stock=$5, estado_activ=$6
 where id_pieza=$1;
 $$
 LANGUAGE SQL;
+
 ----------------------------------------------------------
---	BORRADO LÓGICO
+--  BORRADO LÓGICO (estado=false)
 ----------------------------------------------------------
-CREATE OR REPLACE PROCEDURE public.sp_desactivar_persona(id_per integer)
+CREATE OR REPLACE PROCEDURE public.sp_cambiar_estado_persona(id_per integer, estado boolean)
 AS 
 $$
 BEGIN
 	UPDATE public.persona
-	set estado_activ = false
+	set estado_activ = estado
 	where id_persona = id_per;
 
 	UPDATE public.usuario
-	set estado_activ = false
+	set estado_activ = estado
 	where id_persona = id_per;
 END
 $$

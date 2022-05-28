@@ -22,6 +22,7 @@ import utp.taller.dao.DaoHorario;
 import utp.taller.dao.DaoTecnico;
 import utp.taller.dto.DtoHorario;
 import utp.taller.dto.DtoTecnicoConsulta;
+import utp.taller.dto.DtoUsuario;
 
 /**
  * Servlet implementation class ServletGestionarTecnico
@@ -39,12 +40,16 @@ public class ServletGestionarHorario extends HttpServlet {
 			throws ServletException, IOException {
 
 		String accion = request.getParameter("accion");
-
+		String servicio = request.getParameter("servicio");
+		String idPersona = request.getParameter("idPersona");
+		
+		System.out.println(servicio + " " + idPersona + "<".repeat(20));
+		
 		switch (accion) {
 		case "listar":
 			Map<DtoTecnicoConsulta,List<Map<String, List<DtoHorario>>>> lstHorarios = todosLosHorarios();
-			
-			//Map<String, List<DtoHorario>> lsthorario = obtenerHorario(3);
+			request.setAttribute("servicio",servicio);
+			request.setAttribute("idPersona", idPersona);
 			request.setAttribute("lsthorario", lstHorarios);
 			break;
 
@@ -66,7 +71,7 @@ public class ServletGestionarHorario extends HttpServlet {
 		
 		for (int i = 0; i < lstTecnicos.size(); i++) {
 			lstHorarios.put(lstTecnicos.get(i),obtenerHorario(lstTecnicos.get(i).getIdPersona()));
-			System.out.println(lstTecnicos.get(i).getNombreCompleto());
+			
 		}
 		
 		return lstHorarios;
@@ -86,7 +91,7 @@ public class ServletGestionarHorario extends HttpServlet {
 		c.set(Calendar.SECOND, 0);
 		c.set(Calendar.MILLISECOND, 0);
 		fecha = c.getTime();
-
+		System.out.println(fecha+ "  //ZZZZZZZ fecha");
 		// map.get(map.keySet().toArray()[0]);
 		List<Map<String, List<DtoHorario>>> lstHorarioSemana = new ArrayList<>();
 		Map<String, List<DtoHorario>> listaFechaHoras; 
@@ -96,25 +101,25 @@ public class ServletGestionarHorario extends HttpServlet {
 		ZoneId timeZone = ZoneId.systemDefault();
 		
 		for (int week = 0; week < 4; week++) {
-			System.out.println(week);
+
 			listaFechaHoras = new LinkedHashMap<>();
 			for (int day = 0; day < 4; day++) {
 				
 				fecha = c.getTime();
 				final Date fecha2 = fecha;
 				diaMes = fecha.toInstant().atZone(timeZone).toLocalDate();
-				System.out.println(diaMes);
+
 				listaHoras = listahorarios.stream().filter(h -> h.getIdTecnico() == idTecnico)
 						.filter(h -> h.getFechaAtencion().equals(fecha2))
 						.sorted((x, y) -> x.getHoraInicio().compareTo(y.getHoraInicio())).collect(Collectors.toList());
 	
 				//listaFechaHoras.put(formato.format(fecha), listaHoras);
 				listaFechaHoras.put(diaMes.getDayOfMonth()+" " + diaMes.getMonth(), listaHoras);
-				System.out.println(diaMes.getDayOfMonth()+" " + diaMes.getMonth()+"");
+				
 				c.add(Calendar.DATE, 1);
 			}
 			lstHorarioSemana.add(listaFechaHoras);
-			System.out.println(lstHorarioSemana.size());
+			
 		}
 		return lstHorarioSemana;
 	}

@@ -7,7 +7,7 @@
 <head>
 <meta charset="ISO-8859-1">
 <c:set var="context" value="${pageContext.request.contextPath}" />
-<link rel="stylesheet" href="${context}/css/horarios.css">
+<link rel="stylesheet" href="${context}/css/horario.css">
 <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
 
 <title>Insert title here</title>
@@ -54,7 +54,11 @@
 	                                                <tbody>
 	                                                <c:forEach var="hora" items="${dia.value}"> 
 	                                                    <tr>
-	                                                        <td class="tabla-2__hora"><Button><c:out value="${hora.getHoraInicio()}"/></Button></td>
+	                                                        <td class="tabla-2__hora">
+	                                                        	<Button onclick="location.href='ServletGestionarAtencion?servicio=${servicio}&idPersona=${idPersona}&idHorario=${hora.getIdHorario()}'">
+	                                                        		<c:out value="${hora.getHoraInicio()}"/>
+	                                                        	</Button>
+	                                                        </td>
 	                                                    </tr>
 													</c:forEach>
 	                                                </tbody>

@@ -38,6 +38,7 @@ public class DtoHorario {
 
 	public String getHoraFin() {		return horaFin;	}
 	public void setHoraFin(String horaFin) {		this.horaFin = horaFin;	}
+	
 
 	@Override
 	public String toString() {

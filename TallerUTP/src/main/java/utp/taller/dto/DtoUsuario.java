@@ -32,5 +32,6 @@ public class DtoUsuario {
 
 	public byte[] getProfilePic() {		return profilePic;	}
 	public void setProfilePic(byte[] profilePic) {		this.profilePic = profilePic;	}
+	
 
 }

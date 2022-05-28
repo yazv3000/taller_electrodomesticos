@@ -25,7 +25,7 @@
                 <div class="serv__info">
                     <h3 class="serv__titulo">Instalaciones</h3>
                     <p class="serv__descripcion">Deja la instalacion de tus artefactos en manos de expertos.</p>
-                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar">Solicitar</a>
+                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar&servicio=SERV-0001&idPersona=${dtoUsuario.getIdPersona()}">Solicitar</a>
                 </div>
             </div>
              <!-- ==== TARJETA 2 ===== -->
@@ -38,7 +38,7 @@
                 <div class="serv__info">
                     <h3 class="serv__titulo">Reparaciones</h3>
                     <p class="serv__descripcion">Soluciona las averias de tus artefactos con repuestos originales.</p>
-                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar">Solicitar</a>
+                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar&servicio=SERV-0002&idPersona=${dtoUsuario.getIdPersona()}">Solicitar</a>
 
                 </div>
             </div>
@@ -52,7 +52,7 @@
                 <div class="serv__info">
                     <h3 class="serv__titulo">Conversiones</h3>
                     <p class="serv__descripcion">Realiza la conversion de tu cocina a gas.</p>
-                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar">Solicitar</a>
+                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar&servicio=SERV-0003&idPersona=${dtoUsuario.getIdPersona()}">Solicitar</a>
 
                 </div>
             </div>
@@ -66,7 +66,7 @@
                 <div class="serv__info">
                     <h3 class="serv__titulo">Mantenimiento</h3>
                     <p class="serv__descripcion">Prolonga la vida ï¿½til de tus artefactos con cuidados preventivos.</p>
-                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar">Solicitar</a>
+                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar&servicio=SERV-0004&idPersona=${dtoUsuario.getIdPersona()}">Solicitar</a>
 
                 </div>
             </div>
@@ -80,7 +80,7 @@
                 <div class="serv__info">
                     <h3 class="serv__titulo">Diagnostico tecnico</h3>
                     <p class="serv__descripcion">Si tu artefacto presenta averï¿½as, solicita evaluaciï¿½n tï¿½cnica del equipo.</p>
-                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar">Solicitar</a>
+                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar&servicio=SERV-0005&idPersona=${dtoUsuario.getIdPersona()}">Solicitar</a>
 
                 </div>
             </div>
@@ -92,9 +92,9 @@
                     </div>
                 </div></div>
                 <div class="serv__info">
-                    <h3 class="serv__titulo">Asesorï¿½a tï¿½cnica</h3>
+                    <h3 class="serv__titulo">Asesoría Técnica</h3>
                     <p class="serv__descripcion">Deja la instalacion de tus artefactos en manos de expertos</p>
-                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar">Solicitar</a>
+                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar&servicio=SERV-0006&idPersona=${dtoUsuario.getIdPersona()}">Solicitar</a>
 
                 </div>
             </div>
@@ -108,7 +108,7 @@
                 <div class="serv__info">
                     <h3 class="serv__titulo">Venta de accesorios</h3>
                     <p class="serv__descripcion">Encuentra los accesorios originales que necesitas para tus artefactos.</p>
-                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar">Solicitar</a>
+                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar&servicio=SERV-0007&idPersona=${dtoUsuario.getIdPersona()}">Solicitar</a>
 
                 </div>
             </div>
@@ -122,7 +122,7 @@
                 <div class="serv__info">
                     <h3 class="serv__titulo">Estudio de factibilidad</h3>
                     <p class="serv__descripcion">Verifica si el espacio donde se instalarï¿½ el artefacto cuenta con las condiciones tï¿½cnicas, elï¿½ctricas y de gasfiterï¿½a necesarias, para el ï¿½ptimo funcionamiento del producto.</p>
-                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar">Solicitar</a>
+                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar&servicio=SERV-0008&idPersona=${dtoUsuario.getIdPersona()}">Solicitar</a>
 
                 </div>
             </div>
@@ -135,8 +135,8 @@
                 </div></div>
                 <div class="serv__info">
                     <h3 class="serv__titulo">Visitas tï¿½cnicas</h3>
-                    <p class="serv__descripcion">Solicita la visita tï¿½cnica de nuestros expertos para realizar el diagnï¿½stico o reparaciï¿½n del artefacto en tu hogar.</p>
-                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar">Solicitar</a>
+                    <p class="serv__descripcion">Solicita la visita ténicanica de nuestros expertos para realizar el diagnóstico o reparación del artefacto en tu hogar.</p>
+                    <a class="serv__link" href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=listar&servicio=SERV-0009&idPersona=${dtoUsuario.getIdPersona()}">Solicitar</a>
 
                 </div>
             </div>

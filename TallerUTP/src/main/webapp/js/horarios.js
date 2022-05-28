@@ -27,14 +27,24 @@ for (let i = 0; i < contenido.length; i++) {
 // ===== Boton Mostrar Horas =====
 
 const btnMostrarHoras = document.querySelectorAll(".mostrar__horas");
-const tecnicnoHorario = document.querySelectorAll(".tecnico__horario");
-const carrusel = document.querySelectorAll(".carrusel");
+const tecnicoHorario = document.querySelectorAll(".tecnico__horario");
+const carruselEspacio = document.querySelectorAll(".carrusel__espacio");
+
+var btnHoras = true;
 
 for (let m = 0; m < btnMostrarHoras.length; m++) {
 	btnMostrarHoras[m].addEventListener("click", () => {
-		carrusel[m].classList.toggle("carrusel--altura");
-		tecnicnoHorario[m].classList.toggle("tecnico__horario--altura");
-		btnMostrarHoras.innerHTML = "Menos";
+		carruselEspacio[m].classList.toggle("carrusel__espacio--altura");
+		tecnicoHorario[m].classList.toggle("tecnico__horario--altura");
+
+		if (btnHoras){
+			btnHoras = false;
+			btnMostrarHoras[m].innerHTML = "Menos";
+		} else {
+			btnMostrarHoras[m].innerHTML = "Mostrar mas Horas";
+			btnHoras = true;
+		}
+		
 	});
 }
 

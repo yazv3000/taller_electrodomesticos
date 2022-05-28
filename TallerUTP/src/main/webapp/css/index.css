@@ -331,7 +331,18 @@ body {
     cursor: pointer;
 }
 
-/* .form-control {
-    background-color: var(--fondo) !important;
-    border: none !important;
-} */
+/* Change autocomplete styles in WebKit */
+	input:-webkit-autofill,
+	input:-webkit-autofill:hover, 
+	input:-webkit-autofill:focus,
+	textarea:-webkit-autofill,
+	textarea:-webkit-autofill:hover,
+	textarea:-webkit-autofill:focus,
+	select:-webkit-autofill,
+	select:-webkit-autofill:hover,
+	select:-webkit-autofill:focus {
+        -webkit-text-fill-color: white;
+		box-shadow: 0 0 0px 0.25rem var(--fondo) inset;
+	  -webkit-box-shadow: 0 0 0px 1000px var(--fondo) inset;
+	}
+

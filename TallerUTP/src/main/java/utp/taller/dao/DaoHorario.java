@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utp.config.Conexion;
+import utp.taller.dto.DtoHoraConsulta;
+import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoHorario;
 
 public class DaoHorario extends Conexion {
@@ -60,6 +62,39 @@ public class DaoHorario extends Conexion {
 		
 		return lst;
 
+	}
+	
+	public DtoHoraConsulta seleccionarHora(int idHora) {
+		DtoHoraConsulta dtoCita = new DtoHoraConsulta();
+		String sql = "select * from f_consultar_hora(?)";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, idHora);
+			rs = stm.executeQuery();
+
+			if (rs.next()) {
+				dtoCita.setNombres(rs.getString(1));
+				dtoCita.setTelefono(rs.getString(2));
+				try {
+					dtoCita.setFecha(formato.parse(rs.getDate(3).toString()));		
+					
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				dtoCita.setHora(rs.getString(4).substring(0,5));
+			}
+			
+			cnx.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return dtoCita;
 	}
 
 	

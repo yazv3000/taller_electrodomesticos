@@ -1,5 +1,6 @@
 package utp.taller.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,6 +32,43 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 			stm = cnx.prepareStatement(sql);
 			rs = stm.executeQuery();
 
+			while (rs.next()) {
+				p = new Pieza();
+				p.setIdPieza(rs.getInt("id_pieza"));
+				p.setNomPieza(rs.getString("nombre_pieza"));
+				p.setCategoria(new CategoriaPieza(rs.getInt("id_categoria"), rs.getString("nombre_cat")));
+				p.setPrecio(rs.getDouble("precio_pieza"));
+				p.setStock(rs.getLong("stock"));
+				p.setEstadoActivo(rs.getBoolean("estado_activ"));
+				
+				lst.add(p);
+			}
+			
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return lst;
+
+	}
+
+	public List<Pieza> listar(boolean estado) {
+
+		List<Pieza> lst = new ArrayList<Pieza>();
+		Pieza p = null;
+
+		String sql = "select * from v_piezas where estado_activ = ?";
+		
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setBoolean(1, estado);
+			rs = stm.executeQuery();
+			
 			while (rs.next()) {
 				p = new Pieza();
 				p.setIdPieza(rs.getInt("id_pieza"));
@@ -110,17 +148,15 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 		String sql = "call sp_actualizar_pieza(?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
 		try {
-			cnx.setAutoCommit(false);
 			stm = cnx.prepareStatement(sql);
 			stm.setInt(1, p.getIdPieza());
 			stm.setString(2, p.getNomPieza());
 			stm.setInt(3, p.getCategoria().getIdCategoria());
-			stm.setDouble(4, p.getPrecio());
+			stm.setBigDecimal(4, new BigDecimal(p.getPrecio()));
 			stm.setLong(5, p.getStock());
 			stm.setBoolean(6, p.isEstadoActivo());
 			
-			stm.executeUpdate();
-			cnx.commit();
+			stm.execute();
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -129,9 +165,9 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 	}
 
 	@Override
-	public int desactivar(int id) {
+	public int cambiarEstado(int id, boolean estado) {
 		
-		String sql = "delete from pieza where id_pieza=?";
+		String sql = "call sp_cambiar_estado_pieza(?, ?)";
 		cnx = getConnection();
 		try {
 			cnx.setAutoCommit(false);

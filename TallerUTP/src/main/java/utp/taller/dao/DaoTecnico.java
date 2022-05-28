@@ -31,12 +31,12 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 			stm.setString(2, contra);
 			rs = stm.executeQuery();
 			if (rs.next()) {
-				dtoTec.setIdPersona(rs.getInt("id_persona"));
-				dtoTec.setUsername(rs.getString("id_user"));
-				dtoTec.setRol(rs.getString("nombre_completo"));
-				dtoTec.setEmail(rs.getString("correo"));
-				dtoTec.setProfilePic(rs.getBytes("foto"));
-				dtoTec.setUsername(sql);
+				dtoTec.setIdPersona(rs.getInt(1));
+				dtoTec.setIdUsuario(rs.getString(2));
+				dtoTec.setRol(rs.getString(3));
+				dtoTec.setUsername(rs.getString(4));
+				dtoTec.setEmail(rs.getString(5));
+				dtoTec.setProfilePic(rs.getBytes(6));
 			}
 			cnx.close();
 			
@@ -46,41 +46,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 		return dtoTec;
 	}
 	
-	public List<DtoTecnicoConsulta> listarDtoTecnicos(){
-		List<DtoTecnicoConsulta> lst = new ArrayList<DtoTecnicoConsulta>();
-		DtoTecnicoConsulta tec = null;
-		String sql = "select * from v_tecnicos";
-		
-		cnx = getConnection();
-		ResultSet rs = null;
-
-		try {
-			stm = cnx.prepareStatement(sql);
-			rs = stm.executeQuery();
-
-			while (rs.next()) {
-				tec = new DtoTecnicoConsulta();
-				tec.setIdPersonaTecnico(rs.getInt("id_persona"));
-				tec.setIdUsuarioTecnico(rs.getString("id_user"));
-				tec.setNombreCompleto(rs.getString("nombres"));
-				tec.setEspecialidad(rs.getString("especialidad"));
-				tec.setTelefono(rs.getString("telefono"));
-				tec.setDistrito(rs.getString("nombre_distrito"));		
-				tec.setDireccion(rs.getString("direccion"));
-				tec.setEmail(rs.getString("email"));
-				tec.setEstadoActivo(rs.getBoolean("estado_activ"));
-				lst.add(tec);
-			}
-			
-			cnx.close();
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return lst;
-
-	}
-
+	// OPERACIONES CRUD
 	@Override
 	public Tecnico consultarId(int idTecnico) {
 
@@ -127,7 +93,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 
 	@Override
 	public int insertar(Tecnico tec) {
-		String sql = "call sp_nuevo_tecnico(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "call sp_nuevo_tecnico(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
 		try {
 			stm = cnx.prepareStatement(sql);
@@ -141,8 +107,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 			stm.setInt(8, tec.getIdDistrito());
 			stm.setString(9, tec.getDireccion());
 			stm.setString(10, tec.getEmail());
-			//stm.setString(11, tec.getContrasena());
-			stm.setString(11, "por defecto");
+			stm.setString(11, tec.getContrasena());
 			stm.setInt(12, tec.getIdEspecialidad());
 			stm.setInt(13, tec.getAniosExperiencia());
 			stm.setObject(14, LocalDate.now());
@@ -191,20 +156,92 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 	}
 
 	@Override
-	public int desactivar(int id) {
+	public int cambiarEstado(int id, boolean estado) {
 		
-		String sql = "delete from tecnico where id_tecnico=?";
+		String sql = "call sp_cambiar_estado_persona(?, ?)";
 		cnx = getConnection();
 		try {
-			cnx.setAutoCommit(false);
-			stm = cnx.prepareStatement(sql);
+			stm = cnx.prepareCall(sql);
 			stm.setInt(1, id);
-			stm.executeUpdate();
-			cnx.commit();
+			stm.setBoolean(2, estado);
+			stm.execute();
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 		return 0;
 	}
+	
+	// LISTA DE TÉCNICOS PARA MOSTRAR EN LA TABLA DE MANTENIMIENTO
+	public List<DtoTecnicoConsulta> listarDtoTecnicos(){
+		List<DtoTecnicoConsulta> lst = new ArrayList<DtoTecnicoConsulta>();
+		DtoTecnicoConsulta tec = null;
+		String sql = "select * from v_tecnicos";
+		
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				tec = recuperarDatosDto(rs);
+				lst.add(tec);
+			}	
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return lst;
+
+	}
+
+	public List<DtoTecnicoConsulta> listarDtoTecnicos(boolean estado) {
+		
+		List<DtoTecnicoConsulta> lst = new ArrayList<DtoTecnicoConsulta>();
+		DtoTecnicoConsulta tec = null;
+		String sql = "select * from v_tecnicos where estado_activ = ?";
+		
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setBoolean(1, estado);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				tec = recuperarDatosDto(rs);
+				lst.add(tec);
+			}	
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return lst;
+	}
+	
+	// MÉTODOS PRIVADOS
+	private DtoTecnicoConsulta recuperarDatosDto(ResultSet rs ) {
+		DtoTecnicoConsulta tec = new DtoTecnicoConsulta();
+		try {
+				tec.setIdPersonaTecnico(rs.getInt("id_persona"));
+				tec.setIdUsuarioTecnico(rs.getString("id_user"));
+				tec.setNombreCompleto(rs.getString("nombres"));
+				tec.setEspecialidad(rs.getString("especialidad"));
+				tec.setTelefono(rs.getString("telefono"));
+				tec.setDistrito(rs.getString("nombre_distrito"));			
+				tec.setDireccion(rs.getString("direccion"));
+				tec.setEmail(rs.getString("email"));
+				tec.setEstadoActivo(rs.getBoolean("estado_activ"));
+				
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return tec;
+	}
+	
 }
