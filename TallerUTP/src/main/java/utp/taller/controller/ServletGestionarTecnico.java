@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import utp.taller.dao.DaoDistrito;
 import utp.taller.dao.DaoEspecialidad;
 import utp.taller.dao.DaoTecnico;
+import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoTecnicoConsulta;
 import utp.taller.entidades.Distrito;
 import utp.taller.entidades.Especialidad;
@@ -38,36 +39,50 @@ public class ServletGestionarTecnico extends HttpServlet {
             throws ServletException, IOException {
     	
     	String accion = request.getParameter("accion");
+    	String tipoLista = request.getParameter("lista");
+    	
+		if (tipoLista == null) {
+			tipoLista = "todos";
+		}
+    	
     	
     	switch (accion) {
 			case "listar": 
-				 	List<DtoTecnicoConsulta> lst = dao.listarDtoTecnicos();
-				 	request.setAttribute("lstConsultaTecnicos", lst);
+					listar(request, tipoLista);
 				 	break;
 			
 			case "insertar":
 					recuperarDatos(request);
+					// solo cuando inserta puede darle una contraseña
+					tecnico.setContrasena(request.getParameter("txt_pass"));
 					dao.insertar(tecnico);
-					
-					request.getRequestDispatcher("ServletGestionarTecnico?accion=listar").forward(request, response);
+    				listar(request, tipoLista);
 				break;
 				 	
 			case "editar":
 				    idTecnico = Integer.parseInt(request.getParameter("id"));
 					tecnico = dao.consultarId(idTecnico);
 					request.setAttribute("tec", tecnico);
-					
-					request.getRequestDispatcher("ServletGestionarTecnico?accion=listar").include(request, response);
+    				listar(request, tipoLista);
 					break;
+			
+			case "actualizar":
+					recuperarDatos(request);
+					dao.modificar(tecnico);	
+					listar(request, tipoLista);
+			break;
+					
+			case "activar":
+					idTecnico = Integer.parseInt(request.getParameter("id"));
+					dao.cambiarEstado(idTecnico, true);
+					listar(request, tipoLista);
+			break;
 			
 			case "desactivar":
 					idTecnico = Integer.parseInt(request.getParameter("id"));
-					dao.cambiarEstado(idTecnico);
-				break;
-				
-
-			default:
-				throw new IllegalArgumentException("Unexpected value: " + accion);
+					dao.cambiarEstado(idTecnico, false);
+					listar(request, tipoLista);
+			break;
 		}
     	
     	listarEpescialidades(request);
@@ -88,10 +103,11 @@ public class ServletGestionarTecnico extends HttpServlet {
 		List<Especialidad> lstEspecialidades = daoDistr.listar();
 		request.getSession().getServletContext().setAttribute("lstEspecialidades", lstEspecialidades);
 	}
+	
 	private void listarDistritos(HttpServletRequest request) {
 		DaoDistrito daoDistr = new DaoDistrito();
 		List<Distrito> lst = daoDistr.listar();
-		request.getSession().getServletContext().setAttribute("lstDistritos", lst);
+		request.getSession().setAttribute("lstDistritos", lst);
 	}
 	
 	private void recuperarDatos(HttpServletRequest request) {
@@ -105,9 +121,28 @@ public class ServletGestionarTecnico extends HttpServlet {
 		tecnico.setNroDocumento(request.getParameter("num_doc"));
 		tecnico.setTelefono(request.getParameter("num_telef"));
 		tecnico.setIdDistrito(Integer.parseInt(request.getParameter("cbx_distritos")));
+		tecnico.setIdEspecialidad(Integer.parseInt(request.getParameter("cbx_especialidad")));
+		tecnico.setAniosExperiencia(Integer.parseInt(request.getParameter("experiencia")));
 		tecnico.setDireccion(request.getParameter("txt_direcc"));
 		tecnico.setEmail(request.getParameter("txt_correo"));
 		tecnico.setEstadoActivo(Boolean.parseBoolean(request.getParameter("estado")));
+	}
+	
+	private void listar(HttpServletRequest request, String tipoLista) {
+
+		List<DtoTecnicoConsulta> lst;
+
+	 	switch (tipoLista) {
+		case "activos":
+			lst = dao.listarDtoTecnicos(true);
+			break;
+		case "inactivos":
+			lst = dao.listarDtoTecnicos(false);
+			break;	
+		default:
+			lst = dao.listarDtoTecnicos();
+		}
+	 	request.setAttribute("lstConsultaTecnicos", lst);
 	}
 	
 }

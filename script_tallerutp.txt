@@ -454,7 +454,7 @@ BEGIN
 	INSERT INTO public.usuario
 		(id_user, id_rol, id_persona, email, contra)
 	VALUES 
-		(id_user_enc, 3, id_per_tec, $10, $11);
+		(id_user_tec, 3, id_per_tec, $10, $11);
 END
 $$
 LANGUAGE plpgsql;

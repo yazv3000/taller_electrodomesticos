@@ -42,6 +42,7 @@
 							<th>DISTRITO</th>
 							<th>DIRECCION</th>
 							<th>EMAIL</th>
+							<th>ESTADO</th>
 	                    </tr>
 	                </thead>
 	                <tbody class="tabla__info">
@@ -143,7 +144,7 @@
 			            </div>
 			            <div class="form__grupo" align="center">
 			                <div class="input-group">
-						      <input ID="txtPassword" type="Password" Class="form__input form-control" placeholder="Contraseña" name="txtpass" required>
+						      <input ID="txtPassword" type="Password" Class="form__input form-control" placeholder="Contraseña" name="txt_pass" required>
 						      <div class="input-group-append">
 				              <button style="color: white;" id="show_password" class="btn modal__cerrar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
 				          	  </div>
@@ -260,6 +261,7 @@
 	</div><!-- /.contenido -->
 
 	<script src="${context}/js/validForm.js"></script> 
+	<script type="text/javascript" src="${context}/js/contrase.js"></script>
 	<script type="text/javascript" src="${context}/js/ValidacionMonto.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>

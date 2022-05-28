@@ -53,6 +53,42 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 
 	}
 
+	public List<Pieza> listar(boolean estado) {
+
+		List<Pieza> lst = new ArrayList<Pieza>();
+		Pieza p = null;
+
+		String sql = "select * from v_piezas where estado_activ = ?";
+		
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				p = new Pieza();
+				p.setIdPieza(rs.getInt("id_pieza"));
+				p.setNomPieza(rs.getString("nombre_pieza"));
+				p.setCategoria(new CategoriaPieza(rs.getInt("id_categoria"), rs.getString("nombre_cat")));
+				p.setPrecio(rs.getDouble("precio_pieza"));
+				p.setStock(rs.getLong("stock"));
+				p.setEstadoActivo(rs.getBoolean("estado_activ"));
+				
+				lst.add(p);
+			}
+			
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return lst;
+
+	}
+
 	@Override
 	public Pieza consultarId(int id) {
 		Pieza p = null;

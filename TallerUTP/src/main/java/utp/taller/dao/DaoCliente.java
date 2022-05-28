@@ -12,7 +12,7 @@ import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoUsuario;
 import utp.taller.entidades.Cliente;
 
-public class DaoCliente extends Conexion  implements CRUD<Cliente>{
+public class DaoCliente extends Conexion implements CRUD<Cliente>{
 
 	Connection cnx = null;
 	PreparedStatement stm = null;
@@ -139,6 +139,7 @@ public class DaoCliente extends Conexion  implements CRUD<Cliente>{
 			stm.setString(13, c.getContrasena());
 			stm.setBoolean(14, c.isEstadoActivo());
 			stm.setBytes(15, c.getFoto());
+			stm.execute(); 
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -257,40 +258,5 @@ public class DaoCliente extends Conexion  implements CRUD<Cliente>{
 		}
 		return cli;
 	}
-	
-	
-	/*
-	public DtoClienteConsulta consultarDtoCliente(int idCliente) {
-		DtoClienteConsulta cli = new DtoClienteConsulta();
-
-		String sql = "select * from f_consultar_cliente_resumen(?);";
-
-		cnx = getConnection();
-		ResultSet rs = null;
-
-		try {
-			stm = cnx.prepareStatement(sql);
-			stm.setInt(1, idCliente);
-			rs = stm.executeQuery();
-
-			if (rs.next()) {
-				cli.setIdPersonaCliente(rs.getInt("id_persona"));
-				cli.setIdUsuarioCliente(rs.getString("id_user"));
-				cli.setNombreCompleto(rs.getString("nombres"));
-				cli.setTelefono(rs.getString("telefono"));
-				cli.setDistrito(rs.getString("nombre_distrito"));			
-				cli.setDireccion(rs.getString("direccion"));
-				cli.setEmail(rs.getString("email"));
-				
-			}
-			
-			cnx.close();
-			
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return cli;
-	}
-	*/
 	
 }

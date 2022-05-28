@@ -11,9 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import utp.taller.dao.DaoCliente;
 import utp.taller.dao.DaoEncargado;
 import utp.taller.dao.DaoTecnico;
-import utp.taller.dto.DtoClienteConsulta;
-import utp.taller.dto.DtoEncargadoConsulta;
-import utp.taller.dto.DtoTecnicoConsulta;
 import utp.taller.dto.DtoUsuario;
 
 /**
@@ -42,8 +39,7 @@ public class ServletIniciarSesion extends HttpServlet {
 					DaoCliente daoCliente = new DaoCliente();
 					dto = daoCliente.validar(user, pass);
 					if (dto.getEmail() != null) {
-						request.setAttribute("dtoUsuario", dto);
-						System.out.println(dto.getEmail());
+						request.getSession().setAttribute("dtoUsuario", dto);
 						request.getRequestDispatcher("vista/cliente/servicios.jsp").forward(request, response);
 						
 					} else {
@@ -54,7 +50,9 @@ public class ServletIniciarSesion extends HttpServlet {
 			case 2: {
 					DaoEncargado daoEncargado = new DaoEncargado();
 					dto = daoEncargado.validar(user, pass);
+					
 					if (dto.getEmail() != null) {
+						request.getSession().setAttribute("dtoUsuario", dto);
 						request.getRequestDispatcher("vista/encargado/menuEncargado.jsp").forward(request, response);
 					} else {
 						request.getRequestDispatcher("index.jsp").forward(request, response);
@@ -64,7 +62,9 @@ public class ServletIniciarSesion extends HttpServlet {
 			case 3: {
 					DaoTecnico  daoTecnico = new DaoTecnico();
 					dto = daoTecnico.validar(user, pass);
+					
 					if (dto.getEmail() != null) {
+						request.getSession().setAttribute("dtoUsuario", dto);
 						request.getRequestDispatcher("vista/tecnico/menuTecnico.jsp").forward(request, response);
 					} else {
 						request.getRequestDispatcher("index.jsp").forward(request, response);

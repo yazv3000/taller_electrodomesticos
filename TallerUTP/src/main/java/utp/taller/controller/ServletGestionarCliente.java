@@ -51,6 +51,7 @@ public class ServletGestionarCliente extends HttpServlet {
     	
 			case "insertar":
 					recuperarDatos(request);
+					cliente.setContrasena(request.getParameter("txt_pass"));
 					dao.insertar(cliente);
 					listar(request, tipoLista);
 				break;
@@ -63,12 +64,15 @@ public class ServletGestionarCliente extends HttpServlet {
 				break;
 			
 			case "actualizar":
+					System.out.println("actualizando");
+					System.out.println(cliente);	
 					recuperarDatos(request);
-					dao.modificar(cliente);	
-					listar(request, tipoLista);
-				break;
+					System.out.println(cliente);	
+						dao.modificar(cliente);	
+						listar(request, tipoLista);
+					break;
 
-			case "activar":
+			case "activar":				
 				idPCliente = Integer.parseInt(request.getParameter("id"));
 				dao.cambiarEstado(idPCliente, true);
 				listar(request, tipoLista);
@@ -92,14 +96,13 @@ public class ServletGestionarCliente extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		processRequest(request, response);
 	}
 	
 	private void listarDistritos(HttpServletRequest request) {
 		DaoDistrito daoDistr = new DaoDistrito();
 		List<Distrito> lst = daoDistr.listar();
-		request.getSession().getServletContext().setAttribute("lstDistritos", lst);
+		request.getSession().setAttribute("lstDistritos", lst);
 	}
 
 	private void recuperarDatos(HttpServletRequest request) {

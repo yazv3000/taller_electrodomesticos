@@ -35,16 +35,25 @@ public class ServletGestionarPieza extends HttpServlet {
     	
     	String accion = request.getParameter("accion");
     	
+		String tipoLista = request.getParameter("lista");
+    	
+		if (tipoLista == null) {
+			tipoLista = "todos";
+		}
+
     	switch (accion) {
 		case "listar": 
-			 	List<Pieza> lst = dao.listar();
-			 	request.setAttribute("lstConsultaPiezas", lst);
-			break;
+			 	listar(request, tipoLista);
+				break;
+		case "insertar":
+					recuperarDatos(request);
+					dao.insertar(pieza);
+					listar(request, tipoLista);
+				break;
 		case "editar":
 		    idPieza = Integer.parseInt(request.getParameter("id"));
 			pieza = dao.consultarId(idPieza);
 			request.setAttribute("pi", pieza);
-			request.getRequestDispatcher("ServletGestionarPieza?accion=listar").forward(request, response);
 			break;
 
 		case "actualizar":
@@ -78,7 +87,7 @@ public class ServletGestionarPieza extends HttpServlet {
 	private void listarCategorias(HttpServletRequest request) {
 		DaoPieza daoPi = new DaoPieza();
 		List<CategoriaPieza> lst = daoPi.listarCategorias();
-		request.getSession().getServletContext().setAttribute("lstCategorias", lst);
+		request.getSession().setAttribute("lstCategorias", lst);
 	}
 	
 	private void recuperarDatos(HttpServletRequest request) {
@@ -89,5 +98,20 @@ public class ServletGestionarPieza extends HttpServlet {
 		pieza.setStock(Long.parseLong(request.getParameter("stock")));
 		pieza.setEstadoActivo(Boolean.parseBoolean(request.getParameter("estado")));
 	}
+	private void listar(HttpServletRequest request, String tipoLista) {
 
+		List<Pieza> lst;
+
+	 	switch (tipoLista) {
+		case "activos":
+			lst = dao.listar(true);
+			break;
+		case "inactivos":
+			lst = dao.listar(false);
+			break;	
+		default:
+			lst = dao.listar();
+		}
+	 	request.setAttribute("lstConsultaClientes", lst);
+	}
 }
