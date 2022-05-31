@@ -12,6 +12,7 @@ import utp.taller.dao.DaoCliente;
 import utp.taller.dao.DaoEncargado;
 import utp.taller.dao.DaoTecnico;
 import utp.taller.dto.DtoUsuario;
+import utp.taller.entidades.Cliente;
 
 /**
  * Servlet implementation class ServletIniciarSesion
@@ -21,7 +22,10 @@ import utp.taller.dto.DtoUsuario;
 public class ServletIniciarSesion extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
-       
+    
+	private Cliente cliente = new Cliente();
+	private DaoCliente dao = new DaoCliente();
+	
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -74,10 +78,32 @@ public class ServletIniciarSesion extends HttpServlet {
 			default:
 				request.getRequestDispatcher("index.jsp").forward(request, response);
 			}
-		} else {
+		}	else if(accion.equalsIgnoreCase("registrar")) {
+			recuperarDatos(request);
+			dao.insertar(cliente);
+			request.getRequestDispatcher("index.jsp").forward(request, response);
+		} 
+		else {
 			request.getRequestDispatcher("index.html").forward(request, response);
 		}
 		
 	}
+	
+	private void recuperarDatos(HttpServletRequest request) {
+		//foto = 
+		
+		cliente.setNombrePrin(request.getParameter("txt_nom1"));
+		cliente.setNombreSec(request.getParameter("txt_nom2"));
+		cliente.setApePrin(request.getParameter("txt_ape1"));
+		cliente.setApeSec(request.getParameter("txt_ape2"));
+		cliente.setTipoDocumento(Integer.parseInt(request.getParameter("cbx_tipodoc")));
+		cliente.setNroDocumento(request.getParameter("num_doc"));
+		cliente.setTelefono(request.getParameter("num_telef"));
+		cliente.setIdDistrito(Integer.parseInt(request.getParameter("cbx_distritos")));
+		cliente.setDireccion(request.getParameter("txt_direcc"));
+		cliente.setEmail(request.getParameter("txt_correo"));
+		cliente.setEstadoActivo(Boolean.parseBoolean(request.getParameter("estado")));
+	}
+	
 
 }

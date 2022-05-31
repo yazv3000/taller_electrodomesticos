@@ -148,7 +148,7 @@ public class DaoEncargado extends Conexion implements CRUD<Encargado> {
 	}
 
 	@Override
-	public int cambiarEstado(int id) {
+	public int cambiarEstado(int id, boolean estado) {
 		
 		String sql = "call sp_desactivar_persona(?)";
 		cnx = getConnection();

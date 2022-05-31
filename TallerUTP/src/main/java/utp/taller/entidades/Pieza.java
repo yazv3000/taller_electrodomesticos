@@ -40,5 +40,11 @@ public class Pieza {
 
 		public boolean isEstadoActivo() {			return estadoActivo;		}
 		public void setEstadoActivo(boolean estadoActivo) {			this.estadoActivo = estadoActivo;		}
+
+		@Override
+		public String toString() {
+			return "Pieza [idPieza=" + idPieza + ", nomPieza=" + nomPieza + ", stock=" + stock + ", precio=" + precio
+					+ ", categoria=" + categoria + ", estadoActivo=" + estadoActivo + "]";
+		}
 		
 }

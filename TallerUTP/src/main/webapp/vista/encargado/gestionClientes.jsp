@@ -20,7 +20,9 @@
 </head>
 
 <body>
-	<div class="contenido">
+	
+	<div class="contenido">ç
+		<h1 class="titulo">TABLA DE <span>CLIENTES</span></h1>
 	    <div class="tabla" id="myTable">
 	        <div class="tabla__tools">
 	            <ul>
@@ -55,12 +57,12 @@
 							<td> <c:out value="${c.getDireccion()}"></c:out> </td>
 							<td> <c:out value="${c.getEmail()}"></c:out> </td>		
 							<td>
-									<c:if  test="${c.isEstadoActivo()}">
-										<a class="fa-solid fa-toggle-on icono" href="${context}/ServletGestionarCliente?accion=desactivar&id=${c.getIdPersona()}"></a>									
-									</c:if>
-									<c:if test="${!c.isEstadoActivo()}">
-										<a class="fa-solid fa-toggle-off icono" href="${context}/ServletGestionarCliente?accion=activar&id=${c.getIdPersona()}"></a>	
-									</c:if>
+								<c:if  test="${c.isEstadoActivo()}">
+									<a class="fa-solid fa-toggle-on" href="${context}/ServletGestionarCliente?accion=desactivar&id=${c.getIdPersona()}"><span></span></a>									
+								</c:if>
+								<c:if test="${!c.isEstadoActivo()}">
+									<a class="fa-solid fa-toggle-off" href="${context}/ServletGestionarCliente?accion=activar&id=${c.getIdPersona()}"><span></span></a>	
+								</c:if>
 							</td>
 						</tr>
 	                    </c:forEach>
@@ -146,7 +148,7 @@
 			                <div class="input-group">
 						      <input ID="txtPassword" type="Password" Class="form__input form-control" placeholder="Contraseña" name="txt_pass" required>
 						      <div class="input-group-append">
-				              <button style="color: white;" id="show_password" class="btn modal__cerrar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
+				              <button style="color: white;" id="show_password" class="btn btn__cerrar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
 				          	  </div>
 			    			</div>
 			            </div>

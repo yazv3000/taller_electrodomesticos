@@ -68,14 +68,14 @@ public class ServletGestionarCliente extends HttpServlet {
 					System.out.println(cliente);	
 					recuperarDatos(request);
 					System.out.println(cliente);	
-						dao.modificar(cliente);	
-						listar(request, tipoLista);
+					dao.modificar(cliente);	
+					listar(request, tipoLista);
 					break;
 
 			case "activar":				
-				idPCliente = Integer.parseInt(request.getParameter("id"));
-				dao.cambiarEstado(idPCliente, true);
-				listar(request, tipoLista);
+					idPCliente = Integer.parseInt(request.getParameter("id"));
+					dao.cambiarEstado(idPCliente, true);
+					listar(request, tipoLista);
 			break;
 			
 			case "desactivar":
@@ -106,7 +106,6 @@ public class ServletGestionarCliente extends HttpServlet {
 	}
 
 	private void recuperarDatos(HttpServletRequest request) {
-		//foto = 
 		
 		cliente.setNombrePrin(request.getParameter("txt_nom1"));
 		cliente.setNombreSec(request.getParameter("txt_nom2"));

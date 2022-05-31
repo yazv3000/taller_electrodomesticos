@@ -11,75 +11,60 @@ import utp.config.Conexion;
 import utp.taller.entidades.Electrodomestico;
 import utp.taller.entidades.ElectrodomesticoMarca;
 import utp.taller.entidades.ElectrodomesticoTipo;
+import utp.taller.dto.DtoElectrodomesticoConsulta;
 
 public class DaoElectrodomestico extends Conexion implements CRUD<Electrodomestico> {
-
-	/*
-	 * TABLA electrodomestico
-	 * 
-	 * id_electrodomestico | nro_serie | id_tipoe | id_marca | modelo
-	 */
 
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
-
-	public List<Electrodomestico> listar() {
-
-		List<Electrodomestico> lst = new ArrayList<Electrodomestico>();
-		Electrodomestico elec = null;
-
-		String sql = "select E.*, TE.nom_tipo_electro, M.nom_marca from electrodomestico E inner join tipo_electro TE on TE.id_tipo_electro = E.id_tipoe inner join marca M on E.id_marca = M.id_marca";
+	// OPERACIONES CRUD
+	@Override
+	public Electrodomestico consultarId(int id) {
 		
-		// (1) id_electrodomestico | (2) nro_serie | (3) id_tipoe |(4) id_marca | (5) modelo | (6) nom_tipo_electro | (7) nom_marca
+		Electrodomestico elec = null;
+		
+		String sql = "select * from electrodomestico where id_electrodomestico = ?";
 		
 		cnx = getConnection();
 		ResultSet rs = null;
-
+		
 		try {
 			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, id);
 			rs = stm.executeQuery();
-
-			while (rs.next()) {
+			if (rs.next()){
 				elec = new Electrodomestico();
 				elec.setIdElectrod(rs.getInt(1));
 				elec.setNroSerie(rs.getString(2));
-				elec.setModelo(rs.getString(5));
-				elec.setTipoElectrod(rs.getString(6));
-				elec.setMarca(rs.getString(7));
-				
-				lst.add(elec);
-			}
+				elec.setIdtipoElectrod(rs.getInt(3));
+				elec.setModelo(rs.getString(4));
+				elec.setIdmarca(rs.getInt(5));
+				elec.setIdpropietario(rs.getInt(6));
+				elec.setEstadoActivo(rs.getBoolean(7));
+			}	
 			
 			cnx.close();
-
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		
-		return lst;
 
-	}
-	
-	@Override
-	public Electrodomestico consultarId(int id) {
-		return null;
+		return elec;
 	}
 
 	@Override
 	public int insertar(Electrodomestico elec) {		
-		String sql = "insert into electrodomestico(nro_serie, id_tipoe, id_marca, modelo) values (?, ?, ?, ?)";
+		String sql = "call sp_nuevo_electrodomestico(?,?,?,?,?)";
 		cnx = getConnection();
 		try {
-			cnx.setAutoCommit(false);
 			stm = cnx.prepareStatement(sql);
 			stm.setString(1, elec.getNroSerie());
-			stm.setInt(2, 1); 	// falta cambiar id_tipoe e id_marca a consulta
-			stm.setInt(3, 1);
-			stm.setString(4, elec.getModelo());
+			stm.setInt(2, elec.getIdtipoElectrod()); 	// falta cambiar id_tipoe e id_marca a consulta
+			stm.setString(3, elec.getModelo());
+			stm.setInt(4, elec.getIdmarca());
+			stm.setInt(5, elec.getIdpropietario());
 			
-			stm.executeUpdate();
-			cnx.commit();
+			stm.execute();
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -89,19 +74,20 @@ public class DaoElectrodomestico extends Conexion implements CRUD<Electrodomesti
 
 	@Override
 	public int modificar(Electrodomestico elec) {
-		String sql = "update electrodomestico set nro_serie=?, id_tipoe=?, id_marca=?, modelo=? where id_electrodomestico=?";
+		String sql = "update electrodomestico set nro_serie=?, id_tipo_electro=?, id_marca=?, modelo=?, id_propietario=? where id_electrodomestico=?";
 		cnx = getConnection();
 		try {
-			cnx.setAutoCommit(false);
+			
 			stm = cnx.prepareStatement(sql);
 			stm.setString(1, elec.getNroSerie());
-			stm.setInt(2, 1); 	// falta cambiar id_tipoe e id_marca a consulta
-			stm.setInt(3, 1);
+			stm.setInt(2, elec.getIdtipoElectrod()); 	// falta cambiar id_tipoe e id_marca a consulta
+			stm.setInt(3, elec.getIdmarca());
 			stm.setString(4, elec.getModelo());
-			stm.setInt(5, elec.getIdElectrod());
+			stm.setInt(5, elec.getIdpropietario());
+			
+			stm.setInt(6, elec.getIdElectrod());
 			
 			stm.executeUpdate();
-			cnx.commit();
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -110,83 +96,182 @@ public class DaoElectrodomestico extends Conexion implements CRUD<Electrodomesti
 	}
 
 	@Override
-	public int cambiarEstado(int id) {
+	public int cambiarEstado(int id, boolean estado) {
 		
-		String sql = "delete from electrodomestico where id_electrodomestico=?";
+		String sql = "call sp_cambiar_estado_electrodomestico(?, ?)";
 		cnx = getConnection();
 		try {
-			cnx.setAutoCommit(false);
-			stm = cnx.prepareStatement(sql);
+			stm = cnx.prepareCall(sql);
 			stm.setInt(1, id);
-			stm.executeUpdate();
-			cnx.commit();
+			stm.setBoolean(2, estado);
+			stm.execute();
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 		return 0;
 	}
+
+	public List<DtoElectrodomesticoConsulta> listarDtoElectrodomesticos() {
+
+		List<DtoElectrodomesticoConsulta> lst = new ArrayList<DtoElectrodomesticoConsulta>();
+		DtoElectrodomesticoConsulta elec = new DtoElectrodomesticoConsulta();
+
+		String sql = "select * from v_electrodomesticos";
+		
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				elec = recuperarDatosDto(rs);
+				lst.add(elec);
+			}
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return lst;
+	}
+	
+	public List<DtoElectrodomesticoConsulta> listarDtoElectrodomesticos(boolean estado) {
+
+		List<DtoElectrodomesticoConsulta> lst = new ArrayList<DtoElectrodomesticoConsulta>();
+		DtoElectrodomesticoConsulta elec = new DtoElectrodomesticoConsulta();
+
+		String sql = "select * from v_electrodomesticos where estado_activ = ?";
+		
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setBoolean(1, estado);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				elec = recuperarDatosDto(rs);
+				lst.add(elec);
+			}
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return lst;
+	}
+	
+	// MÉTODOS PRIVADOS
+	private DtoElectrodomesticoConsulta recuperarDatosDto(ResultSet rs ) {
+		
+		DtoElectrodomesticoConsulta electro = new DtoElectrodomesticoConsulta();
+		try {
+			electro.setIdElectrodomestico(rs.getInt("id_electrodomestico"));
+			electro.setNroSerie(rs.getString("nro_serie"));
+			electro.setTipo(rs.getString("tipo"));
+			electro.setModelo(rs.getString("modelo"));
+			electro.setMarca(rs.getString("marca"));
+			electro.setNombrePropietario(rs.getString("propietario"));
+			electro.setMarca(rs.getString("marca"));
+			electro.setEstadoActivo(rs.getBoolean("estado_activ"));
+				
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return electro;
+	}
+
+
+
+
+	
 	
 	// CONSULTAR MARCAS
-		public List<ElectrodomesticoMarca> listarMarcas() {
+	public List<ElectrodomesticoMarca> listarMarcas() {
 
-			List<ElectrodomesticoMarca> lst = new ArrayList<>();
-			ElectrodomesticoMarca marca = null;
-			
-			String sql = "select * from marca";
+		List<ElectrodomesticoMarca> lst = new ArrayList<ElectrodomesticoMarca>();
+		ElectrodomesticoMarca electrodomesticoMarca;
+		
+		String sql = "select * from marca where estado_activ = true";
 
-			cnx = getConnection();
-			ResultSet rs = null;
+		cnx = getConnection();
+		ResultSet rs = null;
 
-			try {
-				stm = cnx.prepareStatement(sql);
-				rs = stm.executeQuery();
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
 
-				while (rs.next()) {
-					marca = new ElectrodomesticoMarca();
-					
-					marca.setId(rs.getInt(1));
-					marca.setNombre(rs.getString(2));
-					marca.setEstado(rs.getBoolean(3));
-					
-					lst.add(marca);
-				}
-				
-				cnx.close();
-
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+			while (rs.next()) {
+				electrodomesticoMarca = new ElectrodomesticoMarca();
+				electrodomesticoMarca.setId(rs.getInt("id_marca"));
+				electrodomesticoMarca.setNombre(rs.getString("nombre_marca"));
+				lst.add(electrodomesticoMarca);
 			}
-			return lst;
+			
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
+		
+		return lst;
+	}
 
 		// CONSULTAR TIPOS DE ELECTRODOMÉSTICOS
-		public List<ElectrodomesticoTipo> listarTiposE() {
+	public List<ElectrodomesticoTipo> listarTiposE() {
 
-			List<ElectrodomesticoTipo> lst = new ArrayList<ElectrodomesticoTipo>();
-			ElectrodomesticoTipo tipo = null;
-			String sql = "select * from tipo_electrodomestico";
+		List<ElectrodomesticoTipo> lst = new ArrayList<ElectrodomesticoTipo>();
+		ElectrodomesticoTipo electrodomesticoTipo;
+		
+		String sql = "select * from tipo_electrodomestico where estado_activ = true";
 
-			cnx = getConnection();
-			ResultSet rs = null;
+		cnx = getConnection();
+		ResultSet rs = null;
 
-			try {
-				stm = cnx.prepareStatement(sql);
-				rs = stm.executeQuery();
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
 
-				while (rs.next()) {
-					tipo = new ElectrodomesticoTipo();
-					tipo.setId(rs.getInt(1));
-					tipo.setNombre(rs.getString(2));
-					tipo.setEstado(rs.getBoolean(3));
-					lst.add(tipo);
-				}
-				cnx.close();
-
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+			while (rs.next()) {
+				electrodomesticoTipo = new ElectrodomesticoTipo();
+				electrodomesticoTipo.setId(rs.getInt("id_tipo_electro"));
+				electrodomesticoTipo.setNombre(rs.getString("nom_tipo_electro"));
+				lst.add(electrodomesticoTipo);
 			}
-			return lst;
+			
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
+		
+		return lst;
+	}
+	
+	public int maxId() {
+		int idElectro = 0;
+		String sql = "SELECT MAX(id_electrodomestico) AS id FROM electrodomestico";
+		cnx = getConnection();
+		ResultSet rs = null;
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				idElectro = rs.getInt(1);	
+			}
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return idElectro;
+	}
 	
 }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utp.config.Conexion;
-import utp.taller.dto.DtoHoraConsulta;
+import utp.taller.dto.DtoConsultaCita;
 import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoHorario;
 
@@ -20,6 +20,8 @@ public class DaoHorario extends Conexion {
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
+	
+	
 	public List<DtoHorario> listar() {
 
 		
@@ -48,9 +50,8 @@ public class DaoHorario extends Conexion {
 				}
 				
 				h.setHoraInicio(rs.getString(4).substring(0,5));
-				//h.setHoraFin(rs.getString(5));
 				
-				h.setEstado(rs.getInt(5));
+				h.setEstado(rs.getString(5));
 				lst.add(h);
 			}
 			
@@ -64,9 +65,9 @@ public class DaoHorario extends Conexion {
 
 	}
 	
-	public DtoHoraConsulta seleccionarHora(int idHora) {
-		DtoHoraConsulta dtoCita = new DtoHoraConsulta();
-		String sql = "select * from f_consultar_hora(?)";
+	public DtoConsultaCita seleccionarHora(int idHora, String idServicio) {
+		DtoConsultaCita dtoCita = new DtoConsultaCita();
+		String sql = "select * from f_consultar_cita(?,?)";
 
 		cnx = getConnection();
 		ResultSet rs = null;
@@ -74,18 +75,24 @@ public class DaoHorario extends Conexion {
 		try {
 			stm = cnx.prepareStatement(sql);
 			stm.setInt(1, idHora);
+			stm.setString(2, idServicio);
 			rs = stm.executeQuery();
 
 			if (rs.next()) {
-				dtoCita.setNombres(rs.getString(1));
-				dtoCita.setTelefono(rs.getString(2));
+				dtoCita.setIdHorario(rs.getInt(1));
+				dtoCita.setNombres(rs.getString(2));
+				dtoCita.setEspecialidad(rs.getString(3));
+				dtoCita.setTelefono(rs.getString(4));
+				dtoCita.setServicio(rs.getString(5));
 				try {
-					dtoCita.setFecha(formato.parse(rs.getDate(3).toString()));		
+					dtoCita.setFecha(formato.parse(rs.getDate(6).toString()));		
 					
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-				dtoCita.setHora(rs.getString(4).substring(0,5));
+				dtoCita.setHora(rs.getString(7).substring(0,5));
+				dtoCita.setEstado(rs.getString(8));
+				dtoCita.setLugar(rs.getString(9));
 			}
 			
 			cnx.close();

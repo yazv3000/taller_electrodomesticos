@@ -1,0 +1,171 @@
+/*===== GOOGLE FONTS =====*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap");
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Roboto:wght@100;300;500&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Tangerine&display=swap');
+/*===== VARIABLES CSS =====*/
+
+:root {
+    --primario: rgb(33, 33, 33);
+    --fondo: rgb(25, 23, 21);
+    --secundario: #2473cd ;
+    --grad-form: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    --grad-fondo: linear-gradient(270deg, rgba(23,30,41,1) 0%, rgba(38,45,62,1) 100%);
+    --grad-img: linear-gradient(180deg, rgba(61,154,234,1) 0%, rgba(73,84,238,1) 100%);
+    --grad-boton: linear-gradient(90deg, rgba(96,195,241,1) 0%, rgba(73,58,251,1) 100%);
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0px;
+    margin:0
+}
+
+.titulo-1 {
+    color: white;
+    font-family: "Audiowide";
+    text-align: center;
+    margin: 40px 0;
+}
+
+.titulo-1 span {
+    color: var(--secundario);
+}
+
+.tabla__titulo {
+    font-family: "Noto Sans";
+    font-size: 15px;
+    color: white;
+}
+
+.tabla__titulo tr th {
+    padding: 10px 10px;
+}
+
+.contenedor {
+    background-color:green;
+}
+
+.tabla__contenido { 
+    margin: 0 5%;
+    padding: 30px;
+    background-color: var(--primario);
+    overflow: hidden;
+    border-radius: 20px;
+}
+
+.tabla__contenido h3 {
+    color:white;
+    text-align: center;
+    font-family: "Audiowide";
+}
+.tabla__overflow {
+    margin:0 20px;
+    overflow: auto;
+}
+
+.tabla__info tr td {
+    color: white;
+    font-family: "Noto Sans";
+    font-size: 15px;
+}
+
+.tabal__columna {
+    height: 80px;
+}
+.informacion {
+    text-decoration: none;
+    margin: 6px 0;
+    display: flex;
+}
+
+.icon {
+    background: var(--grad-form);
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    outline: 1px solid blue;
+    margin: auto;
+}
+#tabla__fila {
+    background-color: var(--primario);
+}
+
+#tabla-citas_length {
+    margin: 20px 0;
+}
+#tabla-citas_length label{
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla-citas_length label select{
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla-citas_length label select option{ 
+    color: white;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color:var(--fondo);
+}
+#tabla-citas_filter {
+    margin: 20px 0;
+}
+#tabla-citas_filter label {
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla-citas_filter label select {
+    color: white;
+}
+
+#tabla-citas_filter label select option{
+    color: white;
+}
+
+#tabla-citas_filter label input{
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla-citas_info {
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla-citas_previous {
+    color: white !important;
+    font-family: "Audiowide";
+}
+
+#tabla-citas_next {
+    color: white !important;
+    font-family: "Audiowide";
+}
+
+.dataTables_empty {
+    background-color: var(--primario);
+}
+
+.contenedor-iframe {
+    display: flex;
+    height:500px;
+
+    justify-content:center;
+    background-color: green;
+    margin-bottom: 50px;
+}
+
+.marco-atencion {
+    background-color: blue;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    margin-left: 5%;
+    margin-right: 5%;
+}

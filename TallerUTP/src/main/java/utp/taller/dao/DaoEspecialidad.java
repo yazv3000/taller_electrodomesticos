@@ -65,7 +65,7 @@ public class DaoEspecialidad extends Conexion implements CRUD<Especialidad> {
 	public int modificar(Especialidad esp) {		return 0;	}
 
 	@Override
-	public int cambiarEstado(int id) {		return 0;	}
+	public int cambiarEstado(int id, boolean estado) {		return 0;	}
 	
 	
 }

@@ -46,32 +46,35 @@ public class ServletGestionarPieza extends HttpServlet {
 			 	listar(request, tipoLista);
 				break;
 		case "insertar":
-					recuperarDatos(request);
-					dao.insertar(pieza);
-					listar(request, tipoLista);
+				recuperarDatos(request);
+				dao.insertar(pieza);
+				listar(request, tipoLista);
 				break;
 		case "editar":
-		    idPieza = Integer.parseInt(request.getParameter("id"));
-			pieza = dao.consultarId(idPieza);
-			request.setAttribute("pi", pieza);
-			break;
-
+			    idPieza = Integer.parseInt(request.getParameter("id"));
+				pieza = dao.consultarId(idPieza);
+				request.setAttribute("pi", pieza);
+				listar(request, tipoLista);
+				break;
+				
 		case "actualizar":
-			recuperarDatos(request);
-			dao.modificar(pieza);
-			
-			request.getRequestDispatcher("ServletGestionarPieza?accion=listar").include(request, response);
+				recuperarDatos(request);
+				System.out.println(pieza.toString());
+				dao.modificar(pieza);
+				listar(request, tipoLista);
+				break;
+				
+		case "activar":
+				idPieza = Integer.parseInt(request.getParameter("id"));
+				dao.cambiarEstado(idPieza, true);
 		break;
-
+		
 		case "desactivar":
 				idPieza = Integer.parseInt(request.getParameter("id"));
-				dao.cambiarEstado(idPieza);
+				dao.cambiarEstado(idPieza, false);
 			break;
-			
-		default:
-			request.getRequestDispatcher("ServletGestionarCliente?accion=listar").forward(request, response);
     	}
-
+    	
     	listarCategorias(request);
     	request.getRequestDispatcher("vista/encargado/gestionPiezas.jsp").forward(request, response);
     }
@@ -112,6 +115,6 @@ public class ServletGestionarPieza extends HttpServlet {
 		default:
 			lst = dao.listar();
 		}
-	 	request.setAttribute("lstConsultaClientes", lst);
+	 	request.setAttribute("lstConsultaPiezas", lst);
 	}
 }
