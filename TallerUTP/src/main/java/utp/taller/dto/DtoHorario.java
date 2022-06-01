@@ -10,7 +10,7 @@ public class DtoHorario {
 	private Date fechaAtencion;
 	private String diaSemana;
 	private String horaInicio, horaFin;
-	private int estado;
+	private String estado;
 	
 	// CONSTRUCTORES
 	public DtoHorario(){}
@@ -46,13 +46,8 @@ public class DtoHorario {
 				+ ", diaSemana=" + diaSemana + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin + "]";
 	}
 
-	public int getEstado() {
-		return estado;
-	}
-
-	public void setEstado(int estado) {
-		this.estado = estado;
-	}
+	public String getEstado() {	return estado;}
+	public void setEstado(String estado) {	this.estado = estado;}
 	
 	
 	

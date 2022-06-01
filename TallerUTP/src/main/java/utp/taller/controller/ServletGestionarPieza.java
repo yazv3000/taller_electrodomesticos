@@ -67,11 +67,13 @@ public class ServletGestionarPieza extends HttpServlet {
 		case "activar":
 				idPieza = Integer.parseInt(request.getParameter("id"));
 				dao.cambiarEstado(idPieza, true);
+				listar(request, tipoLista);
 		break;
 		
 		case "desactivar":
 				idPieza = Integer.parseInt(request.getParameter("id"));
 				dao.cambiarEstado(idPieza, false);
+				listar(request, tipoLista);
 			break;
     	}
     	

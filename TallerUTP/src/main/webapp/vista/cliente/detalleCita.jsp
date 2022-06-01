@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+	<h1>DETALLE CITAS</h1>
 </body>
 </html>

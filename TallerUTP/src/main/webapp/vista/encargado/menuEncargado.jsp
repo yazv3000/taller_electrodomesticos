@@ -53,7 +53,11 @@
                             <i class="fas fa-calendar-check nav__icono"></i>
                             <span class="nav__nombre">Citas</span>
                         </a>
-                        <a href="#" class="nav__link">
+                        <a href="<%=request.getContextPath()%>/ServletGestionarElectrodomestico?accion=listar" class="nav__link" target="marco">
+                            <i class="fas fa-blender nav__icono"></i>
+                            <span class="nav__nombre">Electrodomesticos</span>
+                        </a>
+                        <a href="<%=request.getContextPath()%>/ServletGestionarElectrodomestico?accion=listar" class="nav__link">
                             <i class="fa-solid fa-calendar-days nav__icono"></i>
                             <span class="nav__nombre">Horarios</span>
                         </a>
@@ -87,7 +91,7 @@
             </div>
 			
 			<div class="ventana">
-            <iframe id="ventana__contenido" name="marco"></iframe>
+            <iframe src="<%=request.getContextPath()%>/ServletGestionarCliente?accion=listar" id="ventana__contenido" name="marco"></iframe>
 			</div>
         </div>
 

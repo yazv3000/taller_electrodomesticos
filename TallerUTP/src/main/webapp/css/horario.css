@@ -211,6 +211,7 @@ body {
 }
 
 .mostrar__horas {
+	width: 180px;
     margin: 20px auto;
     position: absolute;
     bottom: 0;

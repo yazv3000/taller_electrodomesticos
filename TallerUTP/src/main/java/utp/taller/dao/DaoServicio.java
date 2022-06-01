@@ -100,7 +100,7 @@ public class DaoServicio extends Conexion implements CRUD<Servicio> {
 	}
 
 	@Override
-	public int cambiarEstado(int id) {
+	public int cambiarEstado(int id, boolean estado) {
 		
 		String sql = "delete from servicio where id_servicio=?";
 		cnx = getConnection();

@@ -1,52 +1,64 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
+	<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <c:set var="context" value="${pageContext.request.contextPath}" /> 
+    <link rel="stylesheet" type="text/css" href="${context}/css/tabla.css">
+    <link rel="icon" href="img/Logo.png" type="image/png">
+    <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Taller-UTP</title>
 </head>
 <body>
+	
 	<div class="contenido">
+	<h1 class="titulo">TABLA DE <span>ELECTRODOMESTICOS</span></h1>
 	    <div class="tabla" id="myTable">
 	        <div class="tabla__tools">
 	            <ul>
 	            	<li><button class="fa-solid fa-plus-square icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"></button></li>
 	                <li><button class="fa-solid fa-pen icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
-	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarCliente?accion=listar'" >Todos</button></li>
-	                <li><button type="button" class="btn btn-success" onclick="location.href='ServletGestionarCliente?accion=listar&lista=activos'" >Activos</button><li>
-	                <li><button type="button" class="btn btn-danger" onclick="location.href='ServletGestionarCliente?accion=listar&lista=inactivos'">Inactivos</button><li>
+	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarElectrodomestico?accion=listar'" >Todos</button></li>
+	                <li><button type="button" class="btn btn-success" onclick="location.href='ServletGestionarElectrodomestico?accion=listar&lista=activos'" >Activos</button><li>
+	                <li><button type="button" class="btn btn-danger" onclick="location.href='ServletGestionarElectrodomestico?accion=listar&lista=inactivos'">Inactivos</button><li>
 	            </ul>
-	            <input class="tabla_buscar" type="text" placeholder="Filtrar">
 	        </div>
 	        <div class="tabla__contenido">
 	            <table id="tabla__Cliente" >
 	                <thead class="tabla__titulo">
 	                    <tr>
 	                        <th>ID</th>
-							<th>NOMBRES Y APELLIDOS</th>
-							<th>TELEFONO</th>
-							<th>DISTRITO</th>
-							<th>DIRECCION</th>
-							<th>EMAIL</th>
+							<th>Nº SERIE</th>
+							<th>TIPO</th>
+							<th>MODELO</th>
+							<th>MARCA</th>
+							<th>PROPIETARIO</th>
 							<th>ESTADO</th>
 	                    </tr>
 	                </thead>
 	                <tbody class="tabla__info">
-	                	<c:forEach items="${lstConsultaClientes}" var="c">
-	                    <tr id="tabla__filas" class="now-selected" onclick="location.href='ServletGestionarCliente?accion=editar&id=${c.getIdPersona()}'">
-	                        <td> <c:out value="${c.getIdUsuarioCliente()}"></c:out> </td>
-							<td> <c:out value="${c.getNombreCompleto()}"></c:out> </td>
-							<td> <c:out value="${c.getTelefono()}"></c:out> </td>
-							<td> <c:out value="${c.getDistrito()}"></c:out> </td>
-							<td> <c:out value="${c.getDireccion()}"></c:out> </td>
-							<td> <c:out value="${c.getEmail()}"></c:out> </td>		
+	                	<c:forEach items="${lstConsultaElectrodomesticos}" var="e">
+	                    <tr id="tabla__filas" class="now-selected" onclick="location.href='ServletGestionarElectrodomestico?accion=editar&id=${e.getIdElectrodomestico()}'">
+	                        <td> <c:out value="${e.getIdElectrodomestico()}"></c:out> </td>
+							<td> <c:out value="${e.getNroSerie()}"></c:out> </td>
+							<td> <c:out value="${e.getTipo()}"></c:out> </td>
+							<td> <c:out value="${e.getModelo()}"></c:out> </td>
+							<td> <c:out value="${e.getMarca()}"></c:out> </td>
+							<td> <c:out value="${e.getNombrePropietario()}"></c:out> </td>		
 							<td>
-									<c:if  test="${c.isEstadoActivo()}">
-										<a class="fa-solid fa-toggle-on icono" href="${context}/ServletGestionarCliente?accion=desactivar&id=${c.getIdPersona()}"></a>									
+									<c:if  test="${e.isEstadoActivo()}">
+										<a class="activado" href="${context}/ServletGestionarElectrodomestico?accion=desactivar&id=${e.getIdElectrodomestico()}"><span></span></a>									
 									</c:if>
-									<c:if test="${!c.isEstadoActivo()}">
-										<a class="fa-solid fa-toggle-off icono" href="${context}/ServletGestionarCliente?accion=activar&id=${c.getIdPersona()}"></a>	
+									<c:if test="${!e.isEstadoActivo()}">
+										<a class="desactivado" href="${context}/ServletGestionarElectrodomestico?accion=activar&id=${e.getIdElectrodomestico()}"><span></span></a>	
 									</c:if>
 							</td>
 						</tr>
@@ -61,15 +73,15 @@
 	<!-- ===== MODAL INSERTAR ===== -->
 	<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right: 350px;">
 	  <div class="modal-dialog" >
-	    <div class="modal-content text-center" style="width: 800px; height: 550px;">
+	    <div class="modal-content text-center" style="width: 800px; height: 380px;">
 	                 
 	      <div class="modal-body">
 	        	<!-- ===== DATOS DEL NUEVO CLIENTE===== -->
-				<form class="formulario needs-validation" action="<%=request.getContextPath()%>/ServletGestionarCliente" method="post" novalidate>
+				<form class="formulario needs-validation" action="<%=request.getContextPath()%>/ServletGestionarElectrodomestico" method="post" novalidate>
 					<div class="row align-items-center pt-1">
 				      	<div class="form__grupo col-11">
 				      		<div class="form__titulo">
-				                <p>INFORMACION DEL CLIENTE</p>
+				                <p>INFORMACION DEL ELECTRODOMÉSTICO</p>
 				            </div>
 			            </div>
 			            <div class="form__grupo col-1">
@@ -79,64 +91,30 @@
 			        <div class="form__contenedor pt-3">
 			        	
 			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" " name="txt_nom1" required>
-			                <label for="name" class="form__label">Primer nombre:</label>
+			                <input type="text" class="form__input form-control" placeholder=" " name="txt_numSer" required>
+			                <label for="name" class="form__label">Número de Serie:</label>
 			                <span class="form__line"></span>
 			            </div>
-			            
-			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control"  placeholder=" " name="txt_nom2">
-			                <label for="name" class="form__label">Segundo nombre:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" " name="txt_ape1" required>
-			                <label for="name" class="form__label">Primer apellido:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" " name="txt_ape2">
-			                <label for="" class="form__label">Segundo Apellido:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <select class="form__seleccion"  name="cbx_tipodoc">
-			                <option class="form__opcion" value="1">DNI</option>
-			                <option class="form__opcion" value="2">Carne de Extranjería</option>
-			                <option class="form__opcion" value="3">Otros</option>
-			            </select>
-			            <div class="form__grupo">
-			                <input type="number" id="num-doc1" class="form__input form-control" placeholder=" " name="num_doc" required>
-			                <label for="name" class="form__label">Número de Documento:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="number" id="tel-1" class="form__input form-control" placeholder=" " name="num_telef" required>
-			                <label for="name" class="form__label">Teléfono:</label>
-			                <span class="form__line"></span>
-			            </div>
-						<select class="form__seleccion" name="cbx_distritos">
-						<c:forEach items="${lstDistritos}" var="d">
-			                <option class="form__opcion" value="${d.getIdDistrito()}">${d.getNombreDistrito()}</option>
+			           	<select class="form__seleccion" name="cbx_tipos">
+						<c:forEach items="${lstTipos}" var="t">
+			                <option class="form__opcion" value="${t.getId()}">${t.getNombre()}</option>
 						</c:forEach>
 						</select>
-			            <div class="form__grupo" >
-			                <input type="text" class="form__input form-control" placeholder=" " name="txt_direcc" required>
-			                <label for="" class="form__label">Direccion:</label>
+						<div class="form__grupo">
+			                <input type="text" class="form__input form-control" placeholder=" " name="txt_modelo" required>
+			                <label for="name" class="form__label">Modelo:</label>
 			                <span class="form__line"></span>
 			            </div>
-			            <div class="form__grupo" align="center">
-			                <input type="email" class="form__input form-control" placeholder=" " name="txt_correo" required>
-			                <label for="" class="form__label">Correo Electronico:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo" align="center">
-			                <div class="input-group">
-						      <input ID="txtPassword" type="Password" Class="form__input form-control" placeholder="Contraseña" name="txt_pass" required>
-						      <div class="input-group-append">
-				              <button style="color: white;" id="show_password" class="btn modal__cerrar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
-				          	  </div>
-			    			</div>
-			            </div>
+						<select class="form__seleccion" name="cbx_marcas">
+						<c:forEach items="${lstMarcas}" var="m">
+			                <option class="form__opcion" value="${m.getId()}">${m.getNombre()}</option>
+						</c:forEach>
+						</select>
+						<select class="form__seleccion" name="cbx_propietario" style="height: 40px;">
+						<c:forEach items="${lstPropietarios}" var="pro">
+			                <option class="form__opcion" value="${pro.getIdPersonaCliente()}">${pro.getNombreCompleto()}</option>
+						</c:forEach>
+						</select> 
 			        </div>
 			        <div class="row align-items-center pt-4">
 				      	<div class="form__grupo col-12">
@@ -156,84 +134,56 @@
 	<!-- ===== MODAL MODIFICAR ===== -->
 	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right: 350px;">
 	  <div class="modal-dialog" >
-	    <div class="modal-content text-center" style="width: 800px; height: 550px;">
+	    <div class="modal-content text-center" style="width: 800px; height: 380px;">
 	                 
 	      <div class="modal-body">
 	        	<!-- ===== DATOS DEL CLIENTE A MODIFICAR ===== -->
-				<form  class="formulario needs-validation"  action="<%=request.getContextPath()%>/ServletGestionarCliente" method="post" novalidate>
+				<form class="formulario needs-validation" action="<%=request.getContextPath()%>/ServletGestionarElectrodomestico" method="post" novalidate>
 					<div class="row align-items-center pt-1">
 				      	<div class="form__grupo col-11">
 				      		<div class="form__titulo">
-				                <p>INFORMACION DEL CLIENTE</p>
+				                <p>INFORMACION DEL ELECTRODOMÉSTICO</p>
 				            </div>
 			            </div>
 			            <div class="form__grupo col-1">
-			            	<input class="btn__cerrar" type="button" data-bs-dismiss="modal" value="X">
+			            	<input class="btn__cerrar" type="button" data-bs-dismiss="modal" value="X" required>
 			            </div>
 			        </div>
 			        <div class="form__contenedor pt-3">
 			        	
 			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" "  value="${cli.getNombrePrin()}" name="txt_nom1" required>
-			                <label for="name" class="form__label" >Primer nombre:</label>
+			                <input type="text" class="form__input form-control" placeholder=" " value="${el.getNroSerie()}" name="txt_numSer" required>
+			                <label for="name" class="form__label">Número de Serie:</label>
 			                <span class="form__line"></span>
 			            </div>
-			            
-			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control"  placeholder=" " value="${cli.getNombreSec()}" name="txt_nom2">
-			                <label for="name" class="form__label">Segundo nombre:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" " value="${cli.getApePrin()}" name="txt_ape1" required>
-			                <label for="name" class="form__label">Primer apellido:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" " value="${cli.getApeSec()}" name="txt_ape2">
-			                <label for="" class="form__label">Segundo Apellido:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <select class="form__seleccion" name="cbx_tipodoc">
-			                <option class="form__opcion" value=1  ${cli.getTipoDocumento() == 1 ? 'selected' : ''}>DNI</option>
-			                <option class="form__opcion" value=2  ${cli.getTipoDocumento() == 2 ? 'selected' : ''}>Carne de Extranjería</option>
-			                <option class="form__opcion" value=3  ${cli.getTipoDocumento() == 3 ? 'selected' : ''}>Otros</option>
-			            </select>
-			            <div class="form__grupo">
-			                <input type="number" id="num-doc2" class="form__input form-control" placeholder=" " value="${cli.getNroDocumento()}" name="num_doc" required>
-			                <label for="name" class="form__label">Número de Documento:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="number" id="tel-2" class="form__input form-control" placeholder=" " value="${cli.getTelefono()}" name="num_telef" required>
-			                <label for="name" class="form__label">Teléfono:</label>
-			                <span class="form__line"></span>
-			            </div>
-						<select class="form__seleccion" name="cbx_distritos">
-						<c:forEach items="${lstDistritos}" var="d">
-			                <option class="form__opcion" value="${d.getIdDistrito()}"  ${cli.getIdDistrito()==d.getIdDistrito() ? 'selected' : ''}>${d.getNombreDistrito()}</option>
+			           	<select class="form__seleccion" name="cbx_tipos">
+						<c:forEach items="${lstTipos}" var="t">
+			                <option class="form__opcion" value="${t.getId()}" ${t.getId()==el.getIdtipoElectrod() ? 'selected' : '' } >${t.getNombre()}</option>
 						</c:forEach>
 						</select>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" " value="${cli.getDireccion()}" name="txt_direcc" required>
-			                <label for="" class="form__label">Direccion:</label>
+						<div class="form__grupo">
+			                <input type="text" class="form__input form-control" placeholder=" " value="${el.getModelo()}" name="txt_modelo" required>
+			                <label for="name" class="form__label">Modelo:</label>
 			                <span class="form__line"></span>
 			            </div>
-
-			            <select class="form__seleccion" name="estado">
-			                <option class="form__opcion" value=true  ${cli.isEstadoActivo() ? 'selected' : ''}>Activo</option>
-			                <option class="form__opcion" value=false  ${!cli.isEstadoActivo() ? 'selected' : ''}>Inactivo</option>
-			            </select>
-			            
-			            <div class="form__grupo" align="center">
-			                <input type="email" class="form__input form-control" placeholder=" " value="${cli.getEmail()}" name="txt_correo" required>
-			                <label for="" class="form__label">Correo Electronico:</label>
-			                <span class="form__line"></span>
-			            </div>
+						<select class="form__seleccion" name="cbx_marcas">
+						<c:forEach items="${lstMarcas}" var="m">
+			                <option class="form__opcion" value="${m.getId()}">${m.getNombre()}</option>
+						</c:forEach>
+						</select>
+						<select class="form__seleccion" name="cbx_propietario" style="height: 40px;">
+						<c:forEach items="${lstPropietarios}" var="pro">
+			                <option class="form__opcion" value="${pro.getIdPersonaCliente()}">${pro.getNombreCompleto()}</option>
+						</c:forEach>
+						</select>
+						<select class="form__seleccion" name="cbx_estado" style="height: 40px;">
+							<option class="form__opcion" value=true  ${el.isEstadoActivo() ? 'selected' : ''}>Activo</option>
+			                <option class="form__opcion" value=false  ${!el.isEstadoActivo() ? 'selected' : ''}>Inactivo</option>
+						</select>  
 			        </div>
 			        <div class="row align-items-center pt-4">
-			            <div class="form__grupo col-12">
-			                <input name="accion" value="actualizar"  class="btn__modificar" type="submit" >MODIFICAR
+				      	<div class="form__grupo col-12">
+			                <input name="accion" value="actualizar"  class="btn__insertar" type="submit" >INSERTAR      
 			            </div>
 			        </div>
 			    </form>

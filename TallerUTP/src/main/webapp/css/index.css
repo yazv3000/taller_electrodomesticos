@@ -255,14 +255,17 @@ body {
     font-size: 25px;
     cursor: pointer;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
-    transition: .3s
+    transition: .3s;
+    position: relative;
+    left: 180px;
+    top: -10px;
 }
 
 .modal__cerrar:hover {
     transform: scale(1.1);
 }
 
-.form__titulo {
+.formTituloLogin {
     color: white;
     font-size: 2em;
     font-family:'Audiowide', 'Tangerine', "Noto Sans";
@@ -330,7 +333,23 @@ body {
     color: var(--secundario);
     cursor: pointer;
 }
+.btn__sinCuenta {
+    width: 70%;
+    font-size: 20px;
+    font-family: 'Audiowide';
+    text-transform: uppercase;
+    color: white;
+    transition: 0.6s;
+    font-weight: 400;
+    padding: 10px;
+    background-color: #212121;
+    border: none;
+}
 
+.btn__sinCuenta:hover {
+    color: var(--secundario);
+    cursor: pointer;
+}
 /* Change autocomplete styles in WebKit */
 	input:-webkit-autofill,
 	input:-webkit-autofill:hover, 

@@ -20,7 +20,9 @@
 </head>
 
 <body>
+	
 	<div class="contenido">
+	<h1 class="titulo">TABLA DE <span>PIEZAS</span></h1>
 	    <div class="tabla">
 	        <div class="tabla__tools">
 	            <ul>
@@ -30,7 +32,6 @@
 	                <li><button type="button" class="btn btn-success" onclick="location.href='ServletGestionarPieza?accion=listar&lista=activos'" >Activos</button><li>
 	                <li><button type="button" class="btn btn-danger" onclick="location.href='ServletGestionarPieza?accion=listar&lista=inactivos'">Inactivos</button><li>
 				</ul>
-	            <input class="tabla_buscar" type="text" placeholder="Filtrar">
 	        </div>
 	        <div class="tabla__contenido">
 	            <table id="tabla__Cliente" >
@@ -41,6 +42,7 @@
 							<th>CATEGORIA</th>
 							<th>PRECIO</th>
 							<th>STOCK</th>
+							<th>ESTADO</th>
 	                    </tr>
 	                </thead>
 	                <tbody class="tabla__info">
@@ -50,7 +52,15 @@
 							<td><c:out value="${p.getNomPieza()}"></c:out></td>
 							<td><c:out value="${p.getCategoria().getNombreCat()}"></c:out></td>
 							<td>S/. <c:out value="${p.getPrecio()}"></c:out></td>
-							<td><c:out value="${p.getStock()}"></c:out></td>		
+							<td><c:out value="${p.getStock()}"></c:out></td>
+							<td>
+								<c:if  test="${p.isEstadoActivo()}">
+									<a class="activado" href="${context}/ServletGestionarPieza?accion=desactivar&id=${p.getIdPieza()}"><span></span></a>									
+								</c:if>
+								<c:if test="${!p.isEstadoActivo()}">
+									<a class="desactivado" href="${context}/ServletGestionarPieza?accion=activar&id=${p.getIdPieza()}"><span></span></a>	
+								</c:if>
+							</td>		
 	                    </tr>
 	                    </c:forEach>
 	                </tbody>

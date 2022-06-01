@@ -40,24 +40,33 @@ public class ServletGestionarHorario extends HttpServlet {
 			throws ServletException, IOException {
 
 		String accion = request.getParameter("accion");
-		String servicio = request.getParameter("servicio");
-		String idPersona = request.getParameter("idPersona");
 		
-		System.out.println(servicio + " " + idPersona + "<".repeat(20));
+		
+		
 		
 		switch (accion) {
 		case "listar":
 			Map<DtoTecnicoConsulta,List<Map<String, List<DtoHorario>>>> lstHorarios = todosLosHorarios();
+			String servicio = request.getParameter("servicio");
 			request.setAttribute("servicio",servicio);
-			request.setAttribute("idPersona", idPersona);
 			request.setAttribute("lsthorario", lstHorarios);
+			request.getRequestDispatcher("/vista/cliente/horarios.jsp").forward(request, response);
 			break;
-
+		case "listarTecnico":
+			System.out.println("entre we");
+			DtoUsuario dtoUsuario = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");
+			request.setAttribute("idTecnico", dtoUsuario.getIdPersona());
+			obtenerHorario(dtoUsuario.getIdPersona(), 7);
+			System.out.println(dtoUsuario.getIdPersona());
+			List<Map<String, List<DtoHorario>>> horarios =obtenerHorario(dtoUsuario.getIdPersona(),7);
+			request.setAttribute("horarios", horarios);
+			request.getRequestDispatcher("/vista/tecnico/tecnico-horario.jsp").forward(request, response);
+			break;
 		default:
 			request.getRequestDispatcher("ServletGestionarCliente?accion=listar").forward(request, response);
 		}
 
-		request.getRequestDispatcher("/vista/cliente/horarios.jsp").forward(request, response);
+		
 	}
 	
 	
@@ -70,7 +79,7 @@ public class ServletGestionarHorario extends HttpServlet {
 		Map<DtoTecnicoConsulta,List<Map<String, List<DtoHorario>>>> lstHorarios = new LinkedHashMap<>();
 		
 		for (int i = 0; i < lstTecnicos.size(); i++) {
-			lstHorarios.put(lstTecnicos.get(i),obtenerHorario(lstTecnicos.get(i).getIdPersona()));
+			lstHorarios.put(lstTecnicos.get(i),obtenerHorario(lstTecnicos.get(i).getIdPersona(), 4));
 			
 		}
 		
@@ -78,7 +87,7 @@ public class ServletGestionarHorario extends HttpServlet {
 	}
 	
 
-	private List<Map<String, List<DtoHorario>>> obtenerHorario(int idTecnico) {
+	private List<Map<String, List<DtoHorario>>> obtenerHorario(int idTecnico, int dias) {
 		
 
 		DaoHorario dao = new DaoHorario();
@@ -103,7 +112,7 @@ public class ServletGestionarHorario extends HttpServlet {
 		for (int week = 0; week < 4; week++) {
 
 			listaFechaHoras = new LinkedHashMap<>();
-			for (int day = 0; day < 4; day++) {
+			for (int day = 0; day < dias; day++) {
 				
 				fecha = c.getTime();
 				final Date fecha2 = fecha;

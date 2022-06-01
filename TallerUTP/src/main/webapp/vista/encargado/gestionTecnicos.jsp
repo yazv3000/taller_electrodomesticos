@@ -23,17 +23,18 @@
 
 <body>
 	<div class="contenido">
+		<h1 class="titulo">TABLA DE <span>TECNICOS</span></h1>
 	    <div class="tabla">
 	        <div class="tabla__tools">
 	            <ul>
 					<li><button class="fa-solid fa-plus-square icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"></button></li>
 	                <li><button class="fa-solid fa-pen icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
-	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarCliente?accion=listar'" >Todos</button></li>
-	                <li><button type="button" class="btn btn-success" onclick="location.href='ServletGestionarCliente?accion=listar&lista=activos'" >Activos</button><li>
-	                <li><button type="button" class="btn btn-danger" onclick="location.href='ServletGestionarCliente?accion=listar&lista=inactivos'">Inactivos</button><li>
+	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarTecnico?accion=listar'" >Todos</button></li>
+	                <li><button type="button" class="btn btn-success" onclick="location.href='ServletGestionarTecnico?accion=listar&lista=activos'" >Activos</button><li>
+	                <li><button type="button" class="btn btn-danger" onclick="location.href='ServletGestionarTecnico?accion=listar&lista=inactivos'">Inactivos</button><li>
 	            </ul>
-	            <input class="tabla_buscar" type="text" placeholder="Filtrar">
 	        </div>
+	        
 	        <div class="tabla__contenido">
 	            <table id="tabla__Tecnico" >
 	                <thead class="tabla__titulo">
@@ -45,6 +46,7 @@
 							<th>DISTRITO</th>
 							<th>DIRECCION</th>
 							<th>EMAIL</th>
+							<th>ESTADO</th>
 	                    </tr>
 	                </thead>
 	                <tbody class="tabla__info">
@@ -56,7 +58,15 @@
 							<td> <c:out value="${t.getTelefono()}"></c:out> </td>
 							<td> <c:out value="${t.getDistrito()}"></c:out> </td>
 							<td> <c:out value="${t.getDireccion()}"></c:out> </td>
-							<td> <c:out value="${t.getEmail()}"></c:out> </td>			
+							<td> <c:out value="${t.getEmail()}"></c:out> </td>	
+							<td>
+								<c:if  test="${t.isEstadoActivo()}">
+									<a class="activado" href="${context}/ServletGestionarTecnico?accion=desactivar&id=${t.getIdPersona()}"><span></span></a>									
+								</c:if>
+								<c:if test="${!t.isEstadoActivo()}">
+									<a class="desactivado" href="${context}/ServletGestionarTecnico?accion=activar&id=${t.getIdPersona()}"><span></span></a>	
+								</c:if>
+							</td>		
 	                    </tr>
 	                    </c:forEach>
 	                </tbody>
@@ -150,7 +160,7 @@
 			                <div class="input-group">
 						      <input ID="txtPassword" type="Password" Class="form__input form-control" placeholder="Contraseña" name="txt_pass" required>
 						      <div class="input-group-append">
-				              <button style="color: white;" id="show_password" class="btn btn__modificar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
+				              <button style="color: white;" id="show_password" class="btn btn__cerrar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
 				          	  </div>
 			    			</div>
 			            </div>
@@ -272,6 +282,7 @@
 	</div><!-- /.contenido -->
 	
 	<script src="${context}/js/validForm.js"></script>
+	<script type="text/javascript" src="${context}/js/contrase.js"></script>
 	<script type="text/javascript" src="${context}/js/ValidacionMonto.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>

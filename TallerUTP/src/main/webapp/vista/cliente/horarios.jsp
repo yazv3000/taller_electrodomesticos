@@ -55,7 +55,7 @@
 	                                                <c:forEach var="hora" items="${dia.value}"> 
 	                                                    <tr>
 	                                                        <td class="tabla-2__hora">
-	                                                        	<Button onclick="location.href='ServletGestionarAtencion?servicio=${servicio}&idPersona=${idPersona}&idHorario=${hora.getIdHorario()}'">
+	                                                        	<Button onclick="location.href='ServletCita?accion=resumen&servicio=${servicio}&idHorario=${hora.getIdHorario()}'">
 	                                                        		<c:out value="${hora.getHoraInicio()}"/>
 	                                                        	</Button>
 	                                                        </td>

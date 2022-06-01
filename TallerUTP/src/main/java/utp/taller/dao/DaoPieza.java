@@ -170,11 +170,10 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 		String sql = "call sp_cambiar_estado_pieza(?, ?)";
 		cnx = getConnection();
 		try {
-			cnx.setAutoCommit(false);
-			stm = cnx.prepareStatement(sql);
+			stm = cnx.prepareCall(sql);
 			stm.setInt(1, id);
-			stm.executeUpdate();
-			cnx.commit();
+			stm.setBoolean(2, estado);
+			stm.execute();
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
