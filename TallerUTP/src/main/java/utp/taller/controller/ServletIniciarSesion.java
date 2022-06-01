@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import utp.taller.dao.DaoCliente;
 import utp.taller.dao.DaoEncargado;
@@ -23,65 +24,18 @@ public class ServletIniciarSesion extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
     
-	private Cliente cliente = new Cliente();
-	private DaoCliente dao = new DaoCliente();
-	
-	
+	HttpSession session;
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		session = request.getSession();
 		String accion = request.getParameter("accion");
-
-		if (accion.equalsIgnoreCase("Ingresar")) {
-			String user = request.getParameter("txt_user");
-			String pass = request.getParameter("txt_pass");
-			int rol = Integer.parseInt(request.getParameter("cbx_rol")) ;
-			
-			DtoUsuario dto = new DtoUsuario();
-			
-			switch (rol) {
-			case 1: {
-					DaoCliente daoCliente = new DaoCliente();
-					dto = daoCliente.validar(user, pass);
-					if (dto.getEmail() != null) {
-						request.getSession().setAttribute("dtoUsuario", dto);
-						request.getRequestDispatcher("vista/cliente/servicios.jsp").forward(request, response);
-						
-					} else {
-						request.getRequestDispatcher("index.jsp").forward(request, response);
-					}
-					break;
-			}
-			case 2: {
-					DaoEncargado daoEncargado = new DaoEncargado();
-					dto = daoEncargado.validar(user, pass);
-					
-					if (dto.getEmail() != null) {
-						request.getSession().setAttribute("dtoUsuario", dto);
-						request.getRequestDispatcher("vista/encargado/menuEncargado.jsp").forward(request, response);
-					} else {
-						request.getRequestDispatcher("index.jsp").forward(request, response);
-					}
-					break;
-			}
-			case 3: {
-					DaoTecnico  daoTecnico = new DaoTecnico();
-					dto = daoTecnico.validar(user, pass);
-					
-					if (dto.getEmail() != null) {
-						request.getSession().setAttribute("dtoUsuario", dto);
-						request.getRequestDispatcher("vista/tecnico/menuTecnico.jsp").forward(request, response);
-					} else {
-						request.getRequestDispatcher("index.jsp").forward(request, response);
-					}
-					break;
-			}
-			default:
-				request.getRequestDispatcher("index.jsp").forward(request, response);
-			}
-		}	else if(accion.equalsIgnoreCase("registrar")) {
-			recuperarDatos(request);
-			dao.insertar(cliente);
-			request.getRequestDispatcher("index.jsp").forward(request, response);
+		
+		if (accion.equalsIgnoreCase("ingresar")) {
+			iniciarSesion(request, response);
+		}
+		else if(accion.equalsIgnoreCase("registrar")) {
+			registrarCliente(request, response);
 		} 
 		else {
 			request.getRequestDispatcher("index.html").forward(request, response);
@@ -89,9 +43,75 @@ public class ServletIniciarSesion extends HttpServlet {
 		
 	}
 	
-	private void recuperarDatos(HttpServletRequest request) {
-		//foto = 
+	// REGISTRAR NUEVO CLIENTE
+	private void registrarCliente(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Cliente cliente  = recuperarCliente(request);
+		DaoCliente dao = new DaoCliente();
+		dao.insertar(cliente);
+		request.getRequestDispatcher("index.jsp").forward(request, response);
+	}
+	
+	// INICIAR SESIÓN
+	private void iniciarSesion(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		// Recuperar valores del formulario
+		String user = request.getParameter("txt_user");
+		String pass = request.getParameter("txt_pass");
+		int rol = Integer.parseInt(request.getParameter("cbx_rol")) ;
+		
+		DtoUsuario dto = new DtoUsuario();
+		
+		// Validar usuario y enviar al respectivo menú según el rol
+		switch (rol) {
+		
+			// USUARIO DE TIPO CLIENTE	
+			case 1: 	
+					DaoCliente daoCliente = new DaoCliente();
+					dto = daoCliente.validar(user, pass);
+					if (dto.getEmail() != null) {
+						session.setAttribute("dtoUsuario", dto);
+						request.getRequestDispatcher("vista/cliente/menuCliente.jsp").forward(request, response);
+					} else {
+						System.out.println("Cliente no registrado");
+						request.getRequestDispatcher("index.jsp").forward(request, response);
+					}
+			break;
+			
+			// USUARIO DE TIPO ENCARGADO
+			case 2: 	
+					DaoEncargado daoEncargado = new DaoEncargado();
+					dto = daoEncargado.validar(user, pass);
+					if (dto.getEmail() != null) {
+						session.setAttribute("dtoUsuario", dto);
+						request.getRequestDispatcher("vista/encargado/menuEncargado.jsp").forward(request, response);
+					} else {
+						System.out.println("Encargado no registrado");
+						request.getRequestDispatcher("index.jsp").forward(request, response);
+					}
+			break;
+
+			// USUARIO DE TIPO TÉCNICO
+			case 3: 	
+					DaoTecnico  daoTecnico = new DaoTecnico();
+					dto = daoTecnico.validar(user, pass);
+					
+					if (dto.getEmail() != null) {
+						session.setAttribute("dtoUsuario", dto);
+						request.getRequestDispatcher("vista/tecnico/menuTecnico.jsp").forward(request, response);
+					} else {
+						System.out.println("Técnico no registrado");
+						request.getRequestDispatcher("index.jsp").forward(request, response);
+					}
+			break;
+			
+			default:
+				request.getRequestDispatcher("index.jsp").forward(request, response);
+			break;
+		}
+	}
+	
+	private Cliente recuperarCliente(HttpServletRequest request) {
+		Cliente cliente = new Cliente();
 		cliente.setNombrePrin(request.getParameter("txt_nom1"));
 		cliente.setNombreSec(request.getParameter("txt_nom2"));
 		cliente.setApePrin(request.getParameter("txt_ape1"));
@@ -102,8 +122,8 @@ public class ServletIniciarSesion extends HttpServlet {
 		cliente.setIdDistrito(Integer.parseInt(request.getParameter("cbx_distritos")));
 		cliente.setDireccion(request.getParameter("txt_direcc"));
 		cliente.setEmail(request.getParameter("txt_correo"));
-		cliente.setEstadoActivo(Boolean.parseBoolean(request.getParameter("estado")));
+		cliente.setContrasena(request.getParameter("txt_pass"));
+		return cliente;
 	}
-	
 
 }

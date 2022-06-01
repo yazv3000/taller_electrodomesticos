@@ -1,4 +1,4 @@
-package utp.taller.controller;
+package utp.taller.controller.mantenimiento;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import utp.taller.dao.DaoPieza;
 import utp.taller.entidades.CategoriaPieza;
-import utp.taller.entidades.Cliente;
 import utp.taller.entidades.Pieza;
 
 

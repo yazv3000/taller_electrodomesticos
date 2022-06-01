@@ -21,9 +21,6 @@
 </head>
 <body>
 	
-	<%@ page import="utp.taller.entidades.*"%>
-	<%@ page import="java.util.List"%>
-	<%@ page import="utp.taller.dao.*"%>
     <!-- ===== IMAGEN DE FONDO ===== -->
     <img class="inicio_fondo" src="${context}/img/fondo.png" alt="Logotipo de HTML5"  />
 	
@@ -36,7 +33,7 @@
             </div>
             <ul>
                 <li><a href="#">Inicio</a></li>
-                <li><a href="#">Servicio</a></li>
+                <li><a href="<%=request.getContextPath()%>/ServletServicios">Servicio</a></li>
                 <li><a href="#">Nosotros</a></li>
                 <li><a class="nav__sesion" data-bs-toggle="modal" data-bs-target="#staticBackdrop1" >Sesion</a></li>
                 <li><a href="<%=request.getContextPath()%>/ServletIniciarSesion?accion=listarDis" data-bs-target="#staticBackdrop2">Contacto</a></li>
@@ -128,8 +125,7 @@
       </div>
     </div>
     
-    
-    <!-- ===== MODAL INSERTAR ===== -->
+    <!-- ===== MODAL REGISTRAR CLIENTE ===== -->
 	<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right: 340px;">
 	  <div class="modal-dialog" >
 	    <div class="modal-content text-center" style="width: 800px; height: 550px;">
@@ -140,7 +136,7 @@
 					<div class="row align-items-center pt-1">
 				      	<div class="form__grupo col-11">
 				      		<div class="form__titulo">
-				                <p>INFORMACION DEL CLIENTE</p>
+				                <p>NUEVO CLIENTE</p>
 				            </div>
 			            </div>
 			            <div class="form__grupo col-1">
@@ -180,28 +176,30 @@
 			                <label for="name" class="form__label">Número de Documento:</label>
 			                <span class="form__line"></span>
 			            </div>
-			            <div class="form__grupo">
-			                <input type="number" id="tel-1" class="form__input form-control" placeholder=" " name="num_telef" required>
-			                <label for="name" class="form__label">Teléfono:</label>
+			            <div class="form__grupo" >
+			                <input type="text" class="form__input form-control" placeholder=" " name="txt_direcc" required>
+			                <label for="" class="form__label">Direccion:</label>
 			                <span class="form__line"></span>
 			            </div>
 						<select class="form__seleccion" name="cbx_distritos" >
 						
-						<%
-						DaoDistrito daoDistr = new DaoDistrito();
-						List<Distrito> lst = daoDistr.listar();
-						%>
-						<%
-				        for(Distrito d : lst) {
-				        %>
-			                <option class="form__opcion" value="<%=d.getIdDistrito()%>"><%=d.getNombreDistrito()%></option>
-						<%
-				        }
-						%>
+							<%@ page import="utp.taller.entidades.*"%>
+							<%@ page import="java.util.List"%>
+							<%@ page import="utp.taller.dao.*"%>
+						
+							<%
+								DaoDistrito daoDistr = new DaoDistrito();
+								List<Distrito> lstDistritos = daoDistr.listar();
+								pageContext.setAttribute("lstDistritos", lstDistritos);
+					        %>
+			            <c:forEach items="${pageScope.lstDistritos}" var="d">
+			                <option class="form__opcion" value="${d.getIdDistrito()}">${d.getNombreDistrito()}</option>
+						</c:forEach>
 						</select>
-			            <div class="form__grupo" >
-			                <input type="text" class="form__input form-control" placeholder=" " name="txt_direcc" required>
-			                <label for="" class="form__label">Direccion:</label>
+			            
+			            <div class="form__grupo">
+			                <input type="number" id="tel-1" class="form__input form-control" placeholder=" " name="num_telef" required>
+			                <label for="name" class="form__label">Teléfono:</label>
 			                <span class="form__line"></span>
 			            </div>
 			            <div class="form__grupo" align="center">
@@ -212,7 +210,7 @@
 			            <div class="form__grupo" align="center">
 			                <div class="input-group">
 			                	<script type="text/javascript" src="${context}/js/contrase.js"></script>
-						      <input ID="txtPassword2" type="Password" Class="form__input form-control" placeholder="Contraseña" name="txt_pass" required>
+						      <input id="txtPassword2" type="password" Class="form__input form-control" placeholder="Contraseña" name="txt_pass" required>
 						      <div class="input-group-append">
 				              <button style="color: white;" id="show_password2" class="btn btn__cerrar" type="button" onclick="mostrarPassword2()"> <span class="fa fa-eye-slash icon"></span> </button>
 				          	  </div>
@@ -231,10 +229,9 @@
 	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal-fade -->
 	
-	<!-- ===== FINAL MODAL INSERTAR ===== -->
-    <form action="">
-    	<button></button>
-    </form>
+	<!-- ===== FINAL MODAL REGISTRAR ===== -->
+
+
     <script type="text/javascript" src="${context}/js/contrase.js"></script>
     <script type="text/javascript" src="${context}/js/contrasena.js"></script>
     <script src="${context}/js/index.js"></script>   

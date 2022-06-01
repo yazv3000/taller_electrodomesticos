@@ -8,58 +8,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utp.config.Conexion;
+import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.entidades.Servicio;
 
 public class DaoServicio extends Conexion implements CRUD<Servicio> {
 
-	/*
-	 * TABLA SERVICIO
-	 * 
-	 * id_servicio | nom_serv | desc_serv
-	 */
-
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
-
-	public List<Servicio> listar() {
-
-		List<Servicio> lst = new ArrayList<Servicio>();
-		Servicio s = null;
-
-		String sql = "select * from servicio";
-
+	
+	
+	@Override
+	public Servicio consultarId(int id) {
+		Servicio serv = new Servicio();
+		
+		String sql = "select * from servicio where id_servicio=?";
+		
 		cnx = getConnection();
 		ResultSet rs = null;
 
 		try {
 			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, id);
 			rs = stm.executeQuery();
-
-			while (rs.next()) {
-				s = new Servicio();
-				s.setIdServicio(rs.getInt(1));
-				s.setNomServicio(rs.getString(2));
-				s.setDescripcion(rs.getString(3));
-
-				lst.add(s);
+			if (rs.next()) {
+				serv = recuperarDatosServicio(rs);
 			}
-			
 			cnx.close();
-
+			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
-		}/* finally {
-			 try { if(rs != null) rs.close(); if(stm != null) stm.close(); if(cnx != null)
-			 cnx.close(); } catch (Exception e2){}	 
-		}*/
-		return lst;
-
-	}
-	
-	@Override
-	public Servicio consultarId(int id) {
-		return null;
+		}
+		
+		return serv;
 	}
 
 	@Override
@@ -89,7 +70,7 @@ public class DaoServicio extends Conexion implements CRUD<Servicio> {
 			stm = cnx.prepareStatement(sql);
 			stm.setString(1, s.getNomServicio());
 			stm.setString(2, s.getDescripcion());
-			stm.setInt(3, s.getIdServicio());
+			//stm.setInt(3, s.getIdServicio());
 			stm.executeUpdate();
 			cnx.commit();
 			cnx.close();
@@ -115,5 +96,66 @@ public class DaoServicio extends Conexion implements CRUD<Servicio> {
 			throw new RuntimeException(e);
 		}
 		return 0;
+	}
+	
+	// LISTAR SERVICIOS
+	public List<Servicio> listar() {
+
+		List<Servicio> lst = new ArrayList<Servicio>();
+		Servicio serv = null;
+		String sql = "select * from servicio";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				serv = recuperarDatosServicio(rs);
+				lst.add(serv);
+			}
+			cnx.close();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return lst;
+	}
+	
+	public List<Servicio> listar(boolean estado){
+		List<Servicio> lst = new ArrayList<Servicio>();
+		Servicio serv = null;
+		String sql = "select * from servicio where estado_activ=?";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setBoolean(1, estado);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				serv = recuperarDatosServicio(rs);
+				lst.add(serv);
+			}
+			cnx.close();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return lst;
+	}
+	
+	private Servicio recuperarDatosServicio(ResultSet rs ) {
+		Servicio serv = new Servicio();
+		try {
+			serv.setIdServicio(rs.getInt("id_servicio"));
+			serv.setNomServicio(rs.getString("nombre_serv"));
+			serv.setDescripcion(rs.getString("descripcion"));
+			serv.setEstadoActivo(rs.getBoolean("estado_activ"));
+			serv.setImagen(rs.getBytes("foto_serv"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return serv;
 	}
 }

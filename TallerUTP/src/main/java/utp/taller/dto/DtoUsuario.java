@@ -1,8 +1,12 @@
 
 package utp.taller.dto;
 
-public class DtoUsuario {
+import java.io.Serializable;
 
+public class DtoUsuario implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	
 	// ATRIBUTOS
 	private int idPersona;
 	private String idUsuario;

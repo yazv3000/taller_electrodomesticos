@@ -10,7 +10,6 @@ import java.util.List;
 
 import utp.config.Conexion;
 import utp.taller.entidades.CategoriaPieza;
-import utp.taller.entidades.Especialidad;
 import utp.taller.entidades.Pieza;
 
 public class DaoPieza extends Conexion implements CRUD<Pieza> {

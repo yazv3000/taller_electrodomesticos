@@ -3,8 +3,10 @@ package utp.taller.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import utp.config.Conexion;
+import utp.taller.dto.DtoNuevaCita;
 import utp.taller.entidades.Atencion;
 
 public class DaoAtencion extends Conexion implements CRUD<Atencion> {
@@ -50,16 +52,19 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 		return 0;
 	}
 	
-	public void insertarCita(Atencion ate) {
-		String sql = "call sp_nueva_cita(?, ?, ?)";
+	public void insertarCita(DtoNuevaCita cita) {
+		String sql = "call sp_nueva_cita(?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
 		
 		try {
 			stm = cnx.prepareCall(sql);
-			stm.setInt(1, ate.getIdElectro());
-			stm.setInt(2, ate.getIdHorario());
-			stm.setString(3, ate.getLugar());
-
+			stm.setInt(1, cita.getElectrodomestico().getIdElectrod());
+			stm.setInt(2, cita.getDtoHora().getIdHorario());
+			stm.setInt(3, cita.getServicio().getIdServicio());
+			stm.setString(4, cita.getLugar());
+			stm.setString(5, cita.getFallaElectrodomestico());
+			stm.setObject(6, LocalDate.now());
+			
 			stm.execute(); 
 			cnx.close();
 		} catch (SQLException e) {

@@ -1,16 +1,15 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ page session="true" %>
+<c:set var="context" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
-<html>
+<html lang="es-PE">
 <head>
-<meta charset="ISO-8859-1">
-<c:set var="context" value="${pageContext.request.contextPath}" />
-<link rel="stylesheet" href="${context}/css/horario.css">
-<script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
+	<meta charset="ISO-8859-1">
+	<link rel="stylesheet" href="${context}/css/horario.css">
+	<script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
 
-<title>Insert title here</title>
 </head>
 <body>
 
@@ -55,9 +54,10 @@
 	                                                <c:forEach var="hora" items="${dia.value}"> 
 	                                                    <tr>
 	                                                        <td class="tabla-2__hora">
-	                                                        	<Button onclick="location.href='ServletCita?accion=resumen&servicio=${servicio}&idHorario=${hora.getIdHorario()}'">
-	                                                        		<c:out value="${hora.getHoraInicio()}"/>
-	                                                        	</Button>
+	                                                        <form action="${context}/ServletNuevaCita" method="post">
+										                    	<input type="hidden" name="horario" value="${hora.getIdHorario()}" />
+										                    	<button class="serv__link" type="submit" name="accion" value="resumen"><c:out value="${hora.getHoraInicio()}"/></button>
+										                	</form>
 	                                                        </td>
 	                                                    </tr>
 													</c:forEach>

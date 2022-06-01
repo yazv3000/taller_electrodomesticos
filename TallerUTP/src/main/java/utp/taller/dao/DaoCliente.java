@@ -107,8 +107,7 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 			stm.setInt(8, cli.getIdDistrito());
 			stm.setString(9, cli.getDireccion());
 			stm.setString(10, cli.getEmail());
-			//stm.setString(11, cli.getContrasena());
-			stm.setString(11, "por defecto");
+			stm.setString(11, cli.getContrasena());
 			stm.setBytes(12, cli.getFoto());
 			stm.execute(); 
 			cnx.close();
@@ -163,6 +162,29 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 		return 0;
 	}
 	
+	public DtoClienteConsulta consultarDtoCliente(int idCliente) {
+		DtoClienteConsulta cli = new DtoClienteConsulta();
+
+		String sql = "select * from v_clientes where id_persona=?";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, idCliente);
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				cli = recuperarDatosDto(rs);
+			}
+			cnx.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return cli;
+	}
+	
 	// LISTA DE CLIENTES PARA MOSTRAR EN LA TABLA DE MANTENIMIENTO
 	public List<DtoClienteConsulta> listarDtoClientes() {
 		
@@ -214,31 +236,6 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 		}
 		return lst;
 	}
-	
-	public DtoClienteConsulta consultarDtoCliente(int idCliente) {
-		DtoClienteConsulta cli = new DtoClienteConsulta();
-
-		String sql = "select * from v_clientes where id_persona=?";
-
-		cnx = getConnection();
-		ResultSet rs = null;
-
-		try {
-			stm = cnx.prepareStatement(sql);
-			stm.setInt(1, idCliente);
-			rs = stm.executeQuery();
-			if (rs.next()) {
-				cli = recuperarDatosDto(rs);
-			}
-			cnx.close();
-			
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return cli;
-	}
-		
-
 
 	// MÉTODOS PRIVADOS
 	private DtoClienteConsulta recuperarDatosDto(ResultSet rs ) {

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ page session="true" %>
 <c:set var="context" value="${pageContext.request.contextPath}" /> 
 
 <!DOCTYPE html>
@@ -12,7 +13,9 @@
     <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
     <link rel="icon" href="${context}/img/Logoa.png" type="image/png" >
     <link rel="stylesheet" href="${context}/css/menu-tecnico.css">
+    <title>Taller-UTP</title>
 </head>
+
 <body>
     <nav class="navegador">
         <div class="nav__contenido">
@@ -25,22 +28,22 @@
 
                 <ul class="nav__lista nav__lista--ocultar">
                     <li class="nav__item">
-                        <a href="${context}/vista/tecnico/tecnico-cita.jsp" class="nav__link" target="marco">Citas</a>
+                        <a href="<%=request.getContextPath()%>/ServletCitasCliente" class="nav__link" target="marco">Citas</a>
                         <div class="nav__linea"></div>
-                    </li>
+                    </li>   
                     <li class="nav__item">
-                        <a href="${context}/ServletGestionarHorario?accion=listarTecnico" class="nav__link" target="marco">Horario</a>
+                        <a href="<%=request.getContextPath()%>/ServletElectrodomesticos" class="nav__link" target="marco">Electrodomésticos</a>
                         <div class="nav__linea"></div>
-                    </li>  
+                    </li>   
                     <li class="nav__item">
-                        <a href="#" class="nav__link" target="">Nuevo</a>
+                        <a href="<%=request.getContextPath()%>/ServletServicios" class="nav__link" target="marco">Servicios</a>
                         <div class="nav__linea"></div>
                     </li>      
                 </ul>
                 
                 <div class="nav__user">
                     <img class="nav__img" src="${context}/img/tony.jpg" alt="">
-                    <a class="nav__name" href="#">Tony Stark</a>
+                    <a class="nav__name" href="#"><c:out value="${sessionScope.dtoUsuario.getUsername()}"/></a>
                 </div>
                 <div class="nav__barras">
                     <i class="fa-solid fa-bars icono"></i>
@@ -48,8 +51,8 @@
             </div>
         </div>
     </nav>
-
-    <iframe class="marco" name="marco" frameborder="0"></iframe>
+   
+    <iframe src="<%=request.getContextPath()%>/ServletServicios" class="marco" name="marco" frameborder="0"></iframe>
     <script src="${context}/js/menu-tec.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
-package utp.taller.controller;
+package utp.taller.controller.atencion;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -12,77 +13,91 @@ import javax.servlet.http.HttpServletResponse;
 import utp.taller.dao.DaoAtencion;
 import utp.taller.dao.DaoElectrodomestico;
 import utp.taller.dao.DaoHorario;
-import utp.taller.dto.DtoConsultaCita;
-import utp.taller.entidades.Atencion;
+import utp.taller.dao.DaoServicio;
+import utp.taller.dto.DtoHoraConsulta;
+import utp.taller.dto.DtoNuevaCita;
+import utp.taller.dto.DtoUsuario;
 import utp.taller.entidades.Electrodomestico;
 import utp.taller.entidades.ElectrodomesticoMarca;
 import utp.taller.entidades.ElectrodomesticoTipo;
+import utp.taller.entidades.Servicio;
 
 /**
- * Servlet implementation class ServletCita
+ * Servlet implementation class ServletNuevaCita
  */
-@WebServlet("/ServletCita")
-public class ServletCita extends HttpServlet {
+@WebServlet("/ServletNuevaCita")
+public class ServletNuevaCita extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    
-    public ServletCita() {
-        super();
-        
+    private DtoNuevaCita dtoCita = new DtoNuevaCita();
+	
+    public ServletNuevaCita() {
+        super();   
     }
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String accion = request.getParameter("accion");
     	
-  
     	switch (accion) {
     	
     	case "resumen":
-    		int idHorario = Integer.parseInt(request.getParameter("idHorario"));
-        	String idServicio = request.getParameter("servicio");
-        	//System.out.println(idHorario + " " + idServicio + "<<<------------"); 
+    		DaoHorario daoHora = new DaoHorario();
+    		DaoServicio daoServ = new DaoServicio();
+    		int idHor = Integer.parseInt(request.getParameter("horario"));
+    		int idServ = Integer.parseInt((String) request.getSession().getAttribute("id_servicio"));
+    		
+    		DtoHoraConsulta dtoHora =  daoHora.consultarDtoHora(idHor);
+    		Servicio  servicio = daoServ.consultarId(idServ);
+    		
+    		System.out.println(servicio.getNomServicio());
+    		
+    		dtoCita.setServicio(servicio);
+    		dtoCita.setDtoHora(dtoHora);
+    		dtoCita.setLugar("A domicilio");
+    		dtoCita.setFechaReserva(new Date());
+    		
     		listarMarcas(request);
     		listarTipos(request);
-    		DaoHorario daoHora = new DaoHorario();
-    		DtoConsultaCita dtoCita = daoHora.seleccionarHora(idHorario,idServicio);
     		request.setAttribute("dtoCita", dtoCita);
-    		request.getRequestDispatcher("/vista/cliente/cita.jsp").forward(request, response);
+    		
+
+    		request.getRequestDispatcher("/vista/cliente/reservaCita.jsp").forward(request, response);
     		break;
     		
     	case "confirmar":
 		
     		Electrodomestico electro = new Electrodomestico();
+    		DtoUsuario propietario = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");
     		
     		electro.setNroSerie(request.getParameter("serie"));
     		electro.setModelo(request.getParameter("modelo"));
     		electro.setIdtipoElectrod(Integer.parseInt(request.getParameter("tipo")));
     		electro.setIdmarca(Integer.parseInt(request.getParameter("marca")));
-    		electro.setIdpropietario(Integer.parseInt(request.getParameter("idPersona")));
+    		electro.setIdpropietario(propietario.getIdPersona());
+    		electro.setEstadoActivo(true);
+    		dtoCita.setElectrodomestico(electro);
+    		dtoCita.setFallaElectrodomestico(request.getParameter("txt_falla"));
+    		
+    		// Agregar el electrodoméstico a la bd
     		DaoElectrodomestico daoElectro = new DaoElectrodomestico();
     		daoElectro.insertar(electro);
     		
-    		if (daoElectro.maxId() != 0){
+    		int idElectro = daoElectro.maxId(propietario.getIdPersona());
+    		
+    		if (idElectro != 0){
     			DaoAtencion daoAte = new DaoAtencion();
-    			Atencion ate = new Atencion();
-    			ate.setIdHorario(Integer.parseInt(request.getParameter("idHorario")));
-    			ate.setIdElectro(daoElectro.maxId());
-    			ate.setLugar("A domicilio");
-    			daoAte.insertarCita(ate);
+    			dtoCita.getElectrodomestico().setIdElectrod(idElectro);
+    			daoAte.insertarCita(dtoCita);
     		}
     		
-    		request.getRequestDispatcher("/vista/cliente/detalleCita.jsp").forward(request, response);
+    		//request.getRequestDispatcher("/ServletServicios").forward(request, response);
+    		request.getRequestDispatcher("/vista/cliente/servicios.jsp").forward(request, response);
     		break;
     	}
     	
 	}
     
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request, response);
-	}
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		processRequest(request, response);
 	}
 	

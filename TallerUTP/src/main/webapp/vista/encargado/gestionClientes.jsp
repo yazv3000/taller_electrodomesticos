@@ -1,14 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"  pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+    <c:set var="context" value="${pageContext.request.contextPath}" /> 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es-PE">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <c:set var="context" value="${pageContext.request.contextPath}" /> 
+
     <link rel="stylesheet" type="text/css" href="${context}/css/tabla.css">
     <link rel="icon" href="img/Logo.png" type="image/png">
     <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
@@ -145,7 +146,7 @@
 			            </div>
 			            <div class="form__grupo" align="center">
 			                <div class="input-group">
-						      <input ID="txtPassword" type="Password" Class="form__input form-control" placeholder="Contraseña" name="txt_pass" required>
+						      <input id="txtPassword" type="password" class="form__input form-control" placeholder="Contraseña" name="txt_pass" required>
 						      <div class="input-group-append">
 				              <button style="color: white;" id="show_password" class="btn btn__cerrar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
 				          	  </div>

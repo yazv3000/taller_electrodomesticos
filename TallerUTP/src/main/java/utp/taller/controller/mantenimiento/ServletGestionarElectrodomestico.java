@@ -1,4 +1,4 @@
-package utp.taller.controller;
+package utp.taller.controller.mantenimiento;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,7 +34,6 @@ public class ServletGestionarElectrodomestico extends HttpServlet {
 	
     public ServletGestionarElectrodomestico() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)

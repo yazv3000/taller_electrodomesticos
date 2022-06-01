@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utp.config.Conexion;
-import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoTecnicoConsulta;
 import utp.taller.dto.DtoUsuario;
 import utp.taller.entidades.Tecnico;

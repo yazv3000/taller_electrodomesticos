@@ -59,7 +59,7 @@ public class DaoElectrodomestico extends Conexion implements CRUD<Electrodomesti
 		try {
 			stm = cnx.prepareStatement(sql);
 			stm.setString(1, elec.getNroSerie());
-			stm.setInt(2, elec.getIdtipoElectrod()); 	// falta cambiar id_tipoe e id_marca a consulta
+			stm.setInt(2, elec.getIdtipoElectrod()); 
 			stm.setString(3, elec.getModelo());
 			stm.setInt(4, elec.getIdmarca());
 			stm.setInt(5, elec.getIdpropietario());
@@ -254,16 +254,17 @@ public class DaoElectrodomestico extends Conexion implements CRUD<Electrodomesti
 		return lst;
 	}
 	
-	public int maxId() {
+	public int maxId(int idPropietario) {
 		int idElectro = 0;
-		String sql = "SELECT MAX(id_electrodomestico) AS id FROM electrodomestico";
+		String sql = "SELECT MAX(id_electrodomestico) AS id FROM electrodomestico where id_propietario=?";
 		cnx = getConnection();
 		ResultSet rs = null;
 		try {
 			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, idPropietario);
 			rs = stm.executeQuery();
 
-			while (rs.next()) {
+			if (rs.next()) {
 				idElectro = rs.getInt(1);	
 			}
 			cnx.close();

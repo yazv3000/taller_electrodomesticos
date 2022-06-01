@@ -91,7 +91,7 @@
             </div>
 			
 			<div class="ventana">
-            <iframe src="<%=request.getContextPath()%>/ServletGestionarCliente?accion=listar" id="ventana__contenido" name="marco"></iframe>
+            <iframe frameborder="0" id="ventana__contenido" name="marco"></iframe>
 			</div>
         </div>
 
