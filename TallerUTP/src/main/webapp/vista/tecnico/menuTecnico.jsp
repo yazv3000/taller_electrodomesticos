@@ -25,15 +25,15 @@
 
                 <ul class="nav__lista nav__lista--ocultar">
                     <li class="nav__item">
-                        <a href="${context}/vista/tecnico/tecnico-cita.jsp" class="nav__link" target="marco">Citas</a>
+                        <a href="${context}/ServletActualizarAtencion" class="nav__link" target="marco">Citas</a>
                         <div class="nav__linea"></div>
                     </li>
                     <li class="nav__item">
-                        <a href="${context}/ServletGestionarHorario?accion=listarTecnico" class="nav__link" target="marco">Horario</a>
+                        <a href="${context}/ServletGestionarHorario?accion=listarTecnico" class="nav__link" target="marco">Horarios</a>
                         <div class="nav__linea"></div>
                     </li>  
                     <li class="nav__item">
-                        <a href="#" class="nav__link" target="">Nuevo</a>
+                        <a href="#" class="nav__link" target="">Atención Taller </a>
                         <div class="nav__linea"></div>
                     </li>      
                 </ul>

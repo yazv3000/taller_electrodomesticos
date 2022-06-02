@@ -1,18 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page session="true" %>
+<c:set var="context" value="${pageContext.request.contextPath}" />
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es-PE">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <c:set var="context" value="${pageContext.request.contextPath}" />
     <link rel="stylesheet" href="${context}/css/tecnico-citas.css">
     <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <title>Document</title>
 </head>
 
 <body>
@@ -26,42 +27,28 @@
                         <th>ID</th>
                         <th>Cliente</th>
                         <th>Direccion</th>
-                        <th>Telefono</th>
                         <th>Fecha</th>
                         <th>Hora</th>
                         <th>Servicio</th>
                         <th>Electrodomestico</th>
-                        <th>Estado Atencion</th>
                         <th>Detalles</th>
                     </tr>
                 </thead>
                 <tbody class="tabla__info">
+                      <c:forEach items="${lstConsultaCitas}" var="ci">       
                     <tr id="tabla__fila">
-                        <td class="tabla__columna">10</td>
-                        <td class="tabla__columna">Juan Perez</td>
-                        <td class="tabla__columna">Cerro colorado</td>
-                        <td class="tabla__columna">990540845</td>
-                        <td class="tabla__columna">12-10-2022</td>
-                        <td class="tabla__columna">16:00</td>
+                        <td class="tabla__columna"><c:out value="${ci.getIdAtencion()}"></c:out></td>
+                        <td class="tabla__columna"><c:out value="${ci.getNombreCliente()}"></c:out></td>
+                        <td class="tabla__columna"><c:out value="${ci.getDistritoYdireccion()}"></c:out></td>
+                        <td class="tabla__columna"><c:out value="${ci.getFechaAtencion()}"></c:out></td>
+                        <td class="tabla__columna"><c:out value="${ci.getHoraAtencion()}"></c:out></td>
                         <td class="tabla__columna">Reparacion</td>
-                        <td class="tabla__columna">Refrigeradora</td>
+                        <td class="tabla__columna"><c:out value="${ci.getTipoElectrodomestico()}"></c:out></td>
                         <td class="tabla__columna">Pendiente</td>
-                        <td class="tabla__columna"><a class="informacion" href=""><i class="fa-solid fa-file-pen icon"
-                                    target="marco-atencion"></i></a></td>
-                    </tr>
-                    <tr id="tabla__fila">
-                        <td class="tabla__columna">11</td>
-                        <td class="tabla__columna">Juan Perez</td>
-                        <td class="tabla__columna">Cerro colorado</td>
-                        <td class="tabla__columna">990540845</td>
-                        <td class="tabla__columna">12-10-2022</td>
-                        <td class="tabla__columna">16:00</td>
-                        <td class="tabla__columna">Reparacion</td>
-                        <td class="tabla__columna">Refrigeradora</td>
-                        <td class="tabla__columna">Concluido</td>
-                        <td class="tabla__columna"><a class="informacion" href=""><i class="fa-solid fa-file-pen icon"
-                                    target="marco-atencion"></i></a></td>
-                    </tr>
+                        <td class="tabla__columna">
+                        	<a class="informacion" href=""><i class="fa-solid fa-file-pen icon" target="marco-atencion"></i></a></td>
+                    	</tr>
+                    	 </c:forEach>
                 </tbody>
             </table>
         </div>

@@ -247,7 +247,8 @@ WITH (
 ) 
 AS
 select E.id_electrodomestico, E.nro_serie, TE.nom_tipo_electro as tipo,
-E.modelo, M.nombre_marca as marca, C.nombres as propietario, E.estado_activ
+E.modelo, M.nombre_marca as marca, 
+E.id_propietario, C.nombres as propietario, E.estado_activ
 from electrodomestico E inner join tipo_electrodomestico TE on TE.id_tipo_electro = E.id_tipo_electro 
 inner join marca M on E.id_marca = M.id_marca
 inner join v_clientes C on C.id_persona = E.id_propietario;
@@ -280,6 +281,23 @@ left join persona T on T.id_persona = H.id_tecnico
 left join persona C on C.id_persona = E.id_propietario  
 where estado_atencion = 'Pendiente' and A.estado_activ;
 ----------------------------------------------------------
+CREATE OR REPLACE VIEW public.v_citas_domicilio
+WITH (
+  security_barrier=true
+) 
+AS
+select A.id_atencion, 
+C.nombres as nombre_cliente,
+concat(C.nombre_distrito,', ',c.direccion) as direc_cliente,
+E.tipo as tipo_electro,
+T.id_persona as id_tecnico, T.nombres as nombre_tecnico,
+H.fecha_atencion, H.hora_inicio, A.tipo as lugar
+from atencion A inner join horario_atencion H on A.id_horario = H.id_horario 
+inner join v_electrodomesticos E on E.id_electrodomestico = A.id_electro
+left join v_tecnicos T on T.id_persona = H.id_tecnico
+left join v_clientes C on C.id_persona = E.id_propietario  
+where estado_atencion = 'Pendiente' and A.tipo = 'A domicilio'
+and A.estado_activ;
 /*********************************************************
   SCRIPT : FUNCIONES: taller_utp (POSTGRESQL)
 *********************************************************/

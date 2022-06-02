@@ -25,7 +25,6 @@ public class Tecnico extends Persona{
 		public int getIdEspecialidad() {return idEspecialidad;	}
 		public void setIdEspecialidad(int especialidad) {	this.idEspecialidad = especialidad;	}
 
-		// falta setter horariosDisponibles
 		public List<Horario> getHorariosDisponibles() {			return horariosDisponibles;		}
 
 }
