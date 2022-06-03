@@ -56,7 +56,9 @@
 	                                                        <td class="tabla-2__hora">
 	                                                        <form action="${context}/ServletNuevaCita" method="post">
 										                    	<input type="hidden" name="horario" value="${hora.getIdHorario()}" />
-										                    	<button class="serv__link" type="submit" name="accion" value="resumen"><c:out value="${hora.getHoraInicio()}"/></button>
+										                    	
+										                    	<button class="serv__link ${hora.getEstado() eq 'Reservado' ? 'desactivado':''}"  ${hora.getEstado() eq 'Reservado' ? 'disabled':''} type="submit" name="accion" value="resumen"><c:out value="${hora.getHoraInicio()}"/></button>
+										                    	
 										                	</form>
 	                                                        </td>
 	                                                    </tr>

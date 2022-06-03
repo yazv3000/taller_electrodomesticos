@@ -25,7 +25,7 @@ import utp.taller.entidades.Horario;
 
 /**
  * Servlet implementation class ServletHorariosDisponibles
- */
+*/
 @WebServlet("/ServletHorariosDisponibles")
 public class ServletHorariosDisponibles extends HttpServlet {
 	

@@ -46,7 +46,7 @@
                         <td class="tabla__columna"><c:out value="${ci.getTipoElectrodomestico()}"></c:out></td>
                         <td class="tabla__columna">Pendiente</td>
                         <td class="tabla__columna">
-                        	<a class="informacion" href=""><i class="fa-solid fa-file-pen icon" target="marco-atencion"></i></a></td>
+                        	<a class="informacion" href="${context}/ServletResumenAtencion?id=${ci.getIdAtencion()}" target="marco-atencion"><i class="fa-solid fa-file-pen icon"></i></a></td>
                     	</tr>
                     	 </c:forEach>
                 </tbody>

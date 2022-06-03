@@ -146,6 +146,7 @@ body {
 
 .nav__name {
     display: inline-block;
+    width: max-content;
     height: 20px;
     margin: auto;
     /* line-height: 80px; */
@@ -160,7 +161,7 @@ body {
 .marco {
     /* background-color: green; */
     width: 100%;
-    height: calc(100vh - 83px);
+    height: calc(100vh - 100px);
 }
 
 

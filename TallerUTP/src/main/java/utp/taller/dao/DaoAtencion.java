@@ -71,37 +71,58 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 		}
 	}
 	//LISTAR ATENCION
-	public List<DtoAtencion> listarAtencion(){
-		List<DtoAtencion> lst = new ArrayList<DtoAtencion>();
+	public DtoAtencion listarAtencion(int idAtencion){
 		DtoAtencion ate = null;
-		String sql = "select * from v_resumenAtencion";
+		String sql = "select * from v_resumenAtencion where id_atencion=?";
 		cnx = getConnection();
 		ResultSet rs = null;
+		
 		try {
-			while (rs.next()) {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, idAtencion);
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				ate = new DtoAtencion();
 				ate.setIdCita(rs.getInt(1)+"");
 				DtoClienteConsulta cliente = new DtoClienteConsulta();
-				cliente.setNombreCompleto(rs.getString(2));
-				cliente.setTelefono(rs.getString(3));
-				cliente.setDistrito(rs.getString(4));
-				cliente.setDireccion(rs.getString(5));
+				cliente.setNombreCompleto(rs.getString("nombres"));
+				cliente.setTelefono(rs.getString("telefono"));
+				cliente.setDistrito(rs.getString("nombre_distrito"));
+				cliente.setDireccion(rs.getString("direccion"));
 				ate.setCliente(cliente);
+				
+				ate.setFechaCita(rs.getDate("fecha_atencion"));
+				
 				Servicio servicio = new Servicio();
-				servicio.setNomServicio(rs.getString(6));
+				servicio.setNomServicio(rs.getString("nombre_serv"));
 				ate.setServicio(servicio);
+				
+				
+				
 				Electrodomestico electro = new Electrodomestico();
-				electro.setNroSerie(rs.getString(7));
+				electro.setNroSerie(rs.getString("nro_serie"));
+				electro.setModelo(rs.getString("modelo"));
+				ate.setElectrodomestico(electro);
+				
 				ElectrodomesticoTipo elecTipo = new ElectrodomesticoTipo();
-				elecTipo.setNombre(rs.getString(8));
-				electro.setModelo(rs.getString(9));
+				elecTipo.setNombre(rs.getString("tipo_electro"));
+				ate.setElectrodomesticoTipo(elecTipo);
+				
 				ElectrodomesticoMarca elecMarca = new ElectrodomesticoMarca();
-				elecMarca.setNombre(rs.getString(10));
+				elecMarca.setNombre(rs.getString("marca"));
+				ate.setElectrodomesticoMarca(elecMarca);
+				
+				ate.setHoraCita(rs.getString("hora_inicio"));
+				ate.setTipoAtencion(rs.getString("tipo"));
+				ate.setFallaDescrita(rs.getString("falla_descrita"));
+				
+				ate.setFechaReservaCita(rs.getDate("fecha_reserva_cita"));
+				
 			}
 		}	catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		return lst;
-
+		return ate;
 	}
 	
 	// LISTAR CITAS

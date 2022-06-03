@@ -9,7 +9,7 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="${context}/css/electro.css">
+	
 	<link rel="stylesheet" href="${context}/css/cita.css">
 	<link rel="icon" type="image/png" href="${context}/img/Logoa.png">
 	<script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>

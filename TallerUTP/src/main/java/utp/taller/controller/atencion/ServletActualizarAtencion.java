@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import utp.taller.dao.DaoAtencion;
+import utp.taller.dto.DtoAtencion;
 import utp.taller.dto.DtoCitaConsulta;
 import utp.taller.dto.DtoUsuario;
 
@@ -31,6 +32,7 @@ public class ServletActualizarAtencion extends HttpServlet {
 		// Precondición técnico ha iniciado sesión
 		DtoUsuario user_tecnico = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");
 		
+			
 		if(user_tecnico==null) {
 			
 			System.out.println("*".repeat(20)+ "No ha iniciado sesión"+"*".repeat(20));
@@ -38,6 +40,8 @@ public class ServletActualizarAtencion extends HttpServlet {
 			
 		}else {
 			List<DtoCitaConsulta> lst = dao.listarCitasDomicilio(user_tecnico.getIdPersona());
+			
+			
 			request.getSession().setAttribute("lstConsultaCitas", lst);
 			request.getRequestDispatcher("vista/tecnico/atencionDomicilio.jsp").forward(request, response);
 		}
