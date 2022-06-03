@@ -29,7 +29,7 @@
 	            <ul>
 	            	<li><button class="fa-solid fa-plus-square icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"></button></li>
 	                <li><button class="fa-solid fa-pen icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
-	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarCliente?accion=listar'" >Todos</button></li>
+	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarCliente?accion=listar&lista=todos'" >Todos</button></li>
 	                <li><button type="button" class="btn btn-success" onclick="location.href='ServletGestionarCliente?accion=listar&lista=activos'" >Activos</button><li>
 	                <li><button type="button" class="btn btn-danger" onclick="location.href='ServletGestionarCliente?accion=listar&lista=inactivos'">Inactivos</button><li>
 	            </ul>
@@ -152,6 +152,13 @@
 				          	  </div>
 			    			</div>
 			            </div>
+			            <div class="form__grupo" align="center">
+			                <div class="input-group">
+						      <input type="file" name="imagen">
+				          	  </div>
+			    			</div>
+			            </div>        	
+			            
 			        </div>
 			        <div class="row align-items-center pt-4">
 				      	<div class="form__grupo col-12">
@@ -245,6 +252,14 @@
 			                <label for="" class="form__label">Correo Electronico:</label>
 			                <span class="form__line"></span>
 			            </div>
+			            
+			            <div class="form__grupo" align="center">
+			                <div class="input-group">
+						      <input type="file" name="imagen">
+				          	  </div>
+			    			</div>
+			            </div>  
+			            
 			        </div>
 			        <div class="row align-items-center pt-4">
 			            <div class="form__grupo col-12">

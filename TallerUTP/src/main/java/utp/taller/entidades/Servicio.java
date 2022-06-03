@@ -7,7 +7,7 @@ public class Servicio {
 	private String nomServicio;
 	private String descripcion;
 	private boolean estadoActivo;
-	private byte[] imagen;
+	private String rutaImgServicio;
 
 	// CONSTRUCTORES
 	public Servicio() {}
@@ -25,7 +25,7 @@ public class Servicio {
 	public boolean isEstadoActivo() 		{return estadoActivo;	}
 	public void setEstadoActivo(boolean estadoActivo)		{this.estadoActivo = estadoActivo;}
 
-	public byte[] getImagen() {		return imagen;	}
-	public void setImagen(byte[] imagen) {		this.imagen = imagen;	}
+	public String getRutaImgServicio() {		return rutaImgServicio;	}
+	public void setRutaImgServicio(String rutaImgServicio) {		this.rutaImgServicio = rutaImgServicio;	}
 	
 }

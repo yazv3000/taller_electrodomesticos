@@ -22,7 +22,7 @@ public class ServletGestionarEncargado extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	DaoEncargado dao = new DaoEncargado();
-	
+	private static String tipoLista;
 	
     public ServletGestionarEncargado() {
         super();
@@ -32,6 +32,13 @@ public class ServletGestionarEncargado extends HttpServlet {
             throws ServletException, IOException {
     	
     	String accion = request.getParameter("accion");
+    	
+		if (tipoLista == null && request.getParameter("lista")==null) {
+			tipoLista = "todos";
+		}else if(request.getParameter("lista")!=null) {
+			tipoLista = request.getParameter("lista");
+		}
+		
     	
     	switch (accion) {
 			case "listar": 

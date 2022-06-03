@@ -35,7 +35,15 @@
 		<div class="resumen">
 			<div class="tecnico__datos">
 				<div class="tecnico__img">
-					<img src="${context}/img/tony.jpg" alt="">
+					<c:set var="foto_tecnico" value="${dtoCita.getDtoHora().getFotoTecnico()}" />
+                     <c:choose>
+                       <c:when test="${foto_tecnico==null}">
+                       <img class="nav__img" src="${context}/default.jpg" alt="">
+                       </c:when>
+                       <c:otherwise>
+				        <img class="nav__img" src="${context}/${foto_tecnico}" alt="">
+				    </c:otherwise>
+                      </c:choose>
 				</div>
 				<h3>${dtoCita.getDtoHora().getNombreTecnico()}</h3>
 				<p class="tecnico__nombre">${dtoCita.getDtoHora().getEspecialidad()}</p>

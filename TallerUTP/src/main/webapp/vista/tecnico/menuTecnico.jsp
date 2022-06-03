@@ -33,15 +33,26 @@
                         <div class="nav__linea"></div>
                     </li>  
                     <li class="nav__item">
-                        <a href="#" class="nav__link" target="">Atención Taller </a>
+                        <a href="#" class="nav__link" target="">Taller </a>
                         <div class="nav__linea"></div>
                     </li>      
                 </ul>
                 
+                <!--===== DATOS DEL USUARIO =====-->
                 <div class="nav__user">
-                    <img class="nav__img" src="${context}/img/tony.jpg" alt="">
-                    <a class="nav__name" href="#">Tony Stark</a>
+                	 <c:set var="foto_perfil" value="${sessionScope.dtoUsuario.getProfilePic()}" />
+              	     <c:choose>
+                       <c:when test="${foto_perfil==null}">
+                       	<img class="nav__img" src="${context}/img/personas/default.jpg" alt="">
+                       </c:when>
+                       <c:otherwise>
+				        <img class="nav__img" src="${context}/${foto_perfil}" alt="">
+				    </c:otherwise>
+                      </c:choose>
+                    
+                    <a class="nav__name" href="#"><c:out value="${sessionScope.dtoUsuario.getUsername()}"/></a>
                 </div>
+                <!--====FIN DATOS DEL USUARIO ====-->
                 <div class="nav__barras">
                     <i class="fa-solid fa-bars icono"></i>
                 </div>
@@ -49,7 +60,7 @@
         </div>
     </nav>
 
-    <iframe class="marco" name="marco" frameborder="0"></iframe>
+    <iframe src="<%=request.getContextPath()%>/ServletActualizarAtencion" class="marco" name="marco" frameborder="0"></iframe>
     <script src="${context}/js/menu-tec.js"></script>
 </body>
 </html>

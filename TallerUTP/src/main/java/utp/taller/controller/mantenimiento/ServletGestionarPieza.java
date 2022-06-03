@@ -24,7 +24,8 @@ public class ServletGestionarPieza extends HttpServlet {
 	private DaoPieza dao = new DaoPieza();
 	private Pieza pieza = new Pieza();
 	private int idPieza;
- 
+	private static String tipoLista;
+	
     public ServletGestionarPieza() {
         super();
     }
@@ -34,10 +35,10 @@ public class ServletGestionarPieza extends HttpServlet {
     	
     	String accion = request.getParameter("accion");
     	
-		String tipoLista = request.getParameter("lista");
-    	
-		if (tipoLista == null) {
+		if (tipoLista == null && request.getParameter("lista")==null) {
 			tipoLista = "todos";
+		}else if(request.getParameter("lista")!=null) {
+			tipoLista = request.getParameter("lista");
 		}
 
     	switch (accion) {

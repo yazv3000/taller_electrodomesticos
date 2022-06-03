@@ -36,7 +36,7 @@
                 <li><a href="<%=request.getContextPath()%>/ServletServicios">Servicio</a></li>
                 <li><a href="#">Nosotros</a></li>
                 <li><a class="nav__sesion" data-bs-toggle="modal" data-bs-target="#staticBackdrop1" >Sesion</a></li>
-                <li><a href="<%=request.getContextPath()%>/ServletIniciarSesion?accion=listarDis" data-bs-target="#staticBackdrop2">Contacto</a></li>
+                <li><a href="#" data-bs-target="#staticBackdrop2">Contacto</a></li>
             </ul>
         </nav>
     </div>
@@ -45,37 +45,37 @@
         <div class="hex">
             <div class="hex__fondo hex-1">
                 <div class="hex__img">
-                    <img src="img/auricular.png" alt="" >
+                    <img src="img/servicios/asesoria.png" alt="" >
                 </div>
             </div>
             <div class="hex__fondo hex-2">
                 <div class="hex__img">
-                    <img src="img/usuario.png" alt="" >
+                    <img src="img/inicio/usuario.png" alt="" >
                 </div>
             </div>
             <div class="hex__fondo hex-3">
                 <div class="hex__img">
-                    <img src="img/info.png" alt="" >
+                    <img src="img/inicio/info.png" alt="" >
                 </div>
             </div>
             <div class="hex__fondo hex-4">
                 <div class="hex__img">
-                    <img src="img/servicio.png" alt="" >
+                    <img src="img/inicio/servicio.png" alt="" >
                 </div>
             </div>
             <div class="hex__fondo hex-5">
                 <div class="hex__img">
-                    <img src="img/telefono.png" alt="" >
+                    <img src="img/inicio/telefono.png" alt="" >
                 </div>
             </div>
             <div class="hex__fondo hex-6">
                 <div class="hex__img">
-                    <img src="img/auricular.png" alt="" >
+                    <img src="img/servicios/asesoria.png" alt="" >
                 </div>
             </div>
             <div class="hex__fondo hex-7">
                 <div class="hex__img">
-                    <img src="img/mundo.png" alt="" >
+                    <img src="img/inicio/mundo.png" alt="" >
                 </div>
             </div>
         </div>

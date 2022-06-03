@@ -35,7 +35,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 				dtoTec.setRol(rs.getString(3));
 				dtoTec.setUsername(rs.getString(4));
 				dtoTec.setEmail(rs.getString(5));
-				dtoTec.setProfilePic(rs.getBytes(6));
+				dtoTec.setProfilePic(rs.getString(6));
 			}
 			cnx.close();
 			
@@ -78,7 +78,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 				tec.setDireccion(rs.getString(13));
 				tec.setEmail(rs.getString(14));
 				tec.setContrasena(rs.getString(15));
-				tec.setFoto(rs.getBytes(16));
+				tec.setRutaFoto(rs.getString(16));
 				tec.setEstadoActivo(rs.getBoolean(17));
 			}
 			
@@ -110,7 +110,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 			stm.setInt(12, tec.getIdEspecialidad());
 			stm.setInt(13, tec.getAniosExperiencia());
 			stm.setObject(14, LocalDate.now());
-			stm.setBytes(15, tec.getFoto());
+			stm.setString(15, tec.getRutaFoto());
 			
 			stm.execute();
 			cnx.close();
@@ -144,7 +144,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 			stm.setObject(16, LocalDate.now());
 			stm.setObject(17, null);
 			stm.setBoolean(18, tec.isEstadoActivo());
-			stm.setBytes(19, tec.getFoto());
+			stm.setString(19, tec.getRutaFoto());
 
 			stm.execute();
 			cnx.close();
@@ -235,6 +235,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 				tec.setDistrito(rs.getString("nombre_distrito"));			
 				tec.setDireccion(rs.getString("direccion"));
 				tec.setEmail(rs.getString("email"));
+				tec.setRutaFoto(rs.getString("foto"));
 				tec.setEstadoActivo(rs.getBoolean("estado_activ"));
 				
 		} catch (SQLException e) {

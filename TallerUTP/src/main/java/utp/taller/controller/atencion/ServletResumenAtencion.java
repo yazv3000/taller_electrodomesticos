@@ -23,11 +23,10 @@ public class ServletResumenAtencion extends HttpServlet {
     }
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	int idAtencion = Integer.parseInt(request.getParameter("id"));
-    	DtoAtencion ate = dao.listarAtencion(idAtencion);
+    	DtoAtencion ate = dao.obtenerAtencion(idAtencion);
     	request.setAttribute("ate", ate);
-    	request.getRequestDispatcher("vista/tecnico/ResumenAtencion.jsp").forward(request, response);
+    	request.getRequestDispatcher("vista/tecnico/resumenAtencion.jsp").forward(request, response);
     }
-    
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		processRequest(request, response);

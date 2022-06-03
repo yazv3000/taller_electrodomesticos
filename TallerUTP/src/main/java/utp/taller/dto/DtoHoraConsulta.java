@@ -10,6 +10,7 @@ public class DtoHoraConsulta {
 	private int idHorario;
 	private String nombreTecnico;
 	private String telefonoTecnico;
+	private String fotoTecnico;
 	private String especialidad;
 	private Date fecha;
 	private String hora;
@@ -64,5 +65,8 @@ public class DtoHoraConsulta {
 
 	public String getHora() {		return hora;	}
 	public void setHora(String hora) {		this.hora = hora;	}
+
+	public String getFotoTecnico() {		return fotoTecnico;	}
+	public void setFotoTecnico(String fotoTecnico) {		this.fotoTecnico = fotoTecnico;	}
 	
 }

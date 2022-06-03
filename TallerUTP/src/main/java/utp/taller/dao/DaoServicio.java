@@ -16,8 +16,6 @@ public class DaoServicio extends Conexion implements CRUD<Servicio> {
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
-	
-	
 	@Override
 	public Servicio consultarId(int id) {
 		Servicio serv = new Servicio();
@@ -83,18 +81,6 @@ public class DaoServicio extends Conexion implements CRUD<Servicio> {
 	@Override
 	public int cambiarEstado(int id, boolean estado) {
 		
-		String sql = "delete from servicio where id_servicio=?";
-		cnx = getConnection();
-		try {
-			cnx.setAutoCommit(false);
-			stm = cnx.prepareStatement(sql);
-			stm.setInt(1, id);
-			stm.executeUpdate();
-			cnx.commit();
-			cnx.close();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
 		return 0;
 	}
 	
@@ -152,7 +138,7 @@ public class DaoServicio extends Conexion implements CRUD<Servicio> {
 			serv.setNomServicio(rs.getString("nombre_serv"));
 			serv.setDescripcion(rs.getString("descripcion"));
 			serv.setEstadoActivo(rs.getBoolean("estado_activ"));
-			serv.setImagen(rs.getBytes("foto_serv"));
+			serv.setRutaImgServicio(rs.getString("foto_serv"));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

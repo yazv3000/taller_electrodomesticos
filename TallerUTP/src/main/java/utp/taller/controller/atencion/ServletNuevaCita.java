@@ -49,8 +49,6 @@ public class ServletNuevaCita extends HttpServlet {
     		DtoHoraConsulta dtoHora =  daoHora.consultarDtoHora(idHor);
     		Servicio  servicio = daoServ.consultarId(idServ);
     		
-    		System.out.println(servicio.getNomServicio());
-    		
     		dtoCita.setServicio(servicio);
     		dtoCita.setDtoHora(dtoHora);
     		dtoCita.setLugar("A domicilio");
@@ -104,6 +102,7 @@ public class ServletNuevaCita extends HttpServlet {
 	private void listarMarcas(HttpServletRequest request) {
 		DaoElectrodomestico daoElectro = new DaoElectrodomestico();
 		List<ElectrodomesticoMarca> lst = daoElectro.listarMarcas();
+		System.out.println("marcas:" + lst.size());
 		request.setAttribute("lstMarcas", lst);
 	}
 	

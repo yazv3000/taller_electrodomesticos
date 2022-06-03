@@ -27,8 +27,7 @@ public class ServletGestionarTecnico extends HttpServlet {
 	private DaoTecnico dao = new DaoTecnico();
 	private Tecnico tecnico = new Tecnico();
 	private int idTecnico;
-	private byte[] foto;
-	
+	private static String tipoLista;
 
     public ServletGestionarTecnico() {
         super();
@@ -38,13 +37,14 @@ public class ServletGestionarTecnico extends HttpServlet {
             throws ServletException, IOException {
     	
     	String accion = request.getParameter("accion");
-    	String tipoLista = request.getParameter("lista");
     	
-		if (tipoLista == null) {
+		if (tipoLista == null && request.getParameter("lista")==null) {
 			tipoLista = "todos";
+		}else if(request.getParameter("lista")!=null) {
+			tipoLista = request.getParameter("lista");
 		}
-    	
-    	
+
+		
     	switch (accion) {
 			case "listar": 
 					listar(request, tipoLista);

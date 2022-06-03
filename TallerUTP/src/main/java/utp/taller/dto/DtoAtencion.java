@@ -15,7 +15,6 @@ public class DtoAtencion {
 	private DtoClienteConsulta cliente;
 	private Servicio servicio;
 	private Electrodomestico electrodomestico;
-	private Atencion atencion;
 	private Date fechaCita;
 	private Date fechaReservaCita;
 	private String horaCita;
@@ -25,7 +24,8 @@ public class DtoAtencion {
 	private ElectrodomesticoMarca electrodomesticoMarca;
 	private String tipoAtencion;
 	private String fallaDescrita;
-	
+	private String estado;
+
 	// CONSTRUCTORES
 	public DtoAtencion() {	}
 
@@ -38,9 +38,6 @@ public class DtoAtencion {
 
 	public Servicio getServicio() {		return servicio;	}
 	public void setServicio(Servicio servicio) {		this.servicio = servicio;	}
-
-	public Atencion getAtencion() {		return atencion;	}
-	public void setAtencion(Atencion atencion) {		this.atencion = atencion;	}
 	
 	public Electrodomestico getElectrodomestico() {		return electrodomestico;	}
 	public void setElectrodomestico(Electrodomestico electrodomestico) {		this.electrodomestico = electrodomestico;	}
@@ -51,7 +48,8 @@ public class DtoAtencion {
 	public ElectrodomesticoMarca getElectrodomesticoMarca() {return electrodomesticoMarca;}
 	public void setElectrodomesticoMarca(ElectrodomesticoMarca electrodomesticoMarca) {	this.electrodomesticoMarca = electrodomesticoMarca;	}
 
-	
+	public String getEstado() {	return estado;}
+	public void setEstado(String estado) {	this.estado = estado;}
 	
 	public String getIdAtencion() {	return idAtencion;	}
 	public void setIdAtencion(String idAtencion) {	this.idAtencion = idAtencion;	}

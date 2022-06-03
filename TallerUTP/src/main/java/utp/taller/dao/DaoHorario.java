@@ -78,7 +78,7 @@ public class DaoHorario extends Conexion {
 				h.setNombreTecnico(rs.getString("tecnico"));
 				h.setEspecialidad(rs.getString("especialidad"));
 				h.setTelefonoTecnico(rs.getString("telefono"));
-				
+				h.setFotoTecnico(rs.getString("foto"));
 				try {
 					h.setFecha(formato.parse(rs.getDate("fecha").toString()));	
 				} catch (ParseException e) {

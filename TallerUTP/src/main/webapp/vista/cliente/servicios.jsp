@@ -24,7 +24,14 @@
             <div class="servicio">
                 <div class="serv__img"><div class="hex__fondo">
                     <div class="hex__img">
-                        <img src="${context}/img/instalacion.png" alt="" >
+                        <c:choose>
+                        <c:when test="${s.getRutaImgServicio()==null}">
+                        	<img src="${context}/img/servicios/default.png" alt="" >
+                        </c:when>
+                        <c:otherwise>
+					        <img src="${context}/${s.getRutaImgServicio()}" alt="" >
+					    </c:otherwise>
+                        </c:choose>
                     </div>
                 </div></div>
                 <div class="serv__info">

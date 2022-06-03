@@ -26,8 +26,7 @@ public class ServletGestionarCliente extends HttpServlet {
 	private DaoCliente dao = new DaoCliente();
 	private Cliente cliente = new Cliente();
 	private int idPCliente;
-	private byte[] foto;
-	
+	private static String tipoLista;
 	
     public ServletGestionarCliente() {
         super();
@@ -37,12 +36,13 @@ public class ServletGestionarCliente extends HttpServlet {
             throws ServletException, IOException {
 
     	String accion = request.getParameter("accion");
-    	String tipoLista = request.getParameter("lista");
-		
-		if (tipoLista == null) {
+
+		if (tipoLista == null && request.getParameter("lista")==null) {
 			tipoLista = "todos";
+		}else if(request.getParameter("lista")!=null) {
+			tipoLista = request.getParameter("lista");
 		}
-    	
+		
     	switch (accion) {
 
     		case "listar":
@@ -60,14 +60,12 @@ public class ServletGestionarCliente extends HttpServlet {
 					idPCliente = Integer.parseInt(request.getParameter("id"));
 					cliente = dao.consultarId(idPCliente);
 					request.setAttribute("cli", cliente);
+					request.getSession().setAttribute("fila", idPCliente);
 					listar(request, tipoLista);
 				break;
 			
 			case "actualizar":
-					System.out.println("actualizando");
-					System.out.println(cliente);	
 					recuperarDatos(request);
-					System.out.println(cliente);	
 					dao.modificar(cliente);	
 					listar(request, tipoLista);
 					break;
@@ -90,7 +88,6 @@ public class ServletGestionarCliente extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	
 		processRequest(request, response);
 		
 	}

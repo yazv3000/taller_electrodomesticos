@@ -35,7 +35,7 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 				dtoClie.setRol(rs.getString(3));
 				dtoClie.setUsername(rs.getString(4));
 				dtoClie.setEmail(rs.getString(5));
-				dtoClie.setProfilePic(rs.getBytes(6));
+				dtoClie.setProfilePic(rs.getString(6));
 			}
 			cnx.close();
 			
@@ -77,7 +77,7 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 				cli.setDireccion(rs.getString(11));
 				cli.setEmail(rs.getString(12));
 				cli.setContrasena(rs.getString(13));
-				cli.setFoto(rs.getBytes(14));
+				cli.setRutaFoto(rs.getString(14));
 				cli.setEstadoActivo(rs.getBoolean(15));
 			}
 			
@@ -108,7 +108,7 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 			stm.setString(9, cli.getDireccion());
 			stm.setString(10, cli.getEmail());
 			stm.setString(11, cli.getContrasena());
-			stm.setBytes(12, cli.getFoto());
+			stm.setString(12, cli.getRutaFoto());
 			stm.execute(); 
 			cnx.close();
 		} catch (SQLException e) {
@@ -137,7 +137,7 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 			stm.setString(12, c.getEmail());
 			stm.setString(13, c.getContrasena());
 			stm.setBoolean(14, c.isEstadoActivo());
-			stm.setBytes(15, c.getFoto());
+			stm.setString(15, c.getRutaFoto());
 			stm.execute(); 
 			cnx.close();
 		} catch (SQLException e) {

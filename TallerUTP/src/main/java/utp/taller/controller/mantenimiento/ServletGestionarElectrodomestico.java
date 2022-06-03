@@ -22,13 +22,13 @@ import utp.taller.entidades.ElectrodomesticoTipo;
  */
 @WebServlet("/ServletGestionarElectrodomestico")
 public class ServletGestionarElectrodomestico extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
     
-	
-	
+
     private DaoElectrodomestico dao = new DaoElectrodomestico();
     private Electrodomestico electrodomestico = new Electrodomestico();
-    
+	private static String tipoLista;
     
     private int idElectrodomestico;
 	
@@ -39,10 +39,11 @@ public class ServletGestionarElectrodomestico extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     	String accion = request.getParameter("accion");
-    	String tipoLista = request.getParameter("lista");
     	
-    	if (tipoLista == null) {
+		if (tipoLista == null && request.getParameter("lista")==null) {
 			tipoLista = "todos";
+		}else if(request.getParameter("lista")!=null) {
+			tipoLista = request.getParameter("lista");
 		}
     	
     	switch (accion) {

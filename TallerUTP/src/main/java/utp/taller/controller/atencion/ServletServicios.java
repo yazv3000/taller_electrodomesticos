@@ -31,7 +31,8 @@ public class ServletServicios extends HttpServlet {
 			List<Servicio> lst = dao.listar(true);
 			request.getSession().setAttribute("lstServicios", lst);
 		}
-		request.getRequestDispatcher("vista/cliente/servicios.jsp").forward(request, response);
-	}
 
+		request.getRequestDispatcher("vista/cliente/servicios.jsp").forward(request, response);
+		
+	}
 }

@@ -21,7 +21,15 @@
             <div class="tecnico">
                 <div class="tecnico__datos">
                     <div class="tecnico__img">
-                        <img src="${context}/img/tony.jpg" alt="" >
+                    <c:set var="foto_tecnico" value="${horarios.key.getRutaFoto()}" />
+                     <c:choose>
+                       <c:when test="${foto_tecnico==null}">
+                       <img class="nav__img" src="${context}/default.jpg" alt="">
+                       </c:when>
+                       <c:otherwise>
+				        <img class="nav__img" src="${context}/${foto_tecnico}" alt="">
+				    </c:otherwise>
+                      </c:choose>
                     </div>
                     <h3><c:out value="${horarios.key.getNombreCompleto()}"/></h3>
                     <p class="tecnico__nombre"><c:out value="${horarios.key.getEspecialidad()}"/></p>
@@ -57,7 +65,7 @@
 	                                                        <form action="${context}/ServletNuevaCita" method="post">
 										                    	<input type="hidden" name="horario" value="${hora.getIdHorario()}" />
 										                    	
-										                    	<button class="serv__link ${hora.getEstado() eq 'Reservado' ? 'desactivado':''}"  ${hora.getEstado() eq 'Reservado' ? 'disabled':''} type="submit" name="accion" value="resumen"><c:out value="${hora.getHoraInicio()}"/></button>
+										                    	<button class="serv__link ${hora.getEstado() ne 'Disponible' ? 'desactivado':''}"  ${hora.getEstado() ne 'Disponible' ? 'disabled':''} type="submit" name="accion" value="resumen"><c:out value="${hora.getHoraInicio()}"/></button>
 										                    	
 										                	</form>
 	                                                        </td>

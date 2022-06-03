@@ -153,6 +153,11 @@ i {
 }
 
 
+.electro {
+    padding: 15px 40px;
+    position: relative;
+    margin: 5px 0;
+}
 
 .electro option {
     font-family:  'Trebuchet MS', sans-serif;

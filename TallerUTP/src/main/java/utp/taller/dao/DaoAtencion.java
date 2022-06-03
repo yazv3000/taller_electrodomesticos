@@ -71,9 +71,9 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 		}
 	}
 	//LISTAR ATENCION
-	public DtoAtencion listarAtencion(int idAtencion){
+	public DtoAtencion obtenerAtencion(int idAtencion){
 		DtoAtencion ate = null;
-		String sql = "select * from v_resumenAtencion where id_atencion=?";
+		String sql = "select * from v_resumen_atencion where id_atencion=?";
 		cnx = getConnection();
 		ResultSet rs = null;
 		
@@ -117,7 +117,7 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 				ate.setFallaDescrita(rs.getString("falla_descrita"));
 				
 				ate.setFechaReservaCita(rs.getDate("fecha_reserva_cita"));
-				
+				ate.setEstado(rs.getString("estado_atencion"));
 			}
 		}	catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -145,11 +145,8 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 				cita.setDistritoYdireccion(rs.getString("direc_cliente"));
 				cita.setTipoElectrodomestico(rs.getString("tipo_electro"));
 				cita.setHoraAtencion(rs.getString("hora_inicio"));
-				try {
-					cita.setFechaAtencion(formato.parse(rs.getDate("fecha_atencion").toString()));	
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
+				cita.setFechaAtencion(rs.getDate("fecha_atencion"));	
+
 				lst.add(cita);
 			}	
 			cnx.close();
