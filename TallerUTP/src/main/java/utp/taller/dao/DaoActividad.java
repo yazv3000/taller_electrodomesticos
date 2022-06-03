@@ -8,6 +8,7 @@ import java.util.List;
 
 import utp.config.Conexion;
 import utp.taller.entidades.Actividad;
+import utp.taller.entidades.Pieza;
 
 public class DaoActividad extends Conexion{
     Connection cnx = null;
@@ -37,5 +38,21 @@ public class DaoActividad extends Conexion{
 		}
         return lst;
     }
-
+    public int agregar_actividad_servicio(int idAtencion, int idServicio, List<Actividad> listaActividades) {
+		String sql = "call sp_agregar_actividad(?, ?, ?)";
+		cnx = getConnection();
+		try {
+			for (Actividad a : listaActividades) {
+				stm = cnx.prepareStatement(sql);
+				stm.setInt(1, idAtencion);
+				stm.setInt(2, idServicio);
+				stm.setInt(3, a.getIdActividad());
+				stm.execute();
+			}
+			cnx.close();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return 0;
+	}
 }

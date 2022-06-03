@@ -16,10 +16,10 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     
     <!-- ===== ACTUALIZAR CSS SIN GUARDAR EN CACHE ===== -->
-    <meta http-equiv="Expires" content="0">
-	<meta http-equiv="Last-Modified" content="0">
-	<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
-  	<meta http-equiv="Pragma" content="no-cache">
+<!--     <meta http-equiv="Expires" content="0"> -->
+<!-- 	<meta http-equiv="Last-Modified" content="0"> -->
+<!-- 	<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate"> -->
+<!--   	<meta http-equiv="Pragma" content="no-cache"> -->
     
     
     <title>Taller-UTP</title>
@@ -57,7 +57,7 @@
                             <i class="fas fa-blender nav__icono"></i>
                             <span class="nav__nombre">Electrodomesticos</span>
                         </a>
-                        <a href="<%=request.getContextPath()%>/ServletGestionarElectrodomestico?accion=listar" class="nav__link">
+                        <a href="" class="nav__link">
                             <i class="fa-solid fa-calendar-days nav__icono"></i>
                             <span class="nav__nombre">Horarios</span>
                         </a>
@@ -91,7 +91,7 @@
             </div>
 			
 			<div class="ventana">
-            <iframe frameborder="0" id="ventana__contenido" name="marco"></iframe>
+            <iframe id="ventana__contenido" name="marco"></iframe>
 			</div>
         </div>
 

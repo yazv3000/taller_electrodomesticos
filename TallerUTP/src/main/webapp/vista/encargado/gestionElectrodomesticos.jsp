@@ -26,7 +26,7 @@
 	            <ul>
 	            	<li><button class="fa-solid fa-plus-square icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"></button></li>
 	                <li><button class="fa-solid fa-pen icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
-	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarElectrodomestico?accion=listar'" >Todos</button></li>
+	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarElectrodomestico?accion=listar&lista=todos'" >Todos</button></li>
 	                <li><button type="button" class="btn btn-success" onclick="location.href='ServletGestionarElectrodomestico?accion=listar&lista=activos'" >Activos</button><li>
 	                <li><button type="button" class="btn btn-danger" onclick="location.href='ServletGestionarElectrodomestico?accion=listar&lista=inactivos'">Inactivos</button><li>
 	            </ul>

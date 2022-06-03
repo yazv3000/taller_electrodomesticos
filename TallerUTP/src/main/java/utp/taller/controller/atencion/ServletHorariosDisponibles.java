@@ -49,7 +49,10 @@ public class ServletHorariosDisponibles extends HttpServlet {
 			listarHorarios(request, response);
 		}	
 	}
-		
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		listarHorarios(request, response);
+	}
+	
 	protected void listarHorarios(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String accion = request.getParameter("accion");

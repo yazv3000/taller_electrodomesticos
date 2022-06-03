@@ -29,7 +29,7 @@
                         <div class="nav__linea"></div>
                     </li>
                     <li class="nav__item">
-                        <a href="${context}/ServletGestionarHorario?accion=listarTecnico" class="nav__link" target="marco">Horarios</a>
+                        <a href="${context}/ServletHorariosDisponibles?accion=listarTecnico" class="nav__link" target="marco">Horarios</a>
                         <div class="nav__linea"></div>
                     </li>  
                     <li class="nav__item">
@@ -51,6 +51,8 @@
                       </c:choose>
                     
                     <a class="nav__name" href="#"><c:out value="${sessionScope.dtoUsuario.getUsername()}"/></a>
+                	<a class="cerrar" href="index.jsp"><i class="fa-solid fa-arrow-right-from-bracket icono"></i></a>
+                	
                 </div>
                 <!--====FIN DATOS DEL USUARIO ====-->
                 <div class="nav__barras">

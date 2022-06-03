@@ -409,7 +409,6 @@ where U.id_rol=3 and T.id_persona = id_tecnico
 $$
 LANGUAGE SQL;
 ----------------------------------------------------------
-DROP FUNCTION public.f_consultar_horario;
 CREATE OR REPLACE FUNCTION public.f_consultar_horario(id_hora integer)
 RETURNS TABLE
 (id_hora integer, 
@@ -437,7 +436,7 @@ AS
 $$ 
 select P.id_pieza, P.nombre_pieza, P.id_categoria, C.nombre_cat, P.precio_pieza, P.stock, P.estado_activ
 from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria
-where id_pieza=$1
+where id_pieza=$1nue
 $$
 LANGUAGE SQL;
 ----------------------------------------------------------
@@ -462,7 +461,6 @@ BEGIN
 END
 $$
 LANGUAGE plpgsql;
-----------------------------------------------------------
 ----------------------------------------------------------
 --	REPORTES
 ----------------------------------------------------------
@@ -691,6 +689,36 @@ END
 $$
 LANGUAGE plpgsql;
 ----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_agregar_venta(id_aten integer, monto numeric)
+AS 
+$$
+DECLARE
+	id_serv_venta integer;
+BEGIN
+select id_servicio into id_serv_venta from public.servicio where nombre_serv like 'Venta%';
+INSERT INTO public.detalle_atencion(id_atencion, id_servicio, monto_servicio)
+	VALUES (id_aten, id_serv_venta, monto);
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_uso_pieza(id_aten integer, id_serv integer, id_pza integer, cant smallint)
+AS 
+$$
+INSERT INTO public.detalle_piezas_usadas(id_atencion, id_servicio, id_pieza)
+	VALUES (id_aten, id_serv, id_pza);
+UPDATE public.pieza set stock = stock-cant;
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_agregar_actividad(id_aten integer, id_serv integer, id_activi integer)
+AS 
+$$
+INSERT INTO public.detalle_actividades(id_atencion, id_servicio, id_actividad)
+	VALUES (id_aten, id_serv, id_activi);
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
 --	ACTUALIZACIONES
 ----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_actualizar_cliente
@@ -878,10 +906,10 @@ INSERT INTO public.servicio(nombre_serv, descripcion, estado_activ, foto_serv)
 ---------------------------------------------------------
 INSERT INTO actividades_servicio (id_servicio, nombre_actividad, precio)
 VALUES
-(1, 'Sub1', 10.50),
-(1, 'Sub2', 23.00),
-(1, 'Sub3', 29.00),
-(1, 'Sub4', 46.00);
+(2, 'Sub1', 10.50),
+(2, 'Sub2', 23.00),
+(2, 'Sub3', 29.00),
+(2, 'Sub4', 46.00);
 ---------------------------------------------------------
 INSERT INTO public.tipo_documento(nom_tipo_doc)
 	VALUES
@@ -1037,7 +1065,7 @@ INSERT INTO public.horario_atencion(id_tecnico, fecha_atencion, hora_inicio, est
 	(cnt, CURRENT_DATE + INTERVAL '5 day', '08:00', 'Disponible');
 	END IF;
    end loop;
-END; $$
+END $$;
 ---------------------------------------------------------
 INSERT INTO public.tipo_electrodomestico(nom_tipo_electro)
 	VALUES

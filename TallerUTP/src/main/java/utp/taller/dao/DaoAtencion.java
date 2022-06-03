@@ -1,26 +1,25 @@
 package utp.taller.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import utp.config.Conexion;
-import utp.taller.dto.DtoNuevaCita;
 import utp.taller.dto.DtoAtencion;
 import utp.taller.dto.DtoCitaConsulta;
 import utp.taller.dto.DtoClienteConsulta;
+import utp.taller.dto.DtoNuevaCita;
 import utp.taller.entidades.Atencion;
 import utp.taller.entidades.Electrodomestico;
 import utp.taller.entidades.ElectrodomesticoMarca;
 import utp.taller.entidades.ElectrodomesticoTipo;
 import utp.taller.entidades.Servicio;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 	
@@ -94,6 +93,7 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 				ate.setFechaCita(rs.getDate("fecha_atencion"));
 				
 				Servicio servicio = new Servicio();
+				servicio.setIdServicio(rs.getInt("id_servicio"));
 				servicio.setNomServicio(rs.getString("nombre_serv"));
 				ate.setServicio(servicio);
 				
@@ -119,6 +119,7 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 				ate.setFechaReservaCita(rs.getDate("fecha_reserva_cita"));
 				ate.setEstado(rs.getString("estado_atencion"));
 			}
+			cnx.close();
 		}	catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -155,5 +156,23 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 			throw new RuntimeException(e);
 		}
 		return lst;
+	}
+
+	// AGREGAR UNA VENTA
+	public void agregarVenta(int idAtencion, double monto) {
+		String sql = "call sp_agregar_venta(?, ?)";
+		
+		cnx = getConnection();
+		
+		try {
+			stm = cnx.prepareCall(sql);
+			stm.setInt(1, idAtencion);
+			stm.setBigDecimal(2, new BigDecimal(monto));
+			stm.execute(); 
+			cnx.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

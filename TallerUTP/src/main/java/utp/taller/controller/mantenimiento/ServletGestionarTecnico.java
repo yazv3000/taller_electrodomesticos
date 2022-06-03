@@ -62,6 +62,7 @@ public class ServletGestionarTecnico extends HttpServlet {
 				    idTecnico = Integer.parseInt(request.getParameter("id"));
 					tecnico = dao.consultarId(idTecnico);
 					request.setAttribute("tec", tecnico);
+					request.getSession().setAttribute("fila", idTecnico);
     				listar(request, tipoLista);
 					break;
 			
@@ -69,19 +70,19 @@ public class ServletGestionarTecnico extends HttpServlet {
 					recuperarDatos(request);
 					dao.modificar(tecnico);	
 					listar(request, tipoLista);
-			break;
+					break;
 					
 			case "activar":
 					idTecnico = Integer.parseInt(request.getParameter("id"));
 					dao.cambiarEstado(idTecnico, true);
 					listar(request, tipoLista);
-			break;
+					break;
 			
 			case "desactivar":
 					idTecnico = Integer.parseInt(request.getParameter("id"));
 					dao.cambiarEstado(idTecnico, false);
 					listar(request, tipoLista);
-			break;
+					break;
 		}
     	
     	listarEpescialidades(request);
@@ -140,6 +141,7 @@ public class ServletGestionarTecnico extends HttpServlet {
 			break;	
 		default:
 			lst = dao.listarDtoTecnicos();
+			break;
 		}
 	 	request.setAttribute("lstConsultaTecnicos", lst);
 	}

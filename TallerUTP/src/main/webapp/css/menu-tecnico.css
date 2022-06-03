@@ -205,5 +205,22 @@ body {
     .nav__user {
         display:none;
     }
+    
+}
+.cerrar {
+	color:white;
+	text-decoration: none;
+	line-height: 40px;
+	font-family: "Audiowide";
+	background: var(--grad-form);
+	margin: 20px 0;
+	border-radius: 5px;
+	display:flex;
+
+}
+
+.icono {
+	padding: 0 10px;
+	margin:auto;
 }
 

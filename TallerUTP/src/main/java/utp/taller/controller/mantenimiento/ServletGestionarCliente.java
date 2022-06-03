@@ -74,7 +74,7 @@ public class ServletGestionarCliente extends HttpServlet {
 					idPCliente = Integer.parseInt(request.getParameter("id"));
 					dao.cambiarEstado(idPCliente, true);
 					listar(request, tipoLista);
-			break;
+					break;
 			
 			case "desactivar":
 					idPCliente = Integer.parseInt(request.getParameter("id"));

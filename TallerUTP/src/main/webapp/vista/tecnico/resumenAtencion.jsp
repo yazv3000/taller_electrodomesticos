@@ -7,7 +7,7 @@
 <head>
 <meta charset="ISO-8859-1">
 <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
-<link rel="stylesheet" type="text/css" href="${context}/css/ResumenAtencion.css">
+<link rel="stylesheet" type="text/css" href="${context}/css/resumenAtencion.css">
 <title>Insert title here</title>
 </head>
 <body>
@@ -36,57 +36,131 @@
             <div class="grid__items"><i class="fa-solid fa-triangle-exclamation"></i><span>Falla: <c:out value="${ate.getFallaDescrita()}"></c:out></span></div>
         </div>
         
-        <button type="button"  class="btn btn-info" onclick="location.href='ServletPresupuesto?accion=listar'">Actualizar</button>
+        <button type="button"  class="actualizar" onclick="location.href='ServletPresupuesto?accion=listar'">Actualizar</button>
        <h3 class="cliente" style="text-align:left;">Actividades</h3>
+	
+	<form action="<%=request.getContextPath()%>/ServletPresupuesto" method="post">
+	<c:if test="${lstActividadesOfrecidas!=null}">
+	<div class="contenedor-act">
+		<div class="bordes">
+			<h2 class="sub-titulo">Actividades ofrecidas</h2>
+			<table class="tabla">
+				<thead>
+					<tr class="titulo-col">
+						<th>ACTIVAD</th>
+						<th>PRECIO</th>
+						<th>ACCION</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${lstActividadesOfrecidas}" var="ac1">
+						<tr>
+							<td><label class="etiqueta"><c:out value="${ac1.getNombre()}"></c:out></label></td>
+							<td><label class="etiqueta"><c:out value="${ac1.getPrecio()}"></c:out></label></td>
+							<td><a class="etiqueta"href="${context}/ServletPresupuesto?accion=agregar&idActividad=${ac1.getIdActividad()}"><i
+									class="fa-solid fa-circle-plus"></i></a></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
 
-       <h2>Actividades ofrecidas</h2>
-       <c:if test="${lstActividadesOfrecidas!=null}">
-	    <table border=1>
-		<thead>
-		<tr> 
-			<th> ACTIVAD </th>
-			<th> PRECIO</th>
-			<th> ACCION </th>
-		</tr>
-		</thead>
-		<tbody>
-	    <c:forEach items="${lstActividadesOfrecidas}" var="ac1">
-	    <tr> 
-	            <td><c:out value="${ac1.getNombre()}"></c:out></td>
-	            <td><c:out value="${ac1.getPrecio()}"></c:out></td>
-	            <td >
-	                <a href="${context}/ServletPresupuesto?accion=agregar&idActividad=${ac1.getIdActividad()}"><i class="fa-solid fa-circle-plus"></i></a>
-                </td>
-	     </tr>
-	    </c:forEach>
-	    </tbody>
-	</table>
-	
-	 <h2>Actividades Seleccionadas</h2>
-	<table border=1>
-		<thead>
-		<tr> 
-			<th> ACTIVAD </th>
-			<th> PRECIO</th>
-			<th> ACCION </th>
-		</tr>
-		</thead>
-		<tbody>
-	    <c:forEach items="${lstActividadesSeleccionadas}" var="ac2">
-	    <tr> 
-	            <td><c:out value="${ac2.getNombre()}"></c:out></td>
-	            <td><c:out value="${ac2.getPrecio()}"></c:out></td>
-	            <td >
-	                <a href="${context}/ServletPresupuesto?accion=quitar&idActividad=${ac2.getIdActividad()}"><i class="fa-solid fa-circle-minus"></i></a>
-                </td>
-	     </tr>
-	    </c:forEach>
-	    </tbody>
-	</table>
-	
+		<div class="bordes">
+			<h2 class="sub-titulo">Actividades Seleccionadas</h2>
+			<table class="tabla">
+				<thead>
+					<tr class="titulo-col">
+						<th>ACTIVAD</th>
+						<th>PRECIO</th>
+						<th>ACCION</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${lstActividadesSeleccionadas}" var="ac2">
+						<tr>
+							<td><label class="etiqueta"><c:out value="${ac2.getNombre()}"></c:out></label></td>
+							<td><label class="etiqueta"><c:out value="${ac2.getPrecio()}"></c:out></label></td>
+							<td><a class="etiqueta"
+								href="${context}/ServletPresupuesto?accion=quitar&idActividad=${ac2.getIdActividad()}"><i
+									class="fa-solid fa-circle-minus"></i></a></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+	</div>
 	</c:if>
-       	<h2>Precio acumulado</h2>
-       	<input  value="${sessionScope.presupuesto}" disabled>
-        <h3 class="cliente" style="text-align:left;">Piezas</h3>
+	<div class="cont-total">
+		<label class="etq-total">Precio acumulado (S/.)</label>
+	    <input class="total" name="txtPreciActividades" value="${presupuesto}" disabled>
+	</div>
+	
+	
+	
+	<h3 class="cliente" style="text-align:left;">Piezas</h3>
+	<button type="button"  class="actualizar" onclick="location.href='ServletPresupuesto?accion=listarPi'">Actualizar</button>
+    
+    <c:if test="${lstPiezasOfrecidas!=null}">
+    <div class="contenedor-act">
+    	<div class="bordes">
+			<h2 class="sub-titulo">Piezas ofrecidas</h2>
+			<table class="tabla">
+				<thead>
+					<tr class="titulo-col">
+						<th> PIEZA </th>
+						<th> PRECIO</th>
+						<th> STOCK </th>
+						<th> ACCION </th>
+					</tr>
+				</thead>
+			<tbody>
+				    <c:forEach items="${lstPiezasOfrecidas}" var="pi1">
+				    <tr> 
+				            <td><label class="etiqueta"><c:out value="${pi1.getNomPieza()}"></c:out></label></td>
+				            <td><label class="etiqueta"><c:out value="${pi1.getPrecio()}"></c:out></label></td>
+				            <td><label class="etiqueta"><c:out value="${pi1.getStock()}"></c:out></label></td>
+				            <td>
+				                <a class="etiqueta" href="${context}/ServletPresupuesto?accion=agregarPi&idPieza=${pi1.getIdPieza()}"><i class="fa-solid fa-circle-plus"></i></a>
+			                </td>
+				     </tr>
+				    </c:forEach>
+	    		</tbody>
+			</table>
+		</div>
+	 	<div class="bordes">
+			<h2 class="sub-titulo">Actividades Seleccionadas</h2>
+			<table class="tabla">
+				<thead>
+					<tr class="titulo-col">
+						<th> ACTIVAD </th>
+						<th> PRECIO</th>
+						<th> CANT </th>
+						<th> ACCION </th>
+					</tr>
+				</thead>
+			<tbody>
+				    <c:forEach items="${lstPiezasSeleccionadas}" var="pi2">
+				    <tr> 
+			            <td><label class="etiqueta"><c:out value="${pi2.getNomPieza()}"></c:out></label></td>
+			            <td><label class="etiqueta"><c:out value="${pi2.getPrecio()}"></c:out></label></td>
+			            <td><label class="etiqueta"><c:out value="${pi2.getCantidadComprar()}"></c:out></label></td>
+			            <td >
+			                <a class="etiqueta" href="${context}/ServletPresupuesto?accion=quitarPi&idPieza=${pi2.getIdPieza()}"><i class="fa-solid fa-circle-minus"></i></a>
+			            </td>
+				     </tr>
+				    </c:forEach>
+	    		</tbody>
+			</table>
+		</div>
+	</div>
+	</c:if>
+	<div class="cont-total">
+		<label class="etq-total">Precio acumulado (S/.)</label>
+	    <input class="total" name="txtPrecioPieza" value="${sessionScope.presupuesto2}" disabled>
+	</div>
+	<input type="hidden" name="id_atencion" value="${ate.getIdAtencion()}" />
+	<input type="hidden" name="id_serv" value="${ate.getServicio().getIdServicio()}" />
+	<a href="" class="actualizar" type="submit" name="accion"  style="margin: 0 calc(45% - 0px);">Confirmar</a>
+	</form>
 </body>
 </html>

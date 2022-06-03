@@ -54,6 +54,8 @@
                       </c:choose>
                     
                     <a class="nav__name" href="#"><c:out value="${sessionScope.dtoUsuario.getUsername()}"/></a>
+                    <a class="cerrar" href="index.jsp"><i class="fa-solid fa-arrow-right-from-bracket icono"></i></a>
+                    
                 </div>
                 <!--====FIN DATOS DEL USUARIO ====-->
                 <div class="nav__barras">
