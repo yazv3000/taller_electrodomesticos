@@ -146,9 +146,9 @@ a {
     transition: .4s;
     box-shadow: 5px 0px 5px rgba(0,0,0,0.5);
     display: block;
-    width: 80px;
-    margin:20px auto;
-
+    width: 100px;
+    border: 0px;
+    margin: 10px auto;
 }
 
 

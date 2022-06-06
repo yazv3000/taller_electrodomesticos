@@ -6,6 +6,7 @@ public class Pieza {
 		private int idPieza;
 		private String nomPieza;
 		private long stock;
+		private long cantidadComprar;
 		private double precio;
 		private CategoriaPieza categoria;
 		private boolean estadoActivo;
@@ -29,6 +30,9 @@ public class Pieza {
 		public String getNomPieza() {			return nomPieza;		}
 		public void setNomPieza(String nomPieza) {			this.nomPieza = nomPieza;		}
 
+		public long getCantidadComprar() {	return cantidadComprar;	}
+		public void setCantidadComprar(long cantidadComprar) {	this.cantidadComprar = cantidadComprar;	}
+
 		public long getStock() {			return stock;		}
 		public void setStock(long stock) {			this.stock = stock;		}
 		
@@ -40,5 +44,11 @@ public class Pieza {
 
 		public boolean isEstadoActivo() {			return estadoActivo;		}
 		public void setEstadoActivo(boolean estadoActivo) {			this.estadoActivo = estadoActivo;		}
+
+		@Override
+		public String toString() {
+			return "Pieza [idPieza=" + idPieza + ", nomPieza=" + nomPieza + ", stock=" + stock + ", precio=" + precio
+					+ ", categoria=" + categoria + ", estadoActivo=" + estadoActivo + "]";
+		}
 		
 }

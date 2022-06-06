@@ -1,0 +1,135 @@
+/*===== GOOGLE FONTS =====*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap");
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Roboto:wght@100;300;500&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Tangerine&display=swap');
+/*===== VARIABLES CSS =====*/
+
+:root {
+    --primario: rgb(33, 33, 33);
+    --fondo: rgb(25, 23, 21);
+    --secundario: #2473cd ;
+    --grad-form: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    --grad-fondo: linear-gradient(270deg, rgba(23,30,41,1) 0%, rgba(38,45,62,1) 100%);
+    --grad-img: linear-gradient(180deg, rgba(61,154,234,1) 0%, rgba(73,84,238,1) 100%);
+    --grad-boton: linear-gradient(90deg, rgba(96,195,241,1) 0%, rgba(73,58,251,1) 100%);
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0px;
+    margin:0
+}
+
+.titulo-horario {
+    font-family: "Audiowide";
+    color: white;
+    text-align: center;
+    margin: 50px;
+}
+
+.titulo-horario span {
+    color: var(--secundario);
+}
+.cuadricula {
+    display: grid;
+}
+
+.contenedor {
+    width: 800px;
+    margin: auto;
+    background-color:var(--primario);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.carrusel {
+    display: flex;
+
+    transition:  .6s;
+}
+
+.carrusel__panel {
+    list-style: none;
+
+    /* background-color: rebeccapurple; */
+    /* opacity: 0.5; */
+}
+
+.carrusel__overflow {
+    width: 800px;
+    padding:0 20px 20px 20px; 
+}
+
+.controles {
+    display: flex;
+    justify-content:space-around;
+}
+
+.boton {
+    background: var(--grad-form);
+    border: none;
+    border: 2px solid var(--secundario);
+    margin: 10px 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.boton:hover {
+    background: none;
+}
+
+.icon {
+    color: white;
+    padding: 10px 20px;
+}
+
+.icon:hover {
+    color: var(--secundario)
+}
+
+.tabla-1 {
+    width: 100%;
+}
+
+
+
+.tabla-2 {
+    width: 100%;
+    display: inline-block;
+}
+
+.tabla-2__fecha {
+    display: flex;
+    padding: 16px;
+}
+
+.fecha {
+    color: var(--secundario);
+    font-family: "Audiowide";
+    margin: auto;
+}
+
+.tabla-2__hora {
+    display: flex;
+}
+
+.hora {
+    color: white;
+    font-family: "Audiowide";
+    margin: auto;
+    background: var(--grad-form);
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.columna {
+	display: flex;
+	justify-content: flex-start;
+	
+}

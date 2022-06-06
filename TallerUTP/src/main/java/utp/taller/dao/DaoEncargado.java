@@ -31,7 +31,7 @@ public class DaoEncargado extends Conexion implements CRUD<Encargado> {
 				dtoEnc.setUsername(rs.getString("id_user"));
 				dtoEnc.setRol(rs.getString("nombre_completo"));
 				dtoEnc.setEmail(rs.getString("correo"));
-				dtoEnc.setProfilePic(rs.getBytes("foto"));
+				dtoEnc.setProfilePic(rs.getString("foto"));
 				dtoEnc.setUsername(sql);
 			}
 			cnx.close();
@@ -73,7 +73,7 @@ public class DaoEncargado extends Conexion implements CRUD<Encargado> {
 				enc.setDireccion(rs.getString(11));
 				enc.setEmail(rs.getString(12));
 				enc.setContrasena(rs.getString(13));
-				enc.setFoto(rs.getBytes(14));
+				enc.setRutaFoto(rs.getString(14));
 				enc.setEstadoActivo(rs.getBoolean(15));
 			}
 			cnx.close();
@@ -102,10 +102,9 @@ public class DaoEncargado extends Conexion implements CRUD<Encargado> {
 			stm.setInt(8, enc.getIdDistrito());
 			stm.setString(9, enc.getDireccion());
 			stm.setString(10, enc.getEmail());
-			//stm.setString(11, enc.getContrasena());
-			stm.setString(11, "por defecto");
+			stm.setString(11, enc.getContrasena());
 			stm.setObject(12, LocalDate.now());
-			stm.setBytes(13, enc.getFoto());
+			stm.setString(13, enc.getRutaFoto());
 			
 			stm.execute();
 			cnx.close();
@@ -137,7 +136,7 @@ public class DaoEncargado extends Conexion implements CRUD<Encargado> {
 			stm.setObject(14, LocalDate.now());
 			stm.setObject(15, null);
 			stm.setBoolean(16, enc.isEstadoActivo());
-			stm.setBytes(17, enc.getFoto());
+			stm.setString(17, enc.getRutaFoto());
 
 			stm.execute();
 			cnx.close();
@@ -148,7 +147,7 @@ public class DaoEncargado extends Conexion implements CRUD<Encargado> {
 	}
 
 	@Override
-	public int desactivar(int id) {
+	public int cambiarEstado(int id, boolean estado) {
 		
 		String sql = "call sp_desactivar_persona(?)";
 		cnx = getConnection();

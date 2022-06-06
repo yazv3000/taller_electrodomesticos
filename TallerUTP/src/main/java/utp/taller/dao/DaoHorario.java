@@ -1,9 +1,11 @@
 package utp.taller.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,8 +13,7 @@ import java.util.List;
 
 import utp.config.Conexion;
 import utp.taller.dto.DtoHoraConsulta;
-import utp.taller.dto.DtoClienteConsulta;
-import utp.taller.dto.DtoHorario;
+import utp.taller.entidades.Horario;
 
 public class DaoHorario extends Conexion {
 
@@ -20,11 +21,11 @@ public class DaoHorario extends Conexion {
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
-	public List<DtoHorario> listar() {
+	
+	public List<Horario> listar() {
 
-		
-		List<DtoHorario> lst = new ArrayList<DtoHorario>();
-		DtoHorario h = null;
+		List<Horario> lst = new ArrayList<Horario>();
+		Horario h = null;
 
 		String sql = "select * from v_horarios";
 
@@ -36,21 +37,18 @@ public class DaoHorario extends Conexion {
 			rs = stm.executeQuery();
 
 			while (rs.next()) {
-				h = new DtoHorario();
-				h.setIdHorario(rs.getInt(1));
-				h.setIdTecnico(rs.getInt(2));
+				h = new Horario();
+				h.setIdHorario(rs.getInt("id_horario"));
+				h.setIdTecnico(rs.getInt("id_tecnico"));
 
 				try {
-					h.setFechaAtencion(formato.parse(rs.getDate(3).toString()));		// corregir esto
-					
+					h.setFechaAtencion(formato.parse(rs.getDate("fecha_atencion").toString()));	
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
 				
-				h.setHoraInicio(rs.getString(4).substring(0,5));
-				//h.setHoraFin(rs.getString(5));
-				
-				h.setEstado(rs.getInt(5));
+				h.setHoraInicio(rs.getString("hora_inicio").substring(0,5));
+				h.setEstado(rs.getString("estado"));
 				lst.add(h);
 			}
 			
@@ -61,41 +59,62 @@ public class DaoHorario extends Conexion {
 		}
 		
 		return lst;
-
 	}
 	
-	public DtoHoraConsulta seleccionarHora(int idHora) {
-		DtoHoraConsulta dtoCita = new DtoHoraConsulta();
-		String sql = "select * from f_consultar_hora(?)";
+	public DtoHoraConsulta consultarDtoHora(int idHorario) {
+		
+		DtoHoraConsulta h = new DtoHoraConsulta();
+		String sql = "select * from f_consultar_horario(?)";
 
 		cnx = getConnection();
 		ResultSet rs = null;
 
 		try {
 			stm = cnx.prepareStatement(sql);
-			stm.setInt(1, idHora);
+			stm.setInt(1, idHorario);
 			rs = stm.executeQuery();
 
 			if (rs.next()) {
-				dtoCita.setNombres(rs.getString(1));
-				dtoCita.setTelefono(rs.getString(2));
+				h = new DtoHoraConsulta();
+				h.setIdHorario(rs.getInt("id_hora"));
+				h.setNombreTecnico(rs.getString("tecnico"));
+				h.setEspecialidad(rs.getString("especialidad"));
+				h.setTelefonoTecnico(rs.getString("telefono"));
+				h.setFotoTecnico(rs.getString("foto"));
 				try {
-					dtoCita.setFecha(formato.parse(rs.getDate(3).toString()));		
-					
+					h.setFecha(formato.parse(rs.getDate("fecha").toString()));	
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-				dtoCita.setHora(rs.getString(4).substring(0,5));
+				h.setHora(rs.getString("hora").substring(0,5));
+
 			}
 			
 			cnx.close();
-			
+
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 		
-		return dtoCita;
+		return h;
 	}
-
+	
+	//INSERTAR HORARIO 
+	public void insertarHorario(Horario horario) {
+		String sql = "call sp_nuevo_horario(?,?,?)";
+		cnx = getConnection();
+		
+		try {
+			stm = cnx.prepareCall(sql);
+			stm.setInt(1,horario.getIdTecnico());
+			long fecha = horario.getFechaAtencion().getTime();
+			stm.setDate(2,Date.valueOf(formato.format(horario.getFechaAtencion())));
+			stm.setTime(3, Time.valueOf(horario.getHoraInicio()));
+			stm.execute();
+			cnx.close();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 }

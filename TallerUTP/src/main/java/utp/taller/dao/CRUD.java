@@ -8,6 +8,6 @@ public interface CRUD<T> {
 	
 	public int modificar(T obj_modificar);
 	
-	public int desactivar(int id);
+	public int cambiarEstado(int id, boolean estado);
  
 }

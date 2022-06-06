@@ -12,11 +12,12 @@ import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoUsuario;
 import utp.taller.entidades.Cliente;
 
-public class DaoCliente extends Conexion  implements CRUD<Cliente>{
+public class DaoCliente extends Conexion implements CRUD<Cliente>{
 
 	Connection cnx = null;
 	PreparedStatement stm = null;
 	
+	// AUTENTICACIÓN CLIENTE
 	public DtoUsuario validar(String email, String contra) {
 		DtoUsuario dtoClie = new DtoUsuario();
 		String sql = "select * from f_validar_acceso(1,?,?)";
@@ -34,7 +35,7 @@ public class DaoCliente extends Conexion  implements CRUD<Cliente>{
 				dtoClie.setRol(rs.getString(3));
 				dtoClie.setUsername(rs.getString(4));
 				dtoClie.setEmail(rs.getString(5));
-				dtoClie.setProfilePic(rs.getBytes(6));
+				dtoClie.setProfilePic(rs.getString(6));
 			}
 			cnx.close();
 			
@@ -45,70 +46,7 @@ public class DaoCliente extends Conexion  implements CRUD<Cliente>{
 		return dtoClie;
 	}
 	
-	public List<DtoClienteConsulta> listarDtoClientes() {
-		List<DtoClienteConsulta> lst = new ArrayList<DtoClienteConsulta>();
-		DtoClienteConsulta clie = null;
-		String sql = "select * from v_clientes";
-		
-		cnx = getConnection();
-		ResultSet rs = null;
-
-		try {
-			stm = cnx.prepareStatement(sql);
-			rs = stm.executeQuery();
-
-			while (rs.next()) {
-				clie = new DtoClienteConsulta();
-				clie.setIdPersonaCliente(rs.getInt("id_persona"));
-				clie.setIdUsuarioCliente(rs.getString("id_user"));
-				clie.setNombreCompleto(rs.getString("nombres"));
-				clie.setTelefono(rs.getString("telefono"));
-				clie.setDistrito(rs.getString("nombre_distrito"));			
-				clie.setDireccion(rs.getString("direccion"));
-				clie.setEmail(rs.getString("email"));
-				clie.setEstadoActivo(rs.getBoolean("estado_activ"));
-				lst.add(clie);
-			}	
-			cnx.close();
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return lst;
-	}
-	
-	public DtoClienteConsulta consultarDtoCliente(int idCliente) {
-		DtoClienteConsulta cli = new DtoClienteConsulta();
-
-		String sql = "select * from f_consultar_cliente_resumen(?);";
-
-		cnx = getConnection();
-		ResultSet rs = null;
-
-		try {
-			stm = cnx.prepareStatement(sql);
-			stm.setInt(1, idCliente);
-			rs = stm.executeQuery();
-
-			if (rs.next()) {
-				cli.setIdPersonaCliente(rs.getInt("id_persona"));
-				cli.setIdUsuarioCliente(rs.getString("id_user"));
-				cli.setNombreCompleto(rs.getString("nombres"));
-				cli.setTelefono(rs.getString("telefono"));
-				cli.setDistrito(rs.getString("nombre_distrito"));			
-				cli.setDireccion(rs.getString("direccion"));
-				cli.setEmail(rs.getString("email"));
-				
-			}
-			
-			cnx.close();
-			
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return cli;
-	}
-	
+	// OPERACIONES CRUD
 	@Override
 	public Cliente consultarId(int idCliente) {
 
@@ -139,7 +77,7 @@ public class DaoCliente extends Conexion  implements CRUD<Cliente>{
 				cli.setDireccion(rs.getString(11));
 				cli.setEmail(rs.getString(12));
 				cli.setContrasena(rs.getString(13));
-				cli.setFoto(rs.getBytes(14));
+				cli.setRutaFoto(rs.getString(14));
 				cli.setEstadoActivo(rs.getBoolean(15));
 			}
 			
@@ -169,9 +107,8 @@ public class DaoCliente extends Conexion  implements CRUD<Cliente>{
 			stm.setInt(8, cli.getIdDistrito());
 			stm.setString(9, cli.getDireccion());
 			stm.setString(10, cli.getEmail());
-			//stm.setString(11, cli.getContrasena());
-			stm.setString(11, "por defecto");
-			stm.setBytes(12, cli.getFoto());
+			stm.setString(11, cli.getContrasena());
+			stm.setString(12, cli.getRutaFoto());
 			stm.execute(); 
 			cnx.close();
 		} catch (SQLException e) {
@@ -179,7 +116,7 @@ public class DaoCliente extends Conexion  implements CRUD<Cliente>{
 		}
 		return 0;
 	}
-
+	
 	@Override
 	public int modificar(Cliente c) {
 		String sql = "call sp_actualizar_cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -200,28 +137,123 @@ public class DaoCliente extends Conexion  implements CRUD<Cliente>{
 			stm.setString(12, c.getEmail());
 			stm.setString(13, c.getContrasena());
 			stm.setBoolean(14, c.isEstadoActivo());
-			stm.setBytes(15, c.getFoto());
-			System.out.println(stm.execute()+"-".repeat(12)+"MODIFIQUE"); 
+			stm.setString(15, c.getRutaFoto());
+			stm.execute(); 
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 		return 0;
-	}
+	}	
 
 	@Override
-	public int desactivar(int id) {
-		String sql = "call sp_desactivar_persona(?)";
+	public int cambiarEstado(int id, boolean estado) {
+		String sql = "call sp_cambiar_estado_persona(?, ?)";
 		cnx = getConnection();
 		try {
 			stm = cnx.prepareCall(sql);
 			stm.setInt(1, id);
+			stm.setBoolean(2, estado);
 			stm.execute();
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 		return 0;
+	}
+	
+	public DtoClienteConsulta consultarDtoCliente(int idCliente) {
+		DtoClienteConsulta cli = new DtoClienteConsulta();
+
+		String sql = "select * from v_clientes where id_persona=?";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, idCliente);
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				cli = recuperarDatosDto(rs);
+			}
+			cnx.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return cli;
+	}
+	
+	// LISTA DE CLIENTES PARA MOSTRAR EN LA TABLA DE MANTENIMIENTO
+	public List<DtoClienteConsulta> listarDtoClientes() {
+		
+		List<DtoClienteConsulta> lst = new ArrayList<DtoClienteConsulta>();
+		DtoClienteConsulta cli = null;
+		String sql = "select * from v_clientes";
+		
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				cli = recuperarDatosDto(rs);
+				lst.add(cli);
+			}	
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return lst;
+	}
+	
+	public List<DtoClienteConsulta> listarDtoClientes(boolean estado) {
+		
+		List<DtoClienteConsulta> lst = new ArrayList<DtoClienteConsulta>();
+		DtoClienteConsulta cli = null;
+		String sql = "select * from v_clientes where estado_activ = ?";
+		
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setBoolean(1, estado);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				cli = recuperarDatosDto(rs);
+				lst.add(cli);
+			}	
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return lst;
+	}
+
+	// MÉTODOS PRIVADOS
+	private DtoClienteConsulta recuperarDatosDto(ResultSet rs ) {
+		DtoClienteConsulta cli = new DtoClienteConsulta();
+		try {
+				cli.setIdPersonaCliente(rs.getInt("id_persona"));
+				cli.setIdUsuarioCliente(rs.getString("id_user"));
+				cli.setNombreCompleto(rs.getString("nombres"));
+				cli.setTelefono(rs.getString("telefono"));
+				cli.setDistrito(rs.getString("nombre_distrito"));			
+				cli.setDireccion(rs.getString("direccion"));
+				cli.setEmail(rs.getString("email"));
+				cli.setEstadoActivo(rs.getBoolean("estado_activ"));
+				
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cli;
 	}
 	
 }

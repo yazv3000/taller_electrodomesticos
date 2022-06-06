@@ -20,15 +20,18 @@
 </head>
 
 <body>
+	
 	<div class="contenido">
+	<h1 class="titulo">TABLA DE <span>PIEZAS</span></h1>
 	    <div class="tabla">
 	        <div class="tabla__tools">
 	            <ul>
 					<li><button class="fa-solid fa-plus-square icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"></button></li>
 	                <li><button class="fa-solid fa-pen icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
-	                <li><button class="fa-solid fa-trash icono"></button></li>
-	            </ul>
-	            <input class="tabla_buscar" type="text" placeholder="Filtrar">
+	            	<li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarPieza?accion=listar&lista=todos'" >Todos</button></li>
+	                <li><button type="button" class="btn btn-success" onclick="location.href='ServletGestionarPieza?accion=listar&lista=activos'" >Activos</button><li>
+	                <li><button type="button" class="btn btn-danger" onclick="location.href='ServletGestionarPieza?accion=listar&lista=inactivos'">Inactivos</button><li>
+				</ul>
 	        </div>
 	        <div class="tabla__contenido">
 	            <table id="tabla__Cliente" >
@@ -39,6 +42,7 @@
 							<th>CATEGORIA</th>
 							<th>PRECIO</th>
 							<th>STOCK</th>
+							<th>ESTADO</th>
 	                    </tr>
 	                </thead>
 	                <tbody class="tabla__info">
@@ -48,7 +52,15 @@
 							<td><c:out value="${p.getNomPieza()}"></c:out></td>
 							<td><c:out value="${p.getCategoria().getNombreCat()}"></c:out></td>
 							<td>S/. <c:out value="${p.getPrecio()}"></c:out></td>
-							<td><c:out value="${p.getStock()}"></c:out></td>		
+							<td><c:out value="${p.getStock()}"></c:out></td>
+							<td>
+								<c:if  test="${p.isEstadoActivo()}">
+									<a class="activado" href="${context}/ServletGestionarPieza?accion=desactivar&id=${p.getIdPieza()}"><span></span></a>									
+								</c:if>
+								<c:if test="${!p.isEstadoActivo()}">
+									<a class="desactivado" href="${context}/ServletGestionarPieza?accion=activar&id=${p.getIdPieza()}"><span></span></a>	
+								</c:if>
+							</td>		
 	                    </tr>
 	                    </c:forEach>
 	                </tbody>
@@ -65,7 +77,7 @@
 	    <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal"> cerrar</button>
 	      <div class="modal-body">
 	        	<!-- ===== DATOS DE LA NUEVA PIEZA ===== -->
-				<form  class="formulario needs-validation" action="" method="post" novalidate>
+				<form  class="formulario needs-validation" action="<%=request.getContextPath()%>/ServletGestionarPieza" method="post" novalidate>
 					<div class="row align-items-center pt-1">
 				      	<div class="form__grupo col-11">
 				      		<div class="form__titulo">
@@ -78,22 +90,22 @@
 			        </div>
 			        <div class="form__contenedor pt-4">
 			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" " required>
+			                <input type="text" class="form__input form-control" placeholder=" " name="txt_nombrePieza" required>
 			                <label for="name" class="form__label">Nombre Pieza:</label>
 			                <span class="form__line"></span>
 			            </div>
-			            <select class="form__seleccion" name="categoria_pieza">
+			            <select class="form__seleccion" name="cbx_categoriaPieza">
 			            	<c:forEach items="${lstCategorias}" var="cat">
 				                <option class="form__opcion" value="${cat.getIdCategoria()}">${cat.getNombreCat()}</option>
 							</c:forEach>
 			            </select>
 			            <div class="form__grupo">
-			                <input type="number" class="form__input form-control"  placeholder=" " required>
+			                <input type="number" id="num-doc2" class="form__input form-control"  placeholder=" " name="precio" required>
 			                <label for="name" class="form__label">Precio:</label>
 			                <span class="form__line"></span>
 			            </div>
 			            <div class="form__grupo">
-			                <input type="number" class="form__input form-control" placeholder=" " required>
+			                <input type="number" id="tel-2" class="form__input form-control" placeholder=" " name="stock" required>
 			                <label for="name" class="form__label">Stock:</label>
 			                <span class="form__line"></span>
 			            </div>
@@ -119,7 +131,7 @@
 	    <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal"> cerrar</button>
 	      <div class="modal-body">
 	        	<!-- ===== DATOS DE LA PIEZA A MODIFICAR ===== -->
-				<form  class="formulario needs-validation" action="<%=request.getContextPath()%>/ServletGestionPiezas" method="post" novalidate>
+				<form  class="formulario needs-validation" action="<%=request.getContextPath()%>/ServletGestionarPieza" method="post" novalidate>
 					<div class="row align-items-center pt-1">
 				      	<div class="form__grupo col-11">
 				      		<div class="form__titulo">
@@ -132,29 +144,29 @@
 			        </div>
 			        <div class="form__contenedor pt-4">
 			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" " value="${pi.getNomPieza()}" required>
+			                <input type="text" class="form__input form-control" placeholder=" " value="${pi.getNomPieza()}" name="txt_nombrePieza" required>
 			                <label for="name" class="form__label">Nombre Pieza:</label>
 			                <span class="form__line"></span>
 			            </div>
-			            <select class="form__seleccion" name="categorias">
+			            <select class="form__seleccion" name="cbx_categoriaPieza">
 				            <c:forEach items="${lstCategorias}" var="cat">
 				                <option class="form__opcion" value="${cat.getIdCategoria()}"  ${pi.getCategoria().getIdCategoria() == cat.getIdCategoria() ? 'selected' : ''}>${cat.getNombreCat()}</option>
 							</c:forEach>
 			            </select>
 			            <div class="form__grupo">
-			                <input type="number" class="form__input form-control"  placeholder=" " value="${pi.getPrecio()}" required>
+			                <input type="number" step="0.01" class="form__input form-control"  placeholder=" " value="${pi.getPrecio()}" name="precio" required>
 			                <label for="name" class="form__label">Precio:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="number" class="form__input form-control" placeholder=" " value="${pi.getStock()}" required>
-			                <label for="name" class="form__label">Stock:</label>
 			                <span class="form__line"></span>
 			            </div>
 			            <select class="form__seleccion" name="estado">
 			                <option class="form__opcion" value="true"  ${pi.isEstadoActivo() ? 'selected' : ''}>Activo</option>
 			                <option class="form__opcion" value="false"  ${!pi.isEstadoActivo() ? 'selected' : ''}>Inactivo</option>
 			            </select>
+			            <div class="form__grupo">
+			                <input type="number" id="num-doc1" class="form__input form-control" placeholder=" " value="${pi.getStock()}" name="stock" required>
+			                <label for="name" class="form__label">Stock:</label>
+			                <span class="form__line"></span>
+			            </div>
 			        </div>
 			        <div class="row align-items-center pt-4">
 			            <div class="form__grupo col-12">
@@ -173,6 +185,7 @@
 	</div><!-- /.contenido -->
 	
 	<script src="${context}/js/validForm.js"></script> 
+    <script type="text/javascript" src="${context}/js/ValidacionMonto.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 	

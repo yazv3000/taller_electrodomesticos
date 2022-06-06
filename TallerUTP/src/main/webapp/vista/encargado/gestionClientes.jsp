@@ -1,14 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"  pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+    <c:set var="context" value="${pageContext.request.contextPath}" /> 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es-PE">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <c:set var="context" value="${pageContext.request.contextPath}" /> 
+
     <link rel="stylesheet" type="text/css" href="${context}/css/tabla.css">
     <link rel="icon" href="img/Logo.png" type="image/png">
     <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
@@ -20,15 +21,18 @@
 </head>
 
 <body>
+	
 	<div class="contenido">
+		<h1 class="titulo">TABLA DE <span>CLIENTES</span></h1>
 	    <div class="tabla" id="myTable">
 	        <div class="tabla__tools">
 	            <ul>
 	            	<li><button class="fa-solid fa-plus-square icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"></button></li>
 	                <li><button class="fa-solid fa-pen icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
-	                <li></li>
+	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarCliente?accion=listar&lista=todos'" >Todos</button></li>
+	                <li><button type="button" class="btn btn-success" onclick="location.href='ServletGestionarCliente?accion=listar&lista=activos'" >Activos</button><li>
+	                <li><button type="button" class="btn btn-danger" onclick="location.href='ServletGestionarCliente?accion=listar&lista=inactivos'">Inactivos</button><li>
 	            </ul>
-	            <input class="tabla_buscar" type="text" placeholder="Filtrar">
 	        </div>
 	        <div class="tabla__contenido">
 	            <table id="tabla__Cliente" >
@@ -40,6 +44,7 @@
 							<th>DISTRITO</th>
 							<th>DIRECCION</th>
 							<th>EMAIL</th>
+							<th>ESTADO</th>
 	                    </tr>
 	                </thead>
 	                <tbody class="tabla__info">
@@ -50,16 +55,14 @@
 							<td> <c:out value="${c.getTelefono()}"></c:out> </td>
 							<td> <c:out value="${c.getDistrito()}"></c:out> </td>
 							<td> <c:out value="${c.getDireccion()}"></c:out> </td>
-							<td> <c:out value="${c.getEmail()}"></c:out> </td>	
+							<td> <c:out value="${c.getEmail()}"></c:out> </td>		
 							<td>
-								<c:choose>
-									<c:when test="${c.isEstadoActivo()}">
-										<a class="fa-solid fa-toggle-on icono" href="${context}/ServletGestionarCliente?accion=desactivar&id=${c.getIdPersona()}"></a>									
-									</c:when>
-									<c:when test="${!c.isEstadoActivo()}">
-										<a class="fa-solid fa-toggle-off icono" href="${context}/ServletGestionarCliente?accion=activar&id=${c.getIdPersona()}"></a>	
-									</c:when>
-								</c:choose>
+								<c:if  test="${c.isEstadoActivo()}">
+									<a class="activado" href="${context}/ServletGestionarCliente?accion=desactivar&id=${c.getIdPersona()}"><span></span></a>									
+								</c:if>
+								<c:if test="${!c.isEstadoActivo()}">
+									<a class="desactivado" href="${context}/ServletGestionarCliente?accion=activar&id=${c.getIdPersona()}"><span></span></a>	
+								</c:if>
 							</td>
 						</tr>
 	                    </c:forEach>
@@ -143,12 +146,19 @@
 			            </div>
 			            <div class="form__grupo" align="center">
 			                <div class="input-group">
-						      <input ID="txtPassword" type="Password" Class="form__input form-control" placeholder="Contraseña" name="txtpass" required>
+						      <input id="txtPassword" type="password" class="form__input form-control" placeholder="Contraseña" name="txt_pass" required>
 						      <div class="input-group-append">
-				              <button style="color: white;" id="show_password" class="btn modal__cerrar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
+				              <button style="color: white;" id="show_password" class="btn btn__cerrar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
 				          	  </div>
 			    			</div>
 			            </div>
+			            <div class="form__grupo" align="center">
+			                <div class="input-group">
+						      <input type="file" name="imagen">
+				          	  </div>
+			    			</div>
+			            </div>        	
+			            
 			        </div>
 			        <div class="row align-items-center pt-4">
 				      	<div class="form__grupo col-12">
@@ -242,6 +252,14 @@
 			                <label for="" class="form__label">Correo Electronico:</label>
 			                <span class="form__line"></span>
 			            </div>
+			            
+			            <div class="form__grupo" align="center">
+			                <div class="input-group">
+						      <input type="file" name="imagen">
+				          	  </div>
+			    			</div>
+			            </div>  
+			            
 			        </div>
 			        <div class="row align-items-center pt-4">
 			            <div class="form__grupo col-12">
@@ -260,6 +278,7 @@
 	</div><!-- /.contenido -->
 
 	<script src="${context}/js/validForm.js"></script> 
+	<script type="text/javascript" src="${context}/js/contrase.js"></script>
 	<script type="text/javascript" src="${context}/js/ValidacionMonto.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
