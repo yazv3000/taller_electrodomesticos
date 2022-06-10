@@ -781,7 +781,7 @@ FOR monto IN select monto_servicio from detalle_atencion where id_atencion = id_
 	total = total+COALESCE(monto, 0);
 end loop;
 
-update atencion set monto_total = total;
+update atencion set monto_total = total where id_atencion = id_aten;
 
 END
 $$

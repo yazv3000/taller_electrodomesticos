@@ -122,7 +122,7 @@ public class ServletPresupuesto extends HttpServlet {
 			break;
 			
 		case "confirmar": 
-			/*DtoAtencion dtoAtencion = (DtoAtencion) request.getSession().getAttribute("dtoAtencion");
+			DtoAtencion dtoAtencion = (DtoAtencion) request.getSession().getAttribute("dtoAtencion");
 			int idServ =(int) request.getSession().getAttribute("id_servicio");
 			
 			DaoAtencion daoAte = new DaoAtencion();
@@ -148,7 +148,7 @@ public class ServletPresupuesto extends HttpServlet {
 			daoAte.finalizarAtencionDomicilio(dtoAtencion.getIdAtencion(), idServ, presupuestoServ);
 			
 			limpiarListas();
-			*/
+			
 			PrintWriter writer = response.getWriter();
 			String htmlRespone = "<html>";
 			htmlRespone += "<script type=\"text/javascript\">"

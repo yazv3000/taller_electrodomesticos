@@ -65,7 +65,8 @@ public class ServletAtencionTaller extends HttpServlet {
 			
 			dao.insertaratencionTaller(atencion);
 			break;
-		default:
+			
+		case "tan":
 				int id = Integer.parseInt(request.getParameter("id"));
 				horario.setIdTecnico(id);
 				//INSERTA HORARIO
@@ -76,8 +77,12 @@ public class ServletAtencionTaller extends HttpServlet {
 				listarServicios(request);
 				request.getRequestDispatcher("vista/tecnico/atencionTaller.jsp").forward(request, response);
 			break;
+			
+			default:
+				request.getRequestDispatcher("vista/tecnico/atencionTaller.jsp").forward(request, response);
+			break;
     	}
-    	request.getRequestDispatcher("vista/tecnico/atencionTaller.jsp").forward(request, response);
+    	
     }
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

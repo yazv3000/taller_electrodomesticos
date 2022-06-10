@@ -26,7 +26,7 @@ public class ServletCitasCliente extends HttpServlet {
         super();
     }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Precondición cliente ha iniciado sesión
 		DtoUsuario user_cliente = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");
 		
@@ -42,4 +42,11 @@ public class ServletCitasCliente extends HttpServlet {
 		}
 	}
 
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request, response);
+	}
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request, response);
+	}
 }

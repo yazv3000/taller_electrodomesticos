@@ -16,7 +16,6 @@
 
 <body>
 	
-	<h1> <c:out value="idTecnico"></c:out></h1>
     <h1 class="titulo-horario">Horario de la <span>Semana</span></h1>
     <div class="cuadricula">
         
