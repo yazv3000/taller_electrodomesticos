@@ -28,7 +28,7 @@
 <body>
     <div class="contenedor">
         <!-- ====== MENÚ ====== -->
-        <div class="menu">
+        <div class="menu nav__toggle">
             <nav class="navi">
                 <div>
                      <!-- ===== LOGO ===== -->
@@ -57,7 +57,7 @@
                             <i class="fas fa-blender nav__icono"></i>
                             <span class="nav__nombre">Electrodomesticos</span>
                         </a>
-                        <a href="" class="nav__link">
+                        <a href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=show" class="nav__link" target="marco">
                             <i class="fa-solid fa-calendar-days nav__icono"></i>
                             <span class="nav__nombre">Horarios</span>
                         </a>

@@ -33,7 +33,7 @@
                         <div class="nav__linea"></div>
                     </li>  
                     <li class="nav__item">
-                        <a href="#" class="nav__link" target="">Taller </a>
+                        <a href="${context}/ServletAtencionTaller?accion=d&&id=<c:out value="${sessionScope.dtoUsuario.getIdPersona()}"/>" class="nav__link" target="marco">Taller</a>
                         <div class="nav__linea"></div>
                     </li>      
                 </ul>

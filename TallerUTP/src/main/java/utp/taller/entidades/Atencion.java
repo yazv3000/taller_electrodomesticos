@@ -14,6 +14,7 @@ public class Atencion {
 	private String horaCita;
 	private String estado;
 	private String diagnostico;
+	private String tipoAtencion;
 	
 	// CONSTRUCTORES
 	public Atencion() {	}
@@ -45,5 +46,13 @@ public class Atencion {
 
 	public String getDiagnostico() {		return diagnostico;	}
 	public void setDiagnostico(String diagnostico) {		this.diagnostico = diagnostico;	}
+
+	public String getIdAtencion() {	return idAtencion;}
+	public void setIdAtencion(String idAtencion) {	this.idAtencion = idAtencion;	}
+
+	public String getTipoAtencion() {	return tipoAtencion;}
+	public void setTipoAtencion(String tipoAtencion) {	this.tipoAtencion = tipoAtencion;}
+	
+	
 	
 }

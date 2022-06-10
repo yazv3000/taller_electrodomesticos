@@ -99,6 +99,7 @@ public class ServletNuevaCita extends HttpServlet {
 		processRequest(request, response);
 	}
 	
+	
 	private void listarMarcas(HttpServletRequest request) {
 		DaoElectrodomestico daoElectro = new DaoElectrodomestico();
 		List<ElectrodomesticoMarca> lst = daoElectro.listarMarcas();

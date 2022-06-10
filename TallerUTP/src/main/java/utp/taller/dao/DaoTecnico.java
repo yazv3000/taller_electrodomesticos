@@ -1,6 +1,7 @@
 package utp.taller.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,8 +9,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jms.Message;
+
 import utp.config.Conexion;
 import utp.taller.dto.DtoTecnicoConsulta;
+import utp.taller.dto.DtoTecnicoNombre;
 import utp.taller.dto.DtoUsuario;
 import utp.taller.entidades.Tecnico;
 
@@ -244,4 +248,79 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 		return tec;
 	}
 	
+	// LISTAR TECNICOS CON HORARIO 
+		public List<DtoTecnicoNombre> listarTecnicoConHorario  (int mes, int anyo){
+			String sql ="select * from f_tecnicos_con_horario(?,?) ";
+			List<DtoTecnicoNombre> lst = new ArrayList<DtoTecnicoNombre>();
+			cnx = getConnection();
+			try {
+				stm = cnx.prepareStatement(sql);
+				stm.setInt(1, mes);
+				stm.setInt(2, anyo);
+				ResultSet rs = null;
+				rs = stm.executeQuery();
+
+				while (rs.next()) {
+					DtoTecnicoNombre dtoTec = new DtoTecnicoNombre();
+					dtoTec.setId(rs.getInt(1));
+					dtoTec.setNombre(rs.getString(2));
+					lst.add(dtoTec);
+				}	
+				cnx.close();
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			return lst;
+		}
+		//FALTA VER SI FINCIONA SIN ESTE
+		// LISTAR TECNICOS SIN HORARIO 	
+		public List<DtoTecnicoNombre> listarTecnicoSinHorario (){
+	
+			String sql ="select id_persona, nombres from v_tecnicos";
+			List<DtoTecnicoNombre> lst = new ArrayList<DtoTecnicoNombre>();
+			cnx = getConnection();
+			try {
+				stm = cnx.prepareStatement(sql);
+				ResultSet rs = null;
+				rs = stm.executeQuery();
+
+				while (rs.next()) {
+					DtoTecnicoNombre dtoTec = new DtoTecnicoNombre();
+					dtoTec.setId(rs.getInt(1));
+					dtoTec.setNombre(rs.getString(2));
+					lst.add(dtoTec);
+				}	
+				cnx.close();
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			return lst;
+		}
+		// LISTAR TECNICOS SIN HORARIO 	
+		public List<DtoTecnicoNombre> listarTecnicos(){
+	
+			String sql ="select id_persona, nombres from v_tecnicos";
+			List<DtoTecnicoNombre> lst = new ArrayList<DtoTecnicoNombre>();
+			cnx = getConnection();
+			try {
+				stm = cnx.prepareStatement(sql);
+
+				ResultSet rs = null;
+				rs = stm.executeQuery();
+
+				while (rs.next()) {
+					DtoTecnicoNombre dtoTec = new DtoTecnicoNombre();
+					dtoTec.setId(rs.getInt(1));
+					dtoTec.setNombre(rs.getString(2));
+					lst.add(dtoTec);
+				}	
+				cnx.close();
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			return lst;
+		}
 }

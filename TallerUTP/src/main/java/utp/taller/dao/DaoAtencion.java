@@ -15,6 +15,7 @@ import utp.taller.dto.DtoAtencion;
 import utp.taller.dto.DtoCitaConsulta;
 import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoNuevaCita;
+import utp.taller.dto.DtoNuevoAtencionTaller;
 import utp.taller.entidades.Atencion;
 import utp.taller.entidades.Electrodomestico;
 import utp.taller.entidades.ElectrodomesticoMarca;
@@ -36,6 +37,7 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 	@Override
 	public int insertar(Atencion ate) {
 		return 0;
+		
 	}
 
 	@Override
@@ -66,6 +68,24 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 			stm.execute(); 
 			cnx.close();
 		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	public void insertaratencionTaller(DtoNuevoAtencionTaller ate) {
+		String sql = "call sp_nueva_cita(?, ?, ?, ?, ?, ?)";
+		cnx = getConnection();
+		try {
+			DaoHorario daoH = new DaoHorario();
+			stm = cnx.prepareCall(sql);
+			stm.setInt(1, ate.getElectrodomestico().getIdElectrod());
+			stm.setInt(2, daoH.idHorario());
+			stm.setInt(3, ate.getServicio().getIdServicio());
+			stm.setString(4, ate.getTipoAtencion());
+			stm.setString(5, ate.getDiagnostico());
+			stm.setObject(6, LocalDate.now());
+			stm.execute(); 
+			cnx.close();
+		}	catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -174,5 +194,42 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	//OBTENER EL ID MAXIMO DEL CLIENTE
+	public int idMaxCliente () {
+		String sql = "select max(u.id_persona) as idMaximo from usuario as u where u.id_rol = 1";
+		cnx = getConnection();
+		ResultSet rs = null;
+		int idMaximo = 0;
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				idMaximo = rs.getInt("idMaximo");
+			}
+			cnx.close();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return idMaximo;
+	}
+	public int getidElectrodomestico () {
+		String sql = "select e.id_electrodomestico as idElec from electrodomestico as e where e.id_propietario= \r\n"
+				+ "(select max(u.id_persona) from usuario as u where u.id_rol = 1);";
+		cnx = getConnection();
+		ResultSet rs = null;
+		int idElec = 0;
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				idElec = rs.getInt("idElec");
+			}
+			cnx.close();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return idElec;
 	}
 }

@@ -157,15 +157,14 @@
 						      <input type="file" name="imagen">
 				          	  </div>
 			    			</div>
-			            </div>        	
-			            
-			        </div>
-			        <div class="row align-items-center pt-4">
-				      	<div class="form__grupo col-12">
-			                <input name="accion" value="insertar"  class="btn__insertar" type="submit" >INSERTAR      
-			            </div>
-			        </div>
-			    </form>
+			            </div>        
+				        <div class="row align-items-center pt-4">
+					      	<div class="form__grupo col-12">
+				                <input name="accion" value="insertar"  class="btn__insertar" type="submit" >INSERTAR      
+				            </div>
+				        </div>
+			   	 </form>
+			   </div>
 				<!-- =====  FIN DATOS ===== -->
 	      </div><!-- /.modal-body -->
 	    </div><!-- /.modal-content -->
@@ -259,9 +258,7 @@
 				          	  </div>
 			    			</div>
 			            </div>  
-			            
-			        </div>
-			        <div class="row align-items-center pt-4">
+			            			        <div class="row align-items-center pt-4">
 			            <div class="form__grupo col-12">
 			                <input name="accion" value="actualizar"  class="btn__modificar" type="submit" >MODIFICAR
 			            </div>
@@ -274,9 +271,6 @@
 	</div><!-- /.modal-fade -->
 	
 	<!-- ===== FINAL MODAL MODIFICAR ===== -->    
-
-	</div><!-- /.contenido -->
-
 	<script src="${context}/js/validForm.js"></script> 
 	<script type="text/javascript" src="${context}/js/contrase.js"></script>
 	<script type="text/javascript" src="${context}/js/ValidacionMonto.js"></script>

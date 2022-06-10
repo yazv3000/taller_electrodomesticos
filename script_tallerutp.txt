@@ -1160,3 +1160,32 @@ INSERT INTO public.pieza(nombre_pieza, stock, precio_pieza, id_categoria)
 	('Kit Instalacion Lavaplatos', 500, 58.90, 7),
 	('Condensador para horno microondas Sharp', 120, 146.00, 8),
 	('Botón plateado para horno microondas Bosch', 280, 24.00, 8);
+---------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_tecnicos_con_horario(
+	mes integer,
+	anyo integer)
+    RETURNS TABLE(id_persona integer, nombres character varying) 
+    LANGUAGE 'sql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+ 			  
+select distinct VT.id_persona, VT.nombres from 
+v_tecnicos VT right join horario_atencion H 
+on VT.id_persona = H.id_tecnico 
+where EXTRACT(MONTH FROM H.fecha_atencion) = mes and EXTRACT(YEAR FROM h.fecha_atencion) = anyo
+$BODY$;
+---------------------------------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_nuevo_horario(
+	IN id_tecnico integer,
+	IN fecha date,
+	IN hora time without time zone)
+LANGUAGE 'sql'
+AS $BODY$
+INSERT INTO public.horario_atencion
+(id_tecnico, fecha_atencion, hora_inicio, estado)
+VALUES
+($1, $2, $3, 'Disponible');
+$BODY$;
