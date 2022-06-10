@@ -173,7 +173,7 @@
 	
 	<!-- ===== FINAL MODAL INSERTAR ===== -->    
 
-
+	<c:if test="${sessionScope.fila != null}">
 	<!-- ===== MODAL MODIFICAR ===== -->
 	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right: 350px;">
 	  <div class="modal-dialog" >
@@ -271,6 +271,8 @@
 	</div><!-- /.modal-fade -->
 	
 	<!-- ===== FINAL MODAL MODIFICAR ===== -->    
+	</c:if>
+	
 	<script src="${context}/js/validForm.js"></script> 
 	<script type="text/javascript" src="${context}/js/contrase.js"></script>
 	<script type="text/javascript" src="${context}/js/ValidacionMonto.js"></script>
@@ -280,7 +282,6 @@
 	
 	 <!-- ===== JS BOOSTRAP ===== -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-	<script type="text/javascript" src="${context}/js/PruebaPermanenciavariable.js"></script>
  
 	<script>
        $(document).ready(function () {
@@ -294,34 +295,6 @@
                 }
             });
         }); 
-        
-		
-       $(function(){
-    	   $('tr').click(function(e){
-    	     if($(this).hasClass('.row-selected')){
-    	       $(this).addClass('other-clic')
-    	     }else{
-    	       cleanTr()
-    	       $(this).addClass('row-selected')
-    	     }
-    	   })
-    	   
-    	   
-    	   function cleanTr(){
-    	     $('.row-selected').each(function(index, element){
-    	       $(element).removeClass('row-selected')
-    	       $(element).removeClass('other-clic')
-    	     })
-    	   }
-    	 })
-    var ashu = document.querySelectorAll("tr");
-
-		for (let i = 0; i < contenido.length; i++) {
-			ashu[i].addEventListener("click", () => {
-				ashu[i].style.backgroundColor="red";
-			});
-		
-		}
     </script>
 
 </body>

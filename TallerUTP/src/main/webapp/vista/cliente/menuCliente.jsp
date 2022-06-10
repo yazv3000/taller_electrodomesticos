@@ -28,15 +28,15 @@
 
                 <ul class="nav__lista nav__lista--ocultar">
                     <li class="nav__item">
-                        <a href="<%=request.getContextPath()%>/ServletCitasCliente" class="nav__link" target="marco">Citas</a>
+                        <a href="${context}/ServletCitasCliente" class="nav__link" target="marco">Citas</a>
                         <div class="nav__linea"></div>
                     </li>   
                     <li class="nav__item">
-                        <a href="<%=request.getContextPath()%>/ServletElectrodomesticos" class="nav__link" target="marco">Electrodomésticos</a>
+                        <a href="${context}/ServletElectrodomesticos" class="nav__link" target="marco">Electrodomésticos</a>
                         <div class="nav__linea"></div>
                     </li>   
                     <li class="nav__item">
-                        <a href="<%=request.getContextPath()%>/ServletServicios" class="nav__link" target="marco">Servicios</a>
+                        <a href="${context}/ServletServicios" class="nav__link" target="marco">Servicios</a>
                         <div class="nav__linea"></div>
                     </li>      
                 </ul>
@@ -54,7 +54,7 @@
                       </c:choose>
                     
                     <a class="nav__name" href="#"><c:out value="${sessionScope.dtoUsuario.getUsername()}"/></a>
-                    <a class="cerrar" href="index.jsp"><i class="fa-solid fa-arrow-right-from-bracket icono"></i></a>
+                    <a class="cerrar" href="${context}/ServletLogout" class="nav__link"><i class="fa-solid fa-arrow-right-from-bracket icono"></i></a>
                     
                 </div>
                 <!--====FIN DATOS DEL USUARIO ====-->
@@ -65,7 +65,7 @@
         </div>
     </nav>
    
-    <iframe src="<%=request.getContextPath()%>/ServletServicios" class="marco" name="marco" frameborder="0"></iframe>
+    <iframe src="${context}/ServletServicios" class="marco" name="marco" frameborder="0"></iframe>
     <script src="${context}/js/menu-tec.js"></script>
 </body>
 </html>

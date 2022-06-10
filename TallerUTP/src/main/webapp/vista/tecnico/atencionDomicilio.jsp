@@ -21,34 +21,53 @@
     <div class="tabla__contenido">
         <h3>Tabla de Citas</h3>
         <div class="tabla__overflow">
-            <table id="tabla-citas">
+            <table id="tabla-citas"">
                 <thead class="tabla__titulo">
                     <tr>
                         <th>ID</th>
                         <th>Cliente</th>
+                        <th>Electrodomestico</th>
                         <th>Direccion</th>
                         <th>Fecha</th>
                         <th>Hora</th>
                         <th>Servicio</th>
-                        <th>Electrodomestico</th>
-                        <th>Detalles</th>
+                        <th>Detalle</th>
                     </tr>
                 </thead>
                 <tbody class="tabla__info">
-                      <c:forEach items="${lstConsultaCitas}" var="ci">       
+                     <c:forEach items="${lstConsultaCitas}" var="ci">      
                     <tr id="tabla__fila">
                         <td class="tabla__columna"><c:out value="${ci.getIdAtencion()}"></c:out></td>
-                        <td class="tabla__columna"><c:out value="${ci.getNombreCliente()}"></c:out></td>
+                        <td  class="tabla__columna"><c:out value="${ci.getNombreCliente()}"></c:out></td>
+                        <td class="tabla__columna"><c:out value="${ci.getTipoElectrodomestico()}"></c:out></td>
                         <td class="tabla__columna"><c:out value="${ci.getDistritoYdireccion()}"></c:out></td>
                         <td class="tabla__columna"><c:out value="${ci.getFechaAtencion()}"></c:out></td>
                         <td class="tabla__columna"><c:out value="${ci.getHoraAtencion()}"></c:out></td>
-                        <td class="tabla__columna">Reparacion</td>
-                        <td class="tabla__columna"><c:out value="${ci.getTipoElectrodomestico()}"></c:out></td>
-                        <td class="tabla__columna">Pendiente</td>
-                        <td class="tabla__columna">
+                        <td>
+                        	<table>
+                        	<tbody class="tabla__info">
+	                        	<c:forEach items="${ci.getServicios()}" var="s">       
+	                        	 <tr id="tabla__fila">
+	                        	 	<td class="tabla__columna"><c:out value="${s.getNomServicio()}"></c:out></td>
+	                        	 	<td class="tabla__columna">
+	                        	 	<c:choose>
+				                       <c:when test="${s.isEstadoCompleto()}">
+				                       <i class="fa fa-check-square" aria-hidden="true"></i>
+				                       </c:when>
+				                       <c:otherwise>
+								       <i class="fa fa-spinner" aria-hidden="true"></i>
+								    </c:otherwise>
+				                      </c:choose>
+	                        	 	</td>
+	                        	 </tr>
+	                        	 </c:forEach>
+                        	</tbody>
+                        	</table>
+                        </td>
+                        <td  class="tabla__columna">
                         	<a class="informacion" href="${context}/ServletResumenAtencion?id=${ci.getIdAtencion()}" target="marco-atencion"><i class="fa-solid fa-file-pen icon"></i></a></td>
-                    	</tr>
-                    	 </c:forEach>
+                    </tr>
+                    </c:forEach>
                 </tbody>
             </table>
         </div>

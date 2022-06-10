@@ -17,8 +17,6 @@ import utp.taller.dao.DaoHorario;
 import utp.taller.dao.DaoServicio;
 import utp.taller.dto.DtoHoraConsulta;
 import utp.taller.dto.DtoNuevoAtencionTaller;
-import utp.taller.dto.DtoUsuario;
-import utp.taller.entidades.Atencion;
 import utp.taller.entidades.Cliente;
 import utp.taller.entidades.Distrito;
 import utp.taller.entidades.Electrodomestico;

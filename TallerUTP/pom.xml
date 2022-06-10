@@ -11,8 +11,23 @@
         <maven.compiler.source>17</maven.compiler.source><!-- sintaxis -->
         <maven.compiler.target>17</maven.compiler.target><!-- motor de jvm -->
 </properties>
-    
-  <!-- More Project Information -->
+
+  <dependencies>
+    	<dependency>
+		<groupId>com.sun.mail</groupId>
+		<artifactId>javax.mail</artifactId>
+		<version>1.6.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
+		<dependency>
+		    <groupId>net.sf.jasperreports</groupId>
+		    <artifactId>jasperreports</artifactId>
+		    <version>6.19.1</version>
+		</dependency>
+   </dependencies>
+   
+   
+   <!-- More Project Information -->
   <organization>
     <name>Universidad Tecnológica del Perú</name>
   </organization>

@@ -67,6 +67,7 @@ public class ServletGestionarCliente extends HttpServlet {
 			case "actualizar":
 					recuperarDatos(request);
 					dao.modificar(cliente);	
+					request.getSession().removeAttribute("fila");
 					listar(request, tipoLista);
 					break;
 

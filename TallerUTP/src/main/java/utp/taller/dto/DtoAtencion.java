@@ -1,24 +1,25 @@
 package utp.taller.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
-import utp.taller.entidades.Atencion;
 import utp.taller.entidades.Electrodomestico;
 import utp.taller.entidades.ElectrodomesticoMarca;
 import utp.taller.entidades.ElectrodomesticoTipo;
 import utp.taller.entidades.Servicio;
 
-public class DtoAtencion {
+public class DtoAtencion implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	// ATRIBUTOS
-	private String idAtencion;
+	private int idAtencion;
 	private DtoClienteConsulta cliente;
 	private Servicio servicio;
 	private Electrodomestico electrodomestico;
 	private Date fechaCita;
 	private Date fechaReservaCita;
 	private String horaCita;
-	
 	
 	private ElectrodomesticoTipo electrodomesticoTipo;
 	private ElectrodomesticoMarca electrodomesticoMarca;
@@ -30,8 +31,8 @@ public class DtoAtencion {
 	public DtoAtencion() {	}
 
 	// MÉTODOS GETTER & SETTER
-	public String getIdCita() {		return idAtencion;	}
-	public void setIdCita(String idCita) {		this.idAtencion = idCita;	}
+	public int getIdAtencion() {	return idAtencion;}
+	public void setIdAtencion(int idAtencion) {	this.idAtencion = idAtencion;	}
 
 	public DtoClienteConsulta getCliente() {		return cliente;	}
 	public void setCliente(DtoClienteConsulta cliente) {		this.cliente = cliente;	}
@@ -50,9 +51,6 @@ public class DtoAtencion {
 
 	public String getEstado() {	return estado;}
 	public void setEstado(String estado) {	this.estado = estado;}
-	
-	public String getIdAtencion() {	return idAtencion;	}
-	public void setIdAtencion(String idAtencion) {	this.idAtencion = idAtencion;	}
 
 	public Date getFechaReservaCita() {	return fechaReservaCita;}
 	public void setFechaReservaCita(Date fechaReservaCita) {	this.fechaReservaCita = fechaReservaCita;	}

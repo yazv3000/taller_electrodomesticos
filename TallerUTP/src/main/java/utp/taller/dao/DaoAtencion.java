@@ -5,10 +5,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLType;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import utp.config.Conexion;
 import utp.taller.dto.DtoAtencion;
@@ -16,42 +21,20 @@ import utp.taller.dto.DtoCitaConsulta;
 import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoNuevaCita;
 import utp.taller.dto.DtoNuevoAtencionTaller;
-import utp.taller.entidades.Atencion;
+import utp.taller.dto.DtoReporteConsulta;
+import utp.taller.dto.DtoServicioAtencion;
 import utp.taller.entidades.Electrodomestico;
 import utp.taller.entidades.ElectrodomesticoMarca;
 import utp.taller.entidades.ElectrodomesticoTipo;
 import utp.taller.entidades.Servicio;
 
-public class DaoAtencion extends Conexion implements CRUD<Atencion> {
+public class DaoAtencion extends Conexion {
 	
 	SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
 	Connection cnx = null;
 	PreparedStatement stm = null;
 	
-	@Override
-	public Atencion consultarId(int id) {
-		
-		return null;
-	}
 
-	@Override
-	public int insertar(Atencion ate) {
-		return 0;
-		
-	}
-
-	@Override
-	public int modificar(Atencion ate) {
-		
-		return 0;
-	}
-
-	@Override
-	public int cambiarEstado(int id, boolean estado) {
-		
-		return 0;
-	}
-	
 	public void insertarCita(DtoNuevaCita cita) {
 		String sql = "call sp_nueva_cita(?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
@@ -71,6 +54,7 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 			throw new RuntimeException(e);
 		}
 	}
+	
 	public void insertaratencionTaller(DtoNuevoAtencionTaller ate) {
 		String sql = "call sp_nueva_cita(?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
@@ -92,7 +76,7 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 	//LISTAR ATENCION
 	public DtoAtencion obtenerAtencion(int idAtencion){
 		DtoAtencion ate = null;
-		String sql = "select * from v_resumen_atencion where id_atencion=?";
+		String sql = "select * from f_resumen_atencion(?)";
 		cnx = getConnection();
 		ResultSet rs = null;
 		
@@ -102,11 +86,11 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 			rs = stm.executeQuery();
 			if (rs.next()) {
 				ate = new DtoAtencion();
-				ate.setIdCita(rs.getInt(1)+"");
+				ate.setIdAtencion(idAtencion);
 				DtoClienteConsulta cliente = new DtoClienteConsulta();
-				cliente.setNombreCompleto(rs.getString("nombres"));
+				cliente.setNombreCompleto(rs.getString("nombre_cliente"));
 				cliente.setTelefono(rs.getString("telefono"));
-				cliente.setDistrito(rs.getString("nombre_distrito"));
+				cliente.setDistrito(rs.getString("distrito"));
 				cliente.setDireccion(rs.getString("direccion"));
 				ate.setCliente(cliente);
 				
@@ -116,8 +100,6 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 				servicio.setIdServicio(rs.getInt("id_servicio"));
 				servicio.setNomServicio(rs.getString("nombre_serv"));
 				ate.setServicio(servicio);
-				
-				
 				
 				Electrodomestico electro = new Electrodomestico();
 				electro.setNroSerie(rs.getString("nro_serie"));
@@ -133,7 +115,7 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 				ate.setElectrodomesticoMarca(elecMarca);
 				
 				ate.setHoraCita(rs.getString("hora_inicio"));
-				ate.setTipoAtencion(rs.getString("tipo"));
+				ate.setTipoAtencion(rs.getString("lugar"));
 				ate.setFallaDescrita(rs.getString("falla_descrita"));
 				
 				ate.setFechaReservaCita(rs.getDate("fecha_reserva_cita"));
@@ -160,14 +142,8 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 			rs = stm.executeQuery();
 
 			while (rs.next()) {
-				cita = new DtoCitaConsulta();
-				cita.setIdAtencion(rs.getInt("id_atencion"));
-				cita.setNombreCliente(rs.getString("nombre_cliente"));
-				cita.setDistritoYdireccion(rs.getString("direc_cliente"));
-				cita.setTipoElectrodomestico(rs.getString("tipo_electro"));
-				cita.setHoraAtencion(rs.getString("hora_inicio"));
-				cita.setFechaAtencion(rs.getDate("fecha_atencion"));	
-
+				cita = recuperarDatosCita(rs);
+				cita.setServicios(recuperarServiciosAtencion(cita.getIdAtencion()));
 				lst.add(cita);
 			}	
 			cnx.close();
@@ -178,6 +154,78 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 		return lst;
 	}
 
+	
+	public List<DtoCitaConsulta> listarCitasCliente(int idCliente){
+		List<DtoCitaConsulta> lst = new ArrayList<DtoCitaConsulta>();
+		String sql = "select * from v_citas_domicilio where id_cliente=? ";
+		DtoCitaConsulta cita = null;
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, idCliente);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				cita = recuperarDatosCita(rs);
+				cita.setServicios(recuperarServiciosAtencion(cita.getIdAtencion()));
+				lst.add(cita);
+			}	
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return lst;
+	}
+	
+	
+	public DtoCitaConsulta recuperarDatosCita(ResultSet rs) {
+		DtoCitaConsulta cita = new DtoCitaConsulta();
+		try {
+			cita.setIdAtencion(rs.getInt("id_atencion"));
+			cita.setNombreCliente(rs.getString("nombre_cliente"));
+			cita.setNombreTecnico(rs.getString("nombre_tecnico"));
+			cita.setDistritoYdireccion(rs.getString("direc_cliente"));
+			cita.setTipoElectrodomestico(rs.getString("tipo_electro"));
+			cita.setHoraAtencion(rs.getString("hora_inicio"));
+			cita.setFechaAtencion(rs.getDate("fecha_atencion"));	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cita;
+	}
+	
+	public Set<DtoServicioAtencion> recuperarServiciosAtencion(int idAtencion) {
+		Set<DtoServicioAtencion> set = new HashSet<DtoServicioAtencion>();
+		String sql = "select S.id_servicio, S.nombre_serv, D.estado_completo from detalle_atencion D inner join servicio S on D.id_servicio = S.id_servicio where id_atencion =? ";
+		DtoServicioAtencion serv = null;
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, idAtencion);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				serv = new DtoServicioAtencion();
+				serv.setIdServicio(rs.getInt("id_servicio"));
+				serv.setNomServicio(rs.getString("nombre_serv"));
+				serv.setEstadoCompleto(rs.getBoolean("estado_completo"));
+				System.out.println(rs.getString("nombre_serv"));
+				set.add(serv);
+			}	
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return set;
+	}
+	
+	
 	// AGREGAR UNA VENTA
 	public void agregarVenta(int idAtencion, double monto) {
 		String sql = "call sp_agregar_venta(?, ?)";
@@ -232,4 +280,124 @@ public class DaoAtencion extends Conexion implements CRUD<Atencion> {
 		}
 		return idElec;
 	}
+
+	public void finalizarAtencionDomicilio(int idAtencion, int idServ, double presupuestoServ) {
+		
+		String sql = "call sp_fin_atencion_domicilio(?, ?, ?, ?, ?, ?)";
+		
+		cnx = getConnection();
+		
+		try {
+			stm = cnx.prepareCall(sql);
+			stm.setInt(1, idAtencion);
+			stm.setInt(2, idServ);
+			// TODO
+			stm.setBoolean(3, true);	// presupuesto aceptado
+			stm.setBigDecimal(4, new BigDecimal(10));	// visita
+			stm.setBigDecimal(5, new BigDecimal(25));	// diagnostico
+			stm.setBigDecimal(6, new BigDecimal(presupuestoServ));
+			stm.execute(); 
+			cnx.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+	
+	// REPORTES
+		public List<DtoReporteConsulta> listarReportes(){
+			List<DtoReporteConsulta> lst = new ArrayList<DtoReporteConsulta>();
+			String sql = "select * from v_atenciones_finalizadas";
+			DtoReporteConsulta aten = null;
+			cnx = getConnection();
+			ResultSet rs = null;
+
+			try {
+				stm = cnx.prepareStatement(sql);
+				rs = stm.executeQuery();
+
+				while (rs.next()) {
+					aten = recuperarReporte(rs);
+					lst.add(aten);
+				}	
+				cnx.close();
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			return lst;
+		}
+		
+		
+		public List<DtoReporteConsulta> listarReportesTecnico(String tecBuscado, Date fecha1, Date fecha2){
+			List<DtoReporteConsulta> lst = new ArrayList<DtoReporteConsulta>();
+			String sql = "select * from f_reportes_x_tecnico(?,?,?) ";
+			DtoReporteConsulta aten = null;
+			cnx = getConnection();
+			ResultSet rs = null;
+
+			try {
+				stm = cnx.prepareStatement(sql);
+				stm.setString(1, tecBuscado);
+				stm.setObject(2, fecha1, Types.DATE);
+				stm.setObject(3, fecha2, Types.DATE);
+				rs = stm.executeQuery();
+
+				while (rs.next()) {
+					aten = recuperarReporte(rs);
+					lst.add(aten);
+				}	
+				cnx.close();
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			return lst;
+		}
+		
+		public List<DtoReporteConsulta> listarReportesCliente(String cliBuscado, Date fecha1, Date fecha2){
+			List<DtoReporteConsulta> lst = new ArrayList<DtoReporteConsulta>();
+			String sql = "select * from f_reportes_x_cliente(?,?,?) ";
+			DtoReporteConsulta aten = null;
+			cnx = getConnection();
+			ResultSet rs = null;
+
+			try {
+				stm = cnx.prepareStatement(sql);
+				stm.setString(1, cliBuscado);
+				stm.setObject(2, fecha1, Types.DATE);
+				stm.setObject(3, fecha2, Types.DATE);
+				rs = stm.executeQuery();
+
+				while (rs.next()) {
+					aten = recuperarReporte(rs);
+					lst.add(aten);
+				}	
+				cnx.close();
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			return lst;
+		}
+		
+		
+		public DtoReporteConsulta recuperarReporte(ResultSet rs) {
+			DtoReporteConsulta aten = new DtoReporteConsulta();
+			try {
+				aten = new DtoReporteConsulta();
+				aten.setIdAtencion(rs.getInt("id_atencion"));
+				aten.setFecha(rs.getDate("fecha_atencion"));
+				aten.setNombreTecnico(rs.getString("tecnico"));
+				aten.setNombreCliente(rs.getString("cliente"));
+				aten.setElectrodomestico(rs.getString("electrodomestico"));
+				aten.setMarca(rs.getString("marca"));
+				aten.setServicio(rs.getString("servicio_realizado"));
+				aten.setMonto(rs.getDouble("monto_total"));
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return aten;
+		}
 }

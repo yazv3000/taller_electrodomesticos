@@ -1,7 +1,5 @@
 package utp.taller.entidades;
 
-import java.util.Arrays;
-
 public abstract class Persona {
 
 		// ATRIBUTOS

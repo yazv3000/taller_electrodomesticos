@@ -37,7 +37,7 @@
                 <div class="serv__info">
                     <h3 class="serv__titulo"><c:out value="${s.getNomServicio()}"></c:out> </h3>
                     <p class="serv__descripcion"><c:out value="${s.getDescripcion()}"></c:out></p>
-                    <form action="<%=request.getContextPath()%>/ServletHorariosDisponibles" method="post" novalidate>
+                    <form action="${context}/ServletHorariosDisponibles" method="post" novalidate>
                     	<input type="hidden" name="id_servicio" value="${s.getIdServicio()}" />
                     	<button class="serv__link" type="submit" name="accion" value="listar">Solicitar</button>
                 	</form>

@@ -1,14 +1,16 @@
 package utp.taller.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
-import utp.taller.entidades.Cliente;
 import utp.taller.entidades.Electrodomestico;
 import utp.taller.entidades.Servicio;
-import utp.taller.entidades.Tecnico;
 
-public class DtoNuevoAtencionTaller {
-	// ATRIBUTOS
+public class DtoNuevoAtencionTaller implements Serializable{
+
+		private static final long serialVersionUID = 1L;
+		
+		// ATRIBUTOS
 		private Servicio servicio;
 		private Electrodomestico electrodomestico;
 		private DtoHoraConsulta dtoHora;

@@ -1,11 +1,14 @@
 package utp.taller.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
-public class DtoHoraConsulta {
+public class DtoHoraConsulta implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	// ATRIBUTOS
 	private int idHorario;
 	private String nombreTecnico;

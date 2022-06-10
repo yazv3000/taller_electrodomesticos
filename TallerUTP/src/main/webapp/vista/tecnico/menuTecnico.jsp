@@ -51,7 +51,7 @@
                       </c:choose>
                     
                     <a class="nav__name" href="#"><c:out value="${sessionScope.dtoUsuario.getUsername()}"/></a>
-                	<a class="cerrar" href="index.jsp"><i class="fa-solid fa-arrow-right-from-bracket icono"></i></a>
+                	 <a class="cerrar" href="${context}/ServletLogout"  class="cerrar"><i class="fa-solid fa-arrow-right-from-bracket icono"></i></a>
                 	
                 </div>
                 <!--====FIN DATOS DEL USUARIO ====-->
@@ -62,7 +62,7 @@
         </div>
     </nav>
 
-    <iframe src="<%=request.getContextPath()%>/ServletActualizarAtencion" class="marco" name="marco" frameborder="0"></iframe>
+    <iframe src="${context}/ServletActualizarAtencion" class="marco" name="marco" frameborder="0"></iframe>
     <script src="${context}/js/menu-tec.js"></script>
 </body>
 </html>

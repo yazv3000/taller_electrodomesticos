@@ -1,15 +1,12 @@
 package utp.taller.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.jms.Message;
 
 import utp.config.Conexion;
 import utp.taller.dto.DtoTecnicoConsulta;

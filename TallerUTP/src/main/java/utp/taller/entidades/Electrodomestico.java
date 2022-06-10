@@ -47,6 +47,17 @@ public class Electrodomestico {
 	public boolean isEstadoActivo() {	return estadoActivo;}
 	public void setEstadoActivo(boolean estadoActivo) {	this.estadoActivo = estadoActivo;	}
 
-		
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("=== DATOS DEL ELECTRODOMÉSTICO ===");
+		sb.append("\nID: ").append(idElectrod);
+		sb.append("\nNro de serie: ").append(nroSerie);
+		sb.append("\nID Tipo ").append(idtipoElectrod);
+		sb.append("\nID Marca ").append(idmarca);
+		sb.append("\nModelo ").append(modelo);
+		sb.append("\nID propietario ").append(idpropietario);
+		return sb.toString();
+	}
 	
 }
