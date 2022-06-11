@@ -21,7 +21,7 @@
 	            </ul>
 	        </div>
 	        <div class="tabla__contenido">
-	            <table>
+	            <table style="">
 	                <thead class="tabla__titulo">
 	                    <tr>
 	                        <th>ID</th>
@@ -39,7 +39,7 @@
 	                    	<td class="tabla__columna"><c:out value="${ci.getNombreTecnico()}"></c:out></td>
 							<td class="tabla__columna"><c:out value="${ci.getFechaAtencion()}"></c:out></td>
 	                        <td class="tabla__columna"><c:out value="${ci.getHoraAtencion()}"></c:out></td>
-	                        <td class="tabla__columna">Reparacion</td>
+	                        <td class="tabla__columna"><c:out value="${ci.getServicioPrincipal().getNomServicio()}"></c:out></td>
 	                        <td class="tabla__columna"><c:out value="${ci.getTipoElectrodomestico()}"></c:out></td>
 						</tr>
 	                    </c:forEach>

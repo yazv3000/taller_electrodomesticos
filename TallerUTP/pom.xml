@@ -1,53 +1,44 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  
-  <!-- Basics -->
-  <groupId>pe.utp.app</groupId>
-  <artifactId>TallerUTP</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>TallerUTP</name>
-  <properties>
-        <java.version>17</java.version>
-        <maven.compiler.source>17</maven.compiler.source><!-- sintaxis -->
-        <maven.compiler.target>17</maven.compiler.target><!-- motor de jvm -->
-</properties>
+	<modelVersion>4.0.0</modelVersion>
 
-  <dependencies>
-    	<dependency>
-		<groupId>com.sun.mail</groupId>
-		<artifactId>javax.mail</artifactId>
-		<version>1.6.2</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
+	<!-- Basics -->
+	<groupId>pe.utp.app</groupId>
+	<artifactId>TallerUTP</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>TallerUTP</name>
+	<properties>
+		<java.version>17</java.version>
+		<maven.compiler.source>17</maven.compiler.source> <!-- sintaxis -->
+		<maven.compiler.target>17</maven.compiler.target> <!-- motor de jvm -->
+	</properties>
+	<!-- More Project Information -->
+	<organization>
+		<name>Universidad Tecnológica del Perú</name>
+	</organization>
+	<dependencies>
 		<dependency>
-		    <groupId>net.sf.jasperreports</groupId>
-		    <artifactId>jasperreports</artifactId>
-		    <version>6.19.1</version>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.19.1</version>
 		</dependency>
-   </dependencies>
-   
-   <!-- More Project Information -->
-  <organization>
-    <name>Universidad Tecnológica del Perú</name>
-  </organization>
-  
-    <!-- Desarrolladores -->
-    <developers>
-	    <developer>
-	      <id>U20101736</id>
-	      <name>Y. Zapata Vargas</name>
-	      <email>u20101736@utp.edu.pe</email>
-	    </developer>
-	    <developer>
-	      <id>U19314535</id>
-	      <name>L. R. Puma Herencia</name>
-	      <email>u19314535@utp.edu.pe</email>
-	    </developer>
-	    <developer>
-	      <id>1626629</id>
-	      <name>P. Quispe Segales</name>
-	      <email>1626629@utp.edu.pe</email>
-	    </developer> 
-  </developers>
-  
+	</dependencies>
+	<!-- Desarrolladores -->
+	<developers>
+		<developer>
+			<id>U20101736</id>
+			<name>Y. Zapata Vargas</name>
+			<email>u20101736@utp.edu.pe</email>
+		</developer>
+		<developer>
+			<id>U19314535</id>
+			<name>L. R. Puma Herencia</name>
+			<email>u19314535@utp.edu.pe</email>
+		</developer>
+		<developer>
+			<id>1626629</id>
+			<name>P. Quispe Segales</name>
+			<email>1626629@utp.edu.pe</email>
+		</developer>
+	</developers>
+
 </project>

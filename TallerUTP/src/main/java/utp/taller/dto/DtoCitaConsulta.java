@@ -45,10 +45,10 @@ public class DtoCitaConsulta implements Serializable{
 	public Set<DtoServicioAtencion> getServicios() {		return servicios;	}
 	public void setServicios(Set<DtoServicioAtencion> servicios) {		this.servicios = servicios;	}
 	
-	/*// MÉTODOS PÚBLICOS
+	// MÉTODOS PÚBLICOS
 	public DtoServicioAtencion getServicioPrincipal() {
 		DtoServicioAtencion prin = servicios.stream().filter(s-> s.getIdServicio() !=5 && s.getIdServicio()!=9).findFirst().get();
 		return prin;
-	}*/
+	}
 	
 }
