@@ -104,6 +104,9 @@ public class ServletReportes extends HttpServlet {
 			
 			System.out.println("Buscado servicios prestados por el técnico:"+tecBuscado+" del "+date1+" al "+date2);
 			lst = dao.listarReportesTecnico(tecBuscado, date1 , date2);
+			request.getSession().setAttribute("fechaInicial", fecha1);
+			request.getSession().setAttribute("fechaFinal", fecha2);
+			request.getSession().setAttribute("lstReportesConsultaFechasTecnico", lst);
 			break;
 		case "cliente":
 			String cliBuscado = request.getParameter("nombre_cli");
@@ -120,9 +123,11 @@ public class ServletReportes extends HttpServlet {
 				date2 = myCalendar.getTime();
 				e.printStackTrace();
 			}
-			
 			System.out.println("Buscado servicios prestados al cliente:"+cliBuscado+" del "+date1+" al "+date2);
 			lst = dao.listarReportesCliente(cliBuscado, date1, date2);
+			request.getSession().setAttribute("fechaInicialC", fecha1);
+			request.getSession().setAttribute("fechaFinalC", fecha2);
+			request.getSession().setAttribute("lstReportesConsultaFechasCliente", lst);
 			break;	
 		default:
 			lst = dao.listarReportes();

@@ -13,7 +13,7 @@ public class DtoReporteConsulta {
 	private String marca;
 	private String servicio;
 	private double monto;
-	
+	//TODO FALTA AGREGAR LA hora de atencion: String hora
 	// CONSTRUCTORES
 	public DtoReporteConsulta() {}
 

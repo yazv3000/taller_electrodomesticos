@@ -129,7 +129,6 @@ public class ServletAtencionTaller extends HttpServlet {
 		electrodomestico.setIdtipoElectrod(Integer.parseInt(request.getParameter("cbx_tipos")));
 		electrodomestico.setModelo(request.getParameter("txt_modelo"));
 		electrodomestico.setIdmarca(Integer.parseInt(request.getParameter("cbx_marcas")));
-		electrodomestico.setIdpropietario(0);
 		//RECUPERANDO FALLAS Y SERVICIO
 		servicio.setIdServicio(Integer.parseInt(request.getParameter("cbx_tipos_Serv")));
 		atencion.setServicio(servicio);

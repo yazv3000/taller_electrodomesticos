@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import utp.taller.controller.email.EnvioCorreo;
+import utp.taller.controller.email.EnvioCorreo2;
 import utp.taller.dao.DaoHorario;
 import utp.taller.dao.DaoTecnico;
 import utp.taller.dto.DtoTecnicoNombre;
@@ -22,7 +24,9 @@ import utp.taller.entidades.Horario;
 @WebServlet("/ServletGestionarHorario")
 public class ServletGestionarHorario extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	 
+	private EnvioCorreo onvi = new EnvioCorreo();
+	
 	public ServletGestionarHorario() {
 		super();
 	}
@@ -91,6 +95,9 @@ public class ServletGestionarHorario extends HttpServlet {
 			break;
 		case "show":
 			
+			break;
+		case "enviarCorreo":
+			onvi.enviarCorreo();
 			break;
 		}
 

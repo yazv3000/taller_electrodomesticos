@@ -1,15 +1,25 @@
 package utp.taller.controller.mantenimiento;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 import utp.taller.dto.DtoReporteTecnico;
 
 /**
@@ -36,13 +46,16 @@ public class ServletGestionarReporte extends HttpServlet {
 				this.reporteCliente(request, response);
 				break;
 		}
-
+		request.getRequestDispatcher("reporte.jsp").forward(request, response);;
 	}
 
 	private void reporteTecnico(HttpServletRequest request, HttpServletResponse response) {
 		List<DtoReporteTecnico> reporteTecnico = new ArrayList<DtoReporteTecnico>();
 		
 		DtoReporteTecnico dto = new DtoReporteTecnico();
+		
+		reporteTecnico.add(new DtoReporteTecnico());
+		
 		dto.setId(1);
 		dto.setNomTecnico("Juan Alvarado");
 		dto.setElectrodomestico("Refrigeradora");

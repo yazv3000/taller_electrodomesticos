@@ -12,6 +12,7 @@ public abstract class DtoPersonaConsulta {
 	private String email;
 	private String rutaFoto;
 	private boolean estadoActivo;
+	private String estado;
 	
 	// MÉTODOS GETTER & SETTER
 	public String getIdUsuario() {return idUsuario;	}
@@ -40,5 +41,7 @@ public abstract class DtoPersonaConsulta {
 	
 	public boolean isEstadoActivo() {		return estadoActivo;	}
 	public void setEstadoActivo(boolean estadoActivo) {		this.estadoActivo = estadoActivo;	}
-
+	
+	public String getEstado() {	return estadoActivo ? "Activo" : "Inactivo";}
+	
 }

@@ -7,6 +7,7 @@
 	<title>Insert title here</title>
 </head>
 <body>
-	<a href="<%=request.getContextPath()%>/ServletGestionarReporte?accion=reporteTecnico">Reporte Tecnico</a>
+	<a target="_blank" href="<%=request.getContextPath()%>/ServletGestionarReporte?accion=reporteTecnico">Reporte Tecnico</a>
+	<a href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=enviarCorreo">Reporte Tecnico</a>
 </body>
 </html>
