@@ -307,7 +307,7 @@ from atencion A inner join horario_atencion H on A.id_horario = H.id_horario
 inner join v_electrodomesticos E on E.id_electrodomestico = A.id_electro
 left join v_tecnicos T on T.id_persona = H.id_tecnico
 left join v_clientes C on C.id_persona = E.id_propietario  
-where estado_atencion = 'Pendiente' and A.tipo = 'A domicilio'
+where estado_atencion = 'Pendiente'
 and A.estado_activ;
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_atenciones_finalizadas
