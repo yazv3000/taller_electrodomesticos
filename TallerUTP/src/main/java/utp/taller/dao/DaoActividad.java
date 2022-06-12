@@ -8,7 +8,6 @@ import java.util.List;
 
 import utp.config.Conexion;
 import utp.taller.entidades.Actividad;
-import utp.taller.entidades.Pieza;
 
 public class DaoActividad extends Conexion{
     Connection cnx = null;

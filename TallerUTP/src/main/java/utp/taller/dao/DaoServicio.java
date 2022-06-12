@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utp.config.Conexion;
-import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.entidades.Servicio;
 
 public class DaoServicio extends Conexion implements CRUD<Servicio> {

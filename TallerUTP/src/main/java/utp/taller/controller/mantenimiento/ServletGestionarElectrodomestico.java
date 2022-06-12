@@ -24,8 +24,7 @@ import utp.taller.entidades.ElectrodomesticoTipo;
 public class ServletGestionarElectrodomestico extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
-    
-
+	
     private DaoElectrodomestico dao = new DaoElectrodomestico();
     private Electrodomestico electrodomestico = new Electrodomestico();
 	private static String tipoLista;

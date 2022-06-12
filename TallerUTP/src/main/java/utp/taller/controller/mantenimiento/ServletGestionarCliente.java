@@ -67,6 +67,7 @@ public class ServletGestionarCliente extends HttpServlet {
 			case "actualizar":
 					recuperarDatos(request);
 					dao.modificar(cliente);	
+					request.getSession().removeAttribute("fila");
 					listar(request, tipoLista);
 					break;
 
@@ -103,7 +104,6 @@ public class ServletGestionarCliente extends HttpServlet {
 	}
 
 	private void recuperarDatos(HttpServletRequest request) {
-		
 		cliente.setNombrePrin(request.getParameter("txt_nom1"));
 		cliente.setNombreSec(request.getParameter("txt_nom2"));
 		cliente.setApePrin(request.getParameter("txt_ape1"));

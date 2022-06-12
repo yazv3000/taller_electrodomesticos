@@ -64,8 +64,8 @@
 	                                                        <td class="tabla-2__hora">
 	                                                        <form action="${context}/ServletNuevaCita" method="post">
 										                    	<input type="hidden" name="horario" value="${hora.getIdHorario()}" />
-										                    	
-										                    	<button class="serv__link ${hora.getEstado() ne 'Disponible' ? 'desactivado':''}"  ${hora.getEstado() ne 'Disponible' ? 'disabled':''} type="submit" name="accion" value="resumen"><c:out value="${hora.getHoraInicio()}"/></button>
+										                    	<!--  Desabilita el boton de horario dependiendo de si este está disponible o no -->
+										                    	<button class="serv__link ${hora.getEstado() ne 'Disponible' ? 'desactivado':''}"  ${hora.getEstado() ne 'Disponible' ? 'disabled':''} type="submit" name="accion" value="cita_domicilio"><c:out value="${hora.getHoraInicio()}"/></button>
 										                    	
 										                	</form>
 	                                                        </td>
@@ -82,7 +82,7 @@
 	                    </c:forEach>
 	                    </ul>
                     </div>
-                    <button class="mostrar__horas">Mostrar mas Horas</button>
+                    <button class="mostrar__horas">Mostrar más Horas</button>
                 </div>       
             </div>
             </c:forEach>

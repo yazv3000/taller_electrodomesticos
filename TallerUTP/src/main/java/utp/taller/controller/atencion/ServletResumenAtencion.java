@@ -24,7 +24,7 @@ public class ServletResumenAtencion extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	int idAtencion = Integer.parseInt(request.getParameter("id"));
     	DtoAtencion ate = dao.obtenerAtencion(idAtencion);
-    	request.setAttribute("ate", ate);
+    	request.getSession().setAttribute("dtoAtencion", ate);
     	request.getRequestDispatcher("vista/tecnico/resumenAtencion.jsp").forward(request, response);
     }
     

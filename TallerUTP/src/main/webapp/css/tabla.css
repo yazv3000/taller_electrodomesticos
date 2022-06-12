@@ -154,7 +154,7 @@ label {
 .form__contenedor {
     display:grid;
     grid-template-columns: repeat(2,1fr);
-    gap: 20px;
+    gap: 23px;
     padding: 10px
 }
 
@@ -186,7 +186,7 @@ label {
 
 .form__input:focus + .form__label,
 .form__input:not(:placeholder-shown) + .form__label {
-    transform: translateY(-15px) scale(.7);
+    transform: translateY(-20px) scale(.9);
     transform-origin: left top;
     color: var(--secundario);
 }

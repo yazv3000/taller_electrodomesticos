@@ -4,6 +4,7 @@ public class DtoTecnicoConsulta extends DtoPersonaConsulta{
 	
 	private String especialidad; 
 	
+	
 	// MÉTODOS GETTER & SETTER
 	
 	public String getEspecialidad() {	return especialidad;}

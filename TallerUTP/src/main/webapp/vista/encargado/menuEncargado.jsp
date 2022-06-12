@@ -28,7 +28,7 @@
 <body>
     <div class="contenedor">
         <!-- ====== MENÚ ====== -->
-        <div class="menu">
+        <div class="menu nav__toggle">
             <nav class="navi">
                 <div>
                      <!-- ===== LOGO ===== -->
@@ -41,11 +41,11 @@
                     </div>
                     <!-- ===== LINK ===== -->
                     <div class="nav__lista">
-                        <a href="<%=request.getContextPath()%>/ServletGestionarCliente?accion=listar" class="nav__link" target="marco">
+                        <a href="${context}/ServletGestionarCliente?accion=listar" class="nav__link" target="marco">
                             <i class="fa-solid fa-user nav__icono"></i>
                             <span class="nav__nombre">Clientes</span>
                         </a>
-                        <a href="<%=request.getContextPath()%>/ServletGestionarTecnico?accion=listar" class="nav__link" target="marco">
+                        <a href="${context}/ServletGestionarTecnico?accion=listar" class="nav__link" target="marco">
                             <i class="fa-solid fa-screwdriver-wrench nav__icono"></i>
                             <span class="nav__nombre">Tecnicos</span>
                         </a>
@@ -53,19 +53,19 @@
                             <i class="fas fa-calendar-check nav__icono"></i>
                             <span class="nav__nombre">Citas</span>
                         </a>
-                        <a href="<%=request.getContextPath()%>/ServletGestionarElectrodomestico?accion=listar" class="nav__link" target="marco">
+                        <a href="${context}/ServletGestionarElectrodomestico?accion=listar" class="nav__link" target="marco">
                             <i class="fas fa-blender nav__icono"></i>
                             <span class="nav__nombre">Electrodomesticos</span>
                         </a>
-                        <a href="" class="nav__link">
+                        <a href="${context}/ServletGestionarHorario?accion=show" class="nav__link" target="marco">
                             <i class="fa-solid fa-calendar-days nav__icono"></i>
                             <span class="nav__nombre">Horarios</span>
                         </a>
-                        <a href="<%=request.getContextPath()%>/ServletGestionarPieza?accion=listar" class="nav__link" target="marco">
+                        <a href="${context}/ServletGestionarPieza?accion=listar" class="nav__link" target="marco">
                             <i class="fa-solid fa-bag-shopping nav__icono"></i>
                             <span class="nav__nombre">Piezas</span>
                         </a>
-                        <a href="#" class="nav__link">
+                        <a href="${context}/ServletReportes?accion=listar" class="nav__link" target="marco">
                             <i class="fa-solid fa-arrow-trend-up nav__icono"></i>
                             <span class="nav__nombre">Reportes</span>
                         </a>
@@ -73,7 +73,7 @@
                             <i class="fa-solid fa-gear nav__icono"></i>
                             <span class="nav__nombre">Configuraciones</span>
                         </a>
-                        <a href="#" class="nav__link">
+                        <a href="${context}/ServletLogout" class="nav__link">
                             <i class="fa-solid fa-arrow-right-from-bracket nav__icono"></i>
                             <span class="nav__nombre">Salir</span>
                         </a>
@@ -91,7 +91,7 @@
             </div>
 			
 			<div class="ventana">
-            <iframe id="ventana__contenido" name="marco"></iframe>
+            <iframe src="${context}/ServletGestionarHorario?accion=show" id="ventana__contenido" name="marco"></iframe>
 			</div>
         </div>
 

@@ -40,56 +40,34 @@ public class ServletNuevaCita extends HttpServlet {
     	
     	switch (accion) {
     	
-    	case "resumen":
-    		DaoHorario daoHora = new DaoHorario();
-    		DaoServicio daoServ = new DaoServicio();
-    		int idHor = Integer.parseInt(request.getParameter("horario"));
-    		int idServ = Integer.parseInt((String) request.getSession().getAttribute("id_servicio"));
-    		
-    		DtoHoraConsulta dtoHora =  daoHora.consultarDtoHora(idHor);
-    		Servicio  servicio = daoServ.consultarId(idServ);
-    		
-    		dtoCita.setServicio(servicio);
-    		dtoCita.setDtoHora(dtoHora);
+    	case "cita_domicilio":
     		dtoCita.setLugar("A domicilio");
     		dtoCita.setFechaReserva(new Date());
+    		
+    		resumen(request);
     		
     		listarMarcas(request);
     		listarTipos(request);
     		request.setAttribute("dtoCita", dtoCita);
-    		
-
     		request.getRequestDispatcher("/vista/cliente/reservaCita.jsp").forward(request, response);
     		break;
     		
     	case "confirmar":
-		
-    		Electrodomestico electro = new Electrodomestico();
-    		DtoUsuario propietario = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");
-    		
-    		electro.setNroSerie(request.getParameter("serie"));
-    		electro.setModelo(request.getParameter("modelo"));
-    		electro.setIdtipoElectrod(Integer.parseInt(request.getParameter("tipo")));
-    		electro.setIdmarca(Integer.parseInt(request.getParameter("marca")));
-    		electro.setIdpropietario(propietario.getIdPersona());
-    		electro.setEstadoActivo(true);
-    		dtoCita.setElectrodomestico(electro);
-    		dtoCita.setFallaElectrodomestico(request.getParameter("txt_falla"));
-    		
-    		// Agregar el electrodoméstico a la bd
-    		DaoElectrodomestico daoElectro = new DaoElectrodomestico();
-    		daoElectro.insertar(electro);
-    		
-    		int idElectro = daoElectro.maxId(propietario.getIdPersona());
+
+    		int idElectro = registrarElectrodomestico(request);
     		
     		if (idElectro != 0){
     			DaoAtencion daoAte = new DaoAtencion();
     			dtoCita.getElectrodomestico().setIdElectrod(idElectro);
+    			
+    			// Guardar la cita
     			daoAte.insertarCita(dtoCita);
+//    			request.getRequestDispatcher("/vista/cliente/servicios.jsp").forward(request, response);
+    			request.getRequestDispatcher("/ServletCitasCliente").forward(request, response);
+    		}else {
+    			System.out.println("No se pudo registrar el electrodoméstico");
+    			request.getRequestDispatcher("/vista/cliente/reservaCita.jsp").forward(request, response);
     		}
-    		
-    		//request.getRequestDispatcher("/ServletServicios").forward(request, response);
-    		request.getRequestDispatcher("/vista/cliente/servicios.jsp").forward(request, response);
     		break;
     	}
     	
@@ -99,10 +77,28 @@ public class ServletNuevaCita extends HttpServlet {
 		processRequest(request, response);
 	}
 	
+	private void resumen(HttpServletRequest request) {
+		// Resumen horario (incluye técnico) y servicio seleccionados
+		DaoHorario daoHora = new DaoHorario();
+		DaoServicio daoServ = new DaoServicio();
+		
+		int idHor = Integer.parseInt(request.getParameter("horario"));
+		int idServ = Integer.parseInt((String) request.getSession().getAttribute("id_servicio"));
+		
+		DtoHoraConsulta dtoHora =  daoHora.consultarDtoHora(idHor);
+		dtoCita.setDtoHora(dtoHora);
+		
+		
+		Servicio  servicio = daoServ.consultarId(idServ);
+		dtoCita.setServicio(servicio);
+		
+		System.out.println("La fecha seleccionada es:  "+dtoHora.getFormatoFecha()+", "+dtoHora.getHora());
+		System.out.println("El servicio es:  "+servicio.getNomServicio());
+	}
+	
 	private void listarMarcas(HttpServletRequest request) {
 		DaoElectrodomestico daoElectro = new DaoElectrodomestico();
 		List<ElectrodomesticoMarca> lst = daoElectro.listarMarcas();
-		System.out.println("marcas:" + lst.size());
 		request.setAttribute("lstMarcas", lst);
 	}
 	
@@ -111,4 +107,29 @@ public class ServletNuevaCita extends HttpServlet {
 		List<ElectrodomesticoTipo> lst = daoElectro.listarTiposE();
 		request.setAttribute("lstTipos", lst);
 	}
+	
+	private int registrarElectrodomestico(HttpServletRequest request) {
+		Electrodomestico electro = new Electrodomestico();
+		DtoUsuario propietario = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");
+		
+		electro.setNroSerie(request.getParameter("serie"));
+		electro.setModelo(request.getParameter("modelo"));
+		electro.setIdtipoElectrod(Integer.parseInt(request.getParameter("tipo")));
+		electro.setIdmarca(Integer.parseInt(request.getParameter("marca")));
+		electro.setIdpropietario(propietario.getIdPersona());
+		electro.setEstadoActivo(true);
+		dtoCita.setElectrodomestico(electro);
+		dtoCita.setFallaElectrodomestico(request.getParameter("txt_falla"));
+		
+		// Agregar el electrodoméstico a la bd
+		DaoElectrodomestico daoElectro = new DaoElectrodomestico();
+		daoElectro.insertar(electro);
+		
+		// Recuperar el id con que fue insertado
+		electro.setIdElectrod(daoElectro.maxId(propietario.getIdPersona()));
+		
+		System.out.println(electro);
+		return electro.getIdElectrod();
+	}
+	
 }

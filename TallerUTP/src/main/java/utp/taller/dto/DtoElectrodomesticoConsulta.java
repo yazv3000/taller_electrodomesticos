@@ -1,6 +1,10 @@
 package utp.taller.dto;
 
-public class DtoElectrodomesticoConsulta {
+import java.io.Serializable;
+
+public class DtoElectrodomesticoConsulta implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
     // ATRIBUTOS
 	private int idElectrodomestico;

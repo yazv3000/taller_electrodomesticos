@@ -1,0 +1,32 @@
+/*===== GOOGLE FONTS =====*/
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Roboto:wght@100;300;500&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Tangerine&display=swap');
+/*===== VARIABLES CSS =====*/
+
+:root {
+    --primario: rgb(33, 33, 33);
+    --fondo: rgb(25, 23, 21);
+    --secundario: #2473cd ;
+    --grad-form: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    --grad-fondo: linear-gradient(270deg, rgba(23,30,41,1) 0%, rgba(38,45,62,1) 100%);
+    --grad-img: linear-gradient(180deg, rgba(61,154,234,1) 0%, rgba(73,84,238,1) 100%);
+    --grad-boton: linear-gradient(90deg, rgba(96,195,241,1) 0%, rgba(73,58,251,1) 100%);
+}
+
+.caja__busqueda{
+	display: grid;
+	
+}
+
+.entrada {
+    width: 150px;
+    background: var(--grad-form);
+    color: white;
+    font-family: "Audiowide";
+    border:none;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: center;
+}

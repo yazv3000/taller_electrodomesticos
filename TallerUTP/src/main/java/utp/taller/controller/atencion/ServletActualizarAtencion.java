@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import utp.taller.dao.DaoAtencion;
-import utp.taller.dto.DtoAtencion;
 import utp.taller.dto.DtoCitaConsulta;
 import utp.taller.dto.DtoUsuario;
 
@@ -40,8 +39,7 @@ public class ServletActualizarAtencion extends HttpServlet {
 			
 		}else {
 			List<DtoCitaConsulta> lst = dao.listarCitasDomicilio(user_tecnico.getIdPersona());
-			
-			
+
 			request.getSession().setAttribute("lstConsultaCitas", lst);
 			request.getRequestDispatcher("vista/tecnico/atencionDomicilio.jsp").forward(request, response);
 		}

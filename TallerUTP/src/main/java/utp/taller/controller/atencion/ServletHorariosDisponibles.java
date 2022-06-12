@@ -39,13 +39,13 @@ public class ServletHorariosDisponibles extends HttpServlet {
 		
 		// Precondición cliente ha iniciado sesión
 		if(request.getSession().getAttribute("dtoUsuario")==null) {
-			
 			System.out.println("*".repeat(20)+ "No ha iniciado sesión"+"*".repeat(20));
-			
 			request.getRequestDispatcher("index.jsp").forward(request, response);
 			
 		}else {
-			request.getSession().setAttribute("id_servicio", request.getParameter("id_servicio"));	
+			String idServicio = request.getParameter("id_servicio");
+			request.getSession().setAttribute("id_servicio", idServicio);	
+			System.out.println("El cliente ha seleccionado el servicio: "+idServicio);
 			listarHorarios(request, response);
 		}	
 	}
@@ -77,8 +77,6 @@ public class ServletHorariosDisponibles extends HttpServlet {
 				request.getRequestDispatcher("ServletGestionarCliente?accion=listar").forward(request, response);
 			break;
 		}
-
-		
 	}
 	
 	

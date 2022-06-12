@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,6 +118,77 @@ public class DaoHorario extends Conexion {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	public void insertarHorarioTaller(Horario horario) {
+		String sql = "insert into horario_atencion (id_tecnico, fecha_atencion, hora_inicio, estado) values (?,?,?,?)";
+		cnx = getConnection();
+		
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1,horario.getIdTecnico());
+			stm.setObject(2, LocalDate.now());
+			stm.setObject(3, LocalTime.now().truncatedTo(ChronoUnit.HOURS));
+			stm.setString(4, "Reservado");
+			stm.execute();
+			cnx.close();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	public int idHorario() {
+		String sql = "select max(h.id_horario) as idHorario from horario_atencion as h";
+		cnx = getConnection();
+		ResultSet rs = null;
+		int idHorario=0;
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				idHorario = rs.getInt("idHorario");	
+			}
+			cnx.close();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return idHorario;
+	}
+	public List<Horario> listarporIdTecnico(int idTec) {
+
+		List<Horario> lst = new ArrayList<Horario>();
+		Horario h = null;
+
+		String sql = "select * from v_horarios where id_tecnico=?";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, idTec);
+			rs = stm.executeQuery();
+			while (rs.next()) {
+				h = new Horario();
+				h.setIdHorario(rs.getInt("id_horario"));
+				h.setIdTecnico(rs.getInt("id_tecnico"));
+
+				try {
+					h.setFechaAtencion(formato.parse(rs.getDate("fecha_atencion").toString()));	
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				
+				h.setHoraInicio(rs.getString("hora_inicio").substring(0,5));
+				h.setEstado(rs.getString("estado"));
+				lst.add(h);
+			}
+			
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return lst;
 	}
 	
 }
