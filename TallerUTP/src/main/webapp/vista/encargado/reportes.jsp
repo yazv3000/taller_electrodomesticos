@@ -29,29 +29,30 @@
 		<c:choose>
 
 	    <c:when test="${por_persona=='tecnico'}">
-	    <div align="center">
-		    <div class="caja__busqueda col-5">
+	    
+	    <div class="filtro">
+	    	<h5 class="filtro__titulo">Filtrar por Tecnico</h5>
+		    <div class="filtro__contenedor">
 			    <form method="get" action="${context}/ServletReportes" class="justify-content-center needs-validation">
-					<label>Técnico</label>
-					<input  class="entrada form-control inpuat" type="text" name="nombre_tec" required/>
-					<input class="entrada form-control inpuat" type="date" name="fecha1" required/>
-					<input  class="entrada form-control inpuat" type="date" name="fecha2" required/>
-					<button class="btn__insertar" type="submit"  name="accion" value="buscar_tecnico">Buscar</button>
+					<input  class="filtro__input" type="text" name="nombre_tec" placeholder="Ingrese el Nombre" required/>
+					<input class="filtro__boton" type="date" name="fecha1" required/>
+					<input  class="filtro__boton" type="date" name="fecha2" required/>
+					<button class="filtro__boton" type="submit"  name="accion" value="buscar_tecnico">Buscar</button>
 				</form>
 			</div>
 		</div>
 		</c:when>
 		
 	    <c:when test="${por_persona=='cliente'}">
-	    <div align="center">
-		    <div class="caja__busqueda col-5">
+	    <div class="filtro">
+	    	<h5 class="filtro__titulo">Filtrar por Cliente</h5>
+		    <div class="">
 			    <form method="get" action="${context}/ServletReportes" class="justify-content-center needs-validation">
-					<label>Cliente</label>
-						<input class="entrada form-control inpuat" type="text" name="nombre_cli" required/>
-						<input class="entrada form-control inpuat" type="date" name="fecha1" required/>
-						<input class="entrada form-control inpuat" type="date" name="fecha2" required/>
-						<input type="number" name="monto1" required/>
-						<input type="number" name="monto2" required/>
+						<input class="filtro__input" type="text" name="nombre_cli" placeholder="Ingrese el Nombre" required/>
+						<input class="filtro__boton" type="date" name="fecha1" required/>
+						<input class="filtro__boton" type="date" name="fecha2" required/>
+						<input class="filtro__input" type="number" name="monto1" placeholder="Monto Inicial S/." required/>
+						<input class="filtro__input" type="number" name="monto2" placeholder="Monto Final S/." required/>
 						
 					<button class="btn__insertar" type="submit"  name="accion" value="buscar_cliente">Buscar</button>
 				</form>

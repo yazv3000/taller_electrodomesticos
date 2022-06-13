@@ -122,7 +122,7 @@ public class ServletHorariosDisponibles extends HttpServlet {
 		LocalDate diaMes = null; 
 		ZoneId timeZone = ZoneId.systemDefault();	// zona horaria por defecto del sistema 
 		
-		for (int week = 0; week < 4; week++) {
+		for (int week = 0; week < 8; week++) {
 
 			listaFechaHoras = new LinkedHashMap<>();
 			for (int day = 0; day < dias; day++) {

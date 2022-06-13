@@ -191,7 +191,8 @@ public class DaoAtencion extends Conexion {
 			cita.setDistritoYdireccion(rs.getString("direc_cliente"));
 			cita.setTipoElectrodomestico(rs.getString("tipo_electro"));
 			cita.setHoraAtencion(rs.getString("hora_inicio"));
-			cita.setFechaAtencion(rs.getDate("fecha_atencion"));	
+			cita.setFechaAtencion(rs.getDate("fecha_atencion"));
+			cita.setLugar(rs.getString("lugar"));;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
