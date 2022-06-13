@@ -9,6 +9,7 @@
 <meta charset="ISO-8859-1">
 <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" type="text/css" href="${context}/css/resumenAtencion.css">
+
 </head>
 <body>
 	<h3 class="cliente" style="text-align:left;">Cliente</h3>

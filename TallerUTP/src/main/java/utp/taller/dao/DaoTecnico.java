@@ -224,6 +224,29 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 		return lst;
 	}
 	
+	public DtoTecnicoConsulta consultarDtoNombres(String nombreTecnico) {
+		DtoTecnicoConsulta tec = new DtoTecnicoConsulta();
+
+		String sql = "select * from v_tecnicos where upper(nombres) like ?";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setString(1, "%"+nombreTecnico.toUpperCase()+"%");
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				tec = recuperarDatosDto(rs);
+			}
+			cnx.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return tec;
+	}
+
 	// MÉTODOS PRIVADOS
 	private DtoTecnicoConsulta recuperarDatosDto(ResultSet rs ) {
 		DtoTecnicoConsulta tec = new DtoTecnicoConsulta();

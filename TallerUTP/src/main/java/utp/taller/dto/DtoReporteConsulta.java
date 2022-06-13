@@ -9,13 +9,14 @@ public class DtoReporteConsulta {
 	private int idAtencion;
 	private Date fecha;
 	private String fechaString;
+	private String hora;
 	private String nombreTecnico;
 	private String nombreCliente;
 	private String electrodomestico;
 	private String marca;
 	private String servicio;
 	private double monto;
-	//TODO FALTA AGREGAR LA hora de atencion: String hora
+
 	// CONSTRUCTORES
 	public DtoReporteConsulta() {}
 
@@ -25,6 +26,9 @@ public class DtoReporteConsulta {
 
 	public Date getFecha() {		return fecha;	}
 	public void setFecha(Date fecha) {		this.fecha = fecha;	}
+
+	public String getHora() {		return hora;	}
+	public void setHora(String hora) {		this.hora = hora;	}
 
 	public String getNombreTecnico() {		return nombreTecnico;	}
 	public void setNombreTecnico(String nombreTecnico) {		this.nombreTecnico = nombreTecnico;	}

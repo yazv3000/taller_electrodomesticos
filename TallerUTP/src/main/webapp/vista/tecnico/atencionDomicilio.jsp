@@ -30,6 +30,7 @@
                         <th>Direccion</th>
                         <th>Fecha</th>
                         <th>Hora</th>
+                        <th>Tipo Atencion</th>
                         <th>Servicio</th>
                         <th>Detalle</th>
                     </tr>
@@ -43,6 +44,7 @@
                         <td class="tabla__columna"><c:out value="${ci.getDistritoYdireccion()}"></c:out></td>
                         <td class="tabla__columna"><c:out value="${ci.getFechaAtencion()}"></c:out></td>
                         <td class="tabla__columna"><c:out value="${ci.getHoraAtencion()}"></c:out></td>
+                        <td class="tabla__columna"><c:out value="${ci.getLugar()}"></c:out></td>
                         <td>
                         	<table>
                         	<tbody class="tabla__info">

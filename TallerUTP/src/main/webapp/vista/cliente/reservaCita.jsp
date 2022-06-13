@@ -90,14 +90,18 @@
 				 <label for="" class="etq" placeholder=" ">Modelo</label>
 			</div>
 			<div class="electro electro__falla">
-				<textarea class="falla" name="txt_falla" id="" cols="30" rows="10"
+				<textarea maxlength="500" class="falla" name="txt_falla" id="" cols="30" rows="10"
 					placeholder="Ingrese la falla de su electrodomestico..."></textarea>
 				<label for="" class="etq" placeholder=" ">Descripcion de la falla</label>
 			</div>
+			
 			<div class="electro__boton">
+				<input type="hidden" name="generarPDF" value="citaTecnica">
 				<input name="accion" class="electro__confirmar" type="submit" value="confirmar">
 			</div>
+			
 		</form>
+		
 	</div>
 
 </body>

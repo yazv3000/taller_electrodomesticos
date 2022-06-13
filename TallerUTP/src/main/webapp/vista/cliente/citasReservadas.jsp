@@ -21,7 +21,7 @@
 	            </ul>
 	        </div>
 	        <div class="tabla__contenido">
-	            <table style="">
+	            <table style="width: 100%">
 	                <thead class="tabla__titulo">
 	                    <tr>
 	                        <th>ID</th>
@@ -34,7 +34,7 @@
 	                </thead>
 	                <tbody class="tabla__info">
 	                	<c:forEach items="${lstCitasCliente}" var="ci">
-	                    <tr id="tabla__filas" class="now-selected">
+	                    <tr id="tabla__filas" class="now-selected" style="text-align: -webkit-center;">
 	                    	  <td class="tabla__columna"><c:out value="${ci.getIdAtencion()}"></c:out></td>
 	                    	<td class="tabla__columna"><c:out value="${ci.getNombreTecnico()}"></c:out></td>
 							<td class="tabla__columna"><c:out value="${ci.getFechaAtencion()}"></c:out></td>

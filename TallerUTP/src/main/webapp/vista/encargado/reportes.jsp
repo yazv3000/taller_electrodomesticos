@@ -26,32 +26,52 @@
 	<div class="contenido">
 		<h1 class="titulo">REPORTES DE <span>ATENCIÓN</span></h1>
 	    
-	    <c:if test="${por_persona=='tecnico'}">
-	    <div class="caja__busqueda">
-		    <form method="get" action="${context}/ServletReportes" class="justify-content-center needs-validation">
-				<label>Técnico</label>
-				<input  type="text" name="nombre_tec" required/>
-				<input class="entrada" type="date" name="fecha1" required/>
-				<input  class="entrada" type="date" name="fecha2" required/>
-				<button type="submit"  name="accion" value="buscar_tecnico">Buscar</button>
-			</form>
-		</div>
-		</c:if>
-		
-	    <c:if test="${por_persona=='cliente'}">
-	    <form method="get" action="${context}/ServletReportes" class="justify-content-center needs-validation">
-			<label>Cliente</label>
-				<input type="text" name="nombre_cli" required/>
-				<input class="entrada" type="date" name="fecha1" required/>
-				<input  class="entrada" type="date" name="fecha2" required/>
-			<button type="submit"  name="accion" value="buscar_cliente">Buscar</button>
-		</form>
-		</c:if>
+		<c:choose>
+
+	    <c:when test="${por_persona=='tecnico'}">
 	    
-	    <div class="tabla">
-	        <div class="tabla__tools">
-	            <ul>
-					<li><button class="fa-solid fa-print icono"></button></li>
+	    <div class="filtro">
+	    	<h5 class="filtro__titulo">Filtrar por Tecnico</h5>
+		    <div class="filtro__contenedor">
+			    <form method="get" action="${context}/ServletReportes" class="justify-content-center needs-validation">
+					<input  class="filtro__input" type="text" name="nombre_tec" placeholder="Ingrese el Nombre" required/>
+					<input class="filtro__boton" type="date" name="fecha1" required/>
+					<input  class="filtro__boton" type="date" name="fecha2" required/>
+					<button class="filtro__boton" type="submit"  name="accion" value="buscar_tecnico">Buscar</button>
+				</form>
+			</div>
+		</div>
+		</c:when>
+		
+	    <c:when test="${por_persona=='cliente'}">
+	    <div class="filtro">
+	    	<h5 class="filtro__titulo">Filtrar por Cliente</h5>
+		    <div class="">
+			    <form method="get" action="${context}/ServletReportes" class="justify-content-center needs-validation">
+						<input class="filtro__input" type="text" name="nombre_cli" placeholder="Ingrese el Nombre" required/>
+						<input class="filtro__boton" type="date" name="fecha1" required/>
+						<input class="filtro__boton" type="date" name="fecha2" required/>
+						<input class="filtro__input" type="number" name="monto1" placeholder="Monto Inicial S/." required/>
+						<input class="filtro__input" type="number" name="monto2" placeholder="Monto Final S/." required/>
+						
+					<button class="btn__insertar" type="submit"  name="accion" value="buscar_cliente">Buscar</button>
+				</form>
+			</div>
+		</div>
+		</c:when>
+		</c:choose>
+
+		<div class="tabla">
+			<div class="tabla__tools">
+				<ul>
+					<c:choose>
+						<c:when test="${sessionScope.por_persona=='tecnico' && estado_reporte=='listo'}">
+								<li><button class="fa-solid fa-print icono"  onclick="location.href='ServletGenerarPDF?generarPDF=reporteTecnico'"></button></li>	
+						</c:when>
+						<c:when test="${sessionScope.por_persona=='cliente' && estado_reporte=='listo'}">
+								<li><button class="fa-solid fa-print icono"  onclick="location.href='ServletGenerarPDF?generarPDF=reporteCliente'"></button></li>	
+						</c:when>
+					</c:choose>
 					<li><button type="button" class="btn btn-danger" onclick="location.href='ServletReportes?accion=listar&lista=todos'">Todos</button><li>
 	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletReportes?accion=seleccionar&persona=tecnico'" >Por Tecnico</button></li>
 	                <li><button type="button" class="btn btn-success" onclick="location.href='ServletReportes?accion=seleccionar&persona=cliente'" >Por Cliente</button><li>
@@ -63,6 +83,7 @@
 	                    <tr>
 	                        <th>ID</th>
 							<th>FECHA</th>
+							<th>HORA</th>
 							<th>TÉCNICO</th>
 							<th>CLIENTE</th>
 							<th>ELECTRODOMÉSTICO</th>
@@ -73,10 +94,11 @@
 	                    </tr>
 	                </thead>
 	                <tbody class="tabla__info">
-	                	<c:forEach items="${lstReportes}" var="r">
+	                	<c:forEach items="${sessionScope.lstReportes}" var="r">
 	                    <tr id="tabla__filas"">
 	                   		<td> <c:out value="${r.getIdAtencion()}"></c:out> </td>
 							<td> <c:out value="${r.getFecha()}"></c:out> </td>
+							<td> <c:out value="${r.getHora()}"></c:out> </td>
 							<td> <c:out value="${r.getNombreTecnico()}"></c:out> </td>
 							<td> <c:out value="${r.getNombreCliente()}"></c:out> </td>
 							<td> <c:out value="${r.getElectrodomestico()}"></c:out> </td>

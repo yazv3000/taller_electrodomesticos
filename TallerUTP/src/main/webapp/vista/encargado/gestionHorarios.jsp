@@ -55,7 +55,7 @@
                 	<h4 class="subtitulo">Tecnicos sin horario</h4>
             	</div>
            		
-                <table class="tabla">
+                <table class="tabla" style="width: 100%">
                     <thead>
                         <tr class="tabla__titulo">
                             <th>id</th>
@@ -65,11 +65,11 @@
                     </thead>
                     <tbody>
                         <c:forEach items="${lstSH}" var="tec1">
-                            <tr class="tabla__fila">
+                            <tr class="tabla__fila" style="text-align: -webkit-center;">
                                 <td>
                                     <c:out value="${tec1.getId()}"></c:out>
                                 </td>
-                                <td style="text-align-last: center;">
+                                <td>
                                     <c:out value="${tec1.getNombre()}"></c:out>
                                 </td>
                                 <td><input class="tecnico-check" name="tecnico" value="${tec1.getId()}" type="checkbox"></td>

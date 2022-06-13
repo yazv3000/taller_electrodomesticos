@@ -92,6 +92,7 @@ public class DaoAtencion extends Conexion {
 				cliente.setTelefono(rs.getString("telefono"));
 				cliente.setDistrito(rs.getString("distrito"));
 				cliente.setDireccion(rs.getString("direccion"));
+				
 				ate.setCliente(cliente);
 				
 				ate.setFechaCita(rs.getDate("fecha_atencion"));
@@ -190,7 +191,8 @@ public class DaoAtencion extends Conexion {
 			cita.setDistritoYdireccion(rs.getString("direc_cliente"));
 			cita.setTipoElectrodomestico(rs.getString("tipo_electro"));
 			cita.setHoraAtencion(rs.getString("hora_inicio"));
-			cita.setFechaAtencion(rs.getDate("fecha_atencion"));	
+			cita.setFechaAtencion(rs.getDate("fecha_atencion"));
+			cita.setLugar(rs.getString("lugar"));;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -247,6 +249,24 @@ public class DaoAtencion extends Conexion {
 	//OBTENER EL ID MAXIMO DEL CLIENTE
 	public int idMaxCliente () {
 		String sql = "select max(u.id_persona) as idMaximo from usuario as u where u.id_rol = 1";
+		cnx = getConnection();
+		ResultSet rs = null;
+		int idMaximo = 0;
+		try {
+			stm = cnx.prepareStatement(sql);
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				idMaximo = rs.getInt("idMaximo");
+			}
+			cnx.close();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return idMaximo;
+	}
+	//OBETENER EL ID MAXIMO DE LA ATENCION
+	public int idMaxAtencion () {
+		String sql = "select max(a.id_atencion) as idMaximo from atencion as a";
 		cnx = getConnection();
 		ResultSet rs = null;
 		int idMaximo = 0;
@@ -330,7 +350,7 @@ public class DaoAtencion extends Conexion {
 		}
 		
 		
-		public List<DtoReporteConsulta> listarReportesTecnico(String tecBuscado, Date fecha1, Date fecha2){
+		public List<DtoReporteConsulta> listarReportesTecnico(int idTecnico, Date fecha1, Date fecha2){
 			List<DtoReporteConsulta> lst = new ArrayList<DtoReporteConsulta>();
 			String sql = "select * from f_reportes_x_tecnico(?,?,?) ";
 			DtoReporteConsulta aten = null;
@@ -339,9 +359,11 @@ public class DaoAtencion extends Conexion {
 
 			try {
 				stm = cnx.prepareStatement(sql);
-				stm.setString(1, tecBuscado);
+				stm.setInt(1, idTecnico);
 				stm.setObject(2, fecha1, Types.DATE);
 				stm.setObject(3, fecha2, Types.DATE);
+				System.out.println(stm+"-------------------------------STM WE");
+				
 				rs = stm.executeQuery();
 
 				while (rs.next()) {
@@ -356,18 +378,20 @@ public class DaoAtencion extends Conexion {
 			return lst;
 		}
 		
-		public List<DtoReporteConsulta> listarReportesCliente(String cliBuscado, Date fecha1, Date fecha2){
+		public List<DtoReporteConsulta> listarReportesCliente(int idCliente, Date fecha1, Date fecha2, double monto1, double monto2){
 			List<DtoReporteConsulta> lst = new ArrayList<DtoReporteConsulta>();
-			String sql = "select * from f_reportes_x_cliente(?,?,?) ";
+			String sql = "select * from f_reportes_x_cliente(?,?,?,?,?) ";
 			DtoReporteConsulta aten = null;
 			cnx = getConnection();
 			ResultSet rs = null;
 
 			try {
 				stm = cnx.prepareStatement(sql);
-				stm.setString(1, cliBuscado);
+				stm.setInt(1, idCliente);
 				stm.setObject(2, fecha1, Types.DATE);
 				stm.setObject(3, fecha2, Types.DATE);
+				stm.setBigDecimal(4, new BigDecimal(monto1));
+				stm.setBigDecimal(5, new BigDecimal(monto2));
 				rs = stm.executeQuery();
 
 				while (rs.next()) {
@@ -389,11 +413,12 @@ public class DaoAtencion extends Conexion {
 				aten = new DtoReporteConsulta();
 				aten.setIdAtencion(rs.getInt("id_atencion"));
 				aten.setFecha(rs.getDate("fecha_atencion"));
+				aten.setHora(rs.getString("hora").substring(0, 5));
 				aten.setNombreTecnico(rs.getString("tecnico"));
 				aten.setNombreCliente(rs.getString("cliente"));
 				aten.setElectrodomestico(rs.getString("electrodomestico"));
 				aten.setMarca(rs.getString("marca"));
-				aten.setServicio(rs.getString("servicio_realizado"));
+				aten.setServicio(rs.getString("servicios"));
 				aten.setMonto(rs.getDouble("monto_total"));
 			} catch (SQLException e) {
 				e.printStackTrace();

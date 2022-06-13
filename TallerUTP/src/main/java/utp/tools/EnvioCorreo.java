@@ -1,4 +1,4 @@
-package utp.taller.controller.email;
+package utp.tools;
 
 import java.io.File;
 
@@ -17,15 +17,14 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import utp.taller.dto.DtoUsuario;
 import utp.taller.entidades.Electrodomestico;
 
 public class EnvioCorreo {
-	public void enviarCorreo() {
-
-
+	public void enviarCorreo(String correoDestino ) {
 		String remitente = "tallerutp.oficial@gmail.com";
 		String clave = "tbwushvhyjherman"; //chochee
-		String destino = "tochoherencia@gmail.com";
+		String destino = correoDestino;
 
 		System.out.println("Se eviará correo a: " + destino);
 
@@ -51,15 +50,15 @@ public class EnvioCorreo {
 			mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(destino));
 			// mensaje.addRecipient(Message.RecipientType.CC, new
 			// InternetAddress(AppAutocine.usuario.getEmail()));
-			mensaje.setSubject("Envio boleta Autocine - UTP");
+			mensaje.setSubject("Envio Resumen de Cita Taller - UTP");
 
 			BodyPart parteTexto = new MimeBodyPart();
-			parteTexto.setContent("Envío de <b>boleta</b>", "text/html");
+			parteTexto.setContent("Envío de <b>Resumen Cita</b>", "text/html");
 
 			BodyPart parteArchivo = new MimeBodyPart();
 
-			parteArchivo.setDataHandler(new DataHandler(new FileDataSource("ReporteTecnico.pdf")));
-			parteArchivo.setFileName("ReporteTecnico.pdf");
+			parteArchivo.setDataHandler(new DataHandler(new FileDataSource("reporte.pdf")));
+			parteArchivo.setFileName("reporte.pdf");
 
 			MimeMultipart todasLasPartes = new MimeMultipart();
 			todasLasPartes.addBodyPart(parteTexto);
@@ -77,35 +76,19 @@ public class EnvioCorreo {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-//		// Borrando el pdf temporal de la boleta
-//		String RUTA = "ReporteTecnico.pdf";
-//
-//		try {
-//			File archivo = new File(RUTA);
-//
-//			if (archivo.delete()) {
-//				System.out.println("El archivo fue eliminado satisfactoriamente.");
-//			} else {
-//				System.out.println("No se ha podido borrar el archivo.");
-//			}
-//
-//		} catch (Exception e) {
-//			System.err.println("Error -> " + e.getMessage());
-//		}
 	}
-	public void verRuta() {
-		File f = new File("program.txt");
-		  
-        // Get the absolute path of file f
-        String absolute = f.getAbsolutePath();
-
-        // Display the file path of the file object
-        // and also the file path of absolute file
-        System.out.println("Original  path: "
-                           + f.getPath());
-        System.out.println("Absolute  path: "
-                           + absolute);
-
-	}
+//	public void verRuta() {
+//		File f = new File("program.txt");
+//		  
+//        // Get the absolute path of file f
+//        String absolute = f.getAbsolutePath();
+//
+//        // Display the file path of the file object
+//        // and also the file path of absolute file
+//        System.out.println("Original  path: "
+//                           + f.getPath());
+//        System.out.println("Absolute  path: "
+//                           + absolute);
+//
+//	}
 }

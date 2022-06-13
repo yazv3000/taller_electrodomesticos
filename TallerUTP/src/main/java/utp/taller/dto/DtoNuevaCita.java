@@ -39,5 +39,12 @@ public class DtoNuevaCita implements Serializable{
 
 	public String getFallaElectrodomestico() {		return fallaElectrodomestico;	}
 	public void setFallaElectrodomestico(String fallaElectrodomestico) {		this.fallaElectrodomestico = fallaElectrodomestico;	}
+
+	@Override
+	public String toString() {
+		return "DtoNuevaCita [servicio=" + servicio + ", electrodomestico=" + electrodomestico + ", dtoHora=" + dtoHora
+				+ ", fechaReserva=" + fechaReserva + ", lugar=" + lugar + ", fallaElectrodomestico="
+				+ fallaElectrodomestico + "]";
+	}
 	
 }

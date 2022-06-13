@@ -60,6 +60,7 @@ public class ServletHorariosDisponibles extends HttpServlet {
 		switch (accion) {
 			case "listar":
 				Map<DtoTecnicoConsulta,List<Map<String, List<Horario>>>> lstHorarios = todosLosHorarios();
+				
 				request.setAttribute("lsthorario", lstHorarios);
 				request.getRequestDispatcher("/vista/cliente/horarios.jsp").forward(request, response);
 			break;
@@ -121,7 +122,7 @@ public class ServletHorariosDisponibles extends HttpServlet {
 		LocalDate diaMes = null; 
 		ZoneId timeZone = ZoneId.systemDefault();	// zona horaria por defecto del sistema 
 		
-		for (int week = 0; week < 4; week++) {
+		for (int week = 0; week < 8; week++) {
 
 			listaFechaHoras = new LinkedHashMap<>();
 			for (int day = 0; day < dias; day++) {

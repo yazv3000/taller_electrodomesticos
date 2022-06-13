@@ -14,6 +14,7 @@ import utp.taller.dao.DaoAtencion;
 import utp.taller.dao.DaoElectrodomestico;
 import utp.taller.dao.DaoHorario;
 import utp.taller.dao.DaoServicio;
+import utp.taller.dto.DtoAtencion;
 import utp.taller.dto.DtoHoraConsulta;
 import utp.taller.dto.DtoNuevaCita;
 import utp.taller.dto.DtoUsuario;
@@ -30,13 +31,14 @@ public class ServletNuevaCita extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     private DtoNuevaCita dtoCita = new DtoNuevaCita();
-	
+    private DaoAtencion daoaTE = new DaoAtencion();
     public ServletNuevaCita() {
         super();   
     }
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String accion = request.getParameter("accion");
+    	String generarPDF = request.getParameter("generarPDF");
     	
     	switch (accion) {
     	
@@ -48,6 +50,7 @@ public class ServletNuevaCita extends HttpServlet {
     		
     		listarMarcas(request);
     		listarTipos(request);
+    		
     		request.setAttribute("dtoCita", dtoCita);
     		request.getRequestDispatcher("/vista/cliente/reservaCita.jsp").forward(request, response);
     		break;
@@ -62,12 +65,18 @@ public class ServletNuevaCita extends HttpServlet {
     			
     			// Guardar la cita
     			daoAte.insertarCita(dtoCita);
-//    			request.getRequestDispatcher("/vista/cliente/servicios.jsp").forward(request, response);
-    			request.getRequestDispatcher("/ServletCitasCliente").forward(request, response);
-    		}else {
-    			System.out.println("No se pudo registrar el electrodoméstico");
-    			request.getRequestDispatcher("/vista/cliente/reservaCita.jsp").forward(request, response);
+    			
+    			int idMaximo = daoAte.idMaxAtencion();
+    			DtoAtencion dtoAte = daoaTE.obtenerAtencion(idMaximo);
+    			request.setAttribute("generarPDF", generarPDF);
+    			request.getSession().setAttribute("dtoAtencion", dtoAte);
+    			request.getSession().setAttribute("dtoCita", dtoCita);
+    			request.getRequestDispatcher("/ServletGenerarPDF").forward(request, response);
     		}
+//    		else {
+//    			System.out.println("No se pudo registrar el electrodoméstico");
+//    			request.getRequestDispatcher("/vista/cliente/reservaCita.jsp").forward(request, response);
+//    		}
     		break;
     	}
     	
@@ -91,6 +100,7 @@ public class ServletNuevaCita extends HttpServlet {
 		
 		Servicio  servicio = daoServ.consultarId(idServ);
 		dtoCita.setServicio(servicio);
+		
 		
 		System.out.println("La fecha seleccionada es:  "+dtoHora.getFormatoFecha()+", "+dtoHora.getHora());
 		System.out.println("El servicio es:  "+servicio.getNomServicio());
@@ -128,7 +138,6 @@ public class ServletNuevaCita extends HttpServlet {
 		// Recuperar el id con que fue insertado
 		electro.setIdElectrod(daoElectro.maxId(propietario.getIdPersona()));
 		
-		System.out.println(electro);
 		return electro.getIdElectrod();
 	}
 	

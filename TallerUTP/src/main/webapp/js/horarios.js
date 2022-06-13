@@ -7,7 +7,7 @@ var posicion = 0;
 for (let i = 0; i < contenido.length; i++) {
 	btnSiguiente[i].addEventListener("click", () => {
 		posicion += -100;
-		if (posicion < -300) {
+		if (posicion < -700) {
 			posicion = 0;
 		}
 		//alert(posicion);
