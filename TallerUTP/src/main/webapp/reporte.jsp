@@ -9,5 +9,6 @@
 <body>
 	<a target="_blank" href="<%=request.getContextPath()%>/ServletGestionarReporte?accion=reporteTecnico">Reporte Tecnico</a>
 	<a href="<%=request.getContextPath()%>/ServletGestionarHorario?accion=enviarCorreo">Reporte Tecnico</a>
+	<a href="<%=request.getContextPath()%>/ServletGestionarReporte?generarPDF=citaTecnica">CitaTecnica</a>
 </body>
 </html>

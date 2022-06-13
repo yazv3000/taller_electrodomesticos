@@ -162,17 +162,17 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 		return 0;
 	}
 	
-	public DtoClienteConsulta consultarDtoCliente(int idCliente) {
+	public DtoClienteConsulta consultarDtoNombres(String nombreCliente) {
 		DtoClienteConsulta cli = new DtoClienteConsulta();
 
-		String sql = "select * from v_clientes where id_persona=?";
+		String sql = "select * from v_clientes where upper(nombres) like ?";
 
 		cnx = getConnection();
 		ResultSet rs = null;
 
 		try {
 			stm = cnx.prepareStatement(sql);
-			stm.setInt(1, idCliente);
+			stm.setString(1, "%"+nombreCliente.toUpperCase()+"%");
 			rs = stm.executeQuery();
 			if (rs.next()) {
 				cli = recuperarDatosDto(rs);

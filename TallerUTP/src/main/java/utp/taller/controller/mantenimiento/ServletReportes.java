@@ -3,9 +3,8 @@ package utp.taller.controller.mantenimiento;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -15,7 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import utp.taller.dao.DaoAtencion;
+import utp.taller.dao.DaoCliente;
+import utp.taller.dao.DaoTecnico;
+import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoReporteConsulta;
+import utp.taller.dto.DtoTecnicoConsulta;
 
 /**
  * Servlet implementation class ServletReportes
@@ -25,9 +28,10 @@ public class ServletReportes extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private DaoAtencion dao = new DaoAtencion();
-	private DtoReporteConsulta rep = new DtoReporteConsulta();
+	private DaoTecnico daoTec = new DaoTecnico();
+	private DaoCliente daoCli = new DaoCliente();
 	private static String tipoLista;
-	SimpleDateFormat sdt = new SimpleDateFormat("dd-MM-YYYY");
+	SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd");
 	
     public ServletReportes() {
         super();
@@ -52,11 +56,13 @@ public class ServletReportes extends HttpServlet {
     		case "seleccionar":
     			String persona = request.getParameter("persona"); 
     			if(persona.equals("tecnico")) {
-    				request.setAttribute("por_persona", persona);
+    				request.getSession().setAttribute("por_persona", persona);
+					request.getSession().setAttribute("lstReportes", new ArrayList<DtoReporteConsulta>());
     			}else if(persona.equals("cliente")) {
-    				request.setAttribute("por_persona", persona);
+    				request.getSession().setAttribute("por_persona", persona);
+					request.getSession().setAttribute("lstReportes", new ArrayList<DtoReporteConsulta>());
     			}else {
-    				System.out.println("ninguno");
+    				request.getSession().removeAttribute("por_persona");;
     			}
     		break;
     		case "buscar_tecnico":
@@ -73,15 +79,12 @@ public class ServletReportes extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
-		
-		
-		
 	}
 
 	
 	private void listar(HttpServletRequest request, String tipoLista) {
 
-		List<DtoReporteConsulta> lst;
+		List<DtoReporteConsulta> lst = new ArrayList<DtoReporteConsulta>();
 
 		
 	 	switch (tipoLista) {
@@ -94,46 +97,63 @@ public class ServletReportes extends HttpServlet {
 			try {
 				date1 = sdt.parse(fecha1);
 				date2 = sdt.parse(fecha2);
-			} catch (ParseException e) {
-				Calendar myCalendar = new GregorianCalendar(2010, 2, 11);
-				date1 = myCalendar.getTime();
-				myCalendar.set(2024, 2, 11);
-				date2 = myCalendar.getTime();
+				DtoTecnicoConsulta tecnicoReporte = daoTec.consultarDtoNombres(tecBuscado);
+				request.getSession().setAttribute("tecnicoReporte", tecnicoReporte);
+				request.getSession().setAttribute("filtros", new String[]{fecha1, fecha2});
+				System.out.println("Buscado servicios prestados por el técnico:"+tecnicoReporte.getNombreCompleto()+" del "+date1+" al "+date2);
+				
+				lst = dao.listarReportesTecnico(tecnicoReporte.getIdPersonaTecnico(), date1 , date2);
+
+				if(lst.size()>0) {
+					request.setAttribute("estado_reporte", "listo");
+					System.out.println("entra");
+				} else {
+					request.setAttribute("estado_reporte", "noListo");
+				}
+				
+				
+			} catch (ParseException| NumberFormatException e) {
 				e.printStackTrace();
 			}
-			
-			System.out.println("Buscado servicios prestados por el técnico:"+tecBuscado+" del "+date1+" al "+date2);
-			lst = dao.listarReportesTecnico(tecBuscado, date1 , date2);
-			request.getSession().setAttribute("fechaInicial", fecha1);
-			request.getSession().setAttribute("fechaFinal", fecha2);
-			request.getSession().setAttribute("lstReportesConsultaFechasTecnico", lst);
 			break;
+			
+			
 		case "cliente":
 			String cliBuscado = request.getParameter("nombre_cli");
 			fecha1 =  request.getParameter("fecha1");
 			fecha2 =  request.getParameter("fecha2");
-			
+			String mt1 = request.getParameter("monto1");
+			String mt2 = request.getParameter("monto2");
+
 			try {
 				date1 = sdt.parse(fecha1);
 				date2 = sdt.parse(fecha2);
-			} catch (ParseException e) {
-				Calendar myCalendar = new GregorianCalendar(2010, 2, 11);
-				date1 = myCalendar.getTime();
-				myCalendar.set(2024, 2, 11);
-				date2 = myCalendar.getTime();
+				double monto1 = Double.parseDouble(mt1);
+				double monto2 = Double.parseDouble(mt2);
+				DtoClienteConsulta clienteReporte = daoCli.consultarDtoNombres(cliBuscado);
+				request.getSession().setAttribute("clienteReporte", clienteReporte);
+				request.getSession().setAttribute("filtros", new String[]{fecha1, fecha2, mt1, mt2});
+				System.out.println("Buscado servicios prestados al cliente:"+clienteReporte.getNombreCompleto()+" del "+date1+" al "+date2+" entre "+monto1+" y "+monto2);
+				
+				lst = dao.listarReportesCliente(clienteReporte.getIdPersonaCliente(), date1, date2, monto1, monto2);
+				
+				if(lst.size()>0) {
+					request.setAttribute("estado_reporte", "listo");
+					System.out.println("entra");
+				} else {
+					request.setAttribute("estado_reporte", "noListo");
+				}
+				
+			} catch (ParseException| NumberFormatException e) {
 				e.printStackTrace();
 			}
-			System.out.println("Buscado servicios prestados al cliente:"+cliBuscado+" del "+date1+" al "+date2);
-			lst = dao.listarReportesCliente(cliBuscado, date1, date2);
-			request.getSession().setAttribute("fechaInicialC", fecha1);
-			request.getSession().setAttribute("fechaFinalC", fecha2);
-			request.getSession().setAttribute("lstReportesConsultaFechasCliente", lst);
+
 			break;	
 		default:
 			lst = dao.listarReportes();
 			break;
 		}
-	 	System.out.println(lst.size());
-	 	request.setAttribute("lstReportes", lst);
+
+	 	request.getSession().setAttribute("lstReportes", lst);
 	}
 }

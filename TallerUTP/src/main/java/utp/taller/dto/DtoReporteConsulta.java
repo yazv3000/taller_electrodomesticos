@@ -1,5 +1,6 @@
 package utp.taller.dto;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DtoReporteConsulta {
@@ -7,13 +8,15 @@ public class DtoReporteConsulta {
 	// ATRIBUTOS
 	private int idAtencion;
 	private Date fecha;
+	private String fechaString;
+	private String hora;
 	private String nombreTecnico;
 	private String nombreCliente;
 	private String electrodomestico;
 	private String marca;
 	private String servicio;
 	private double monto;
-	//TODO FALTA AGREGAR LA hora de atencion: String hora
+
 	// CONSTRUCTORES
 	public DtoReporteConsulta() {}
 
@@ -23,6 +26,9 @@ public class DtoReporteConsulta {
 
 	public Date getFecha() {		return fecha;	}
 	public void setFecha(Date fecha) {		this.fecha = fecha;	}
+
+	public String getHora() {		return hora;	}
+	public void setHora(String hora) {		this.hora = hora;	}
 
 	public String getNombreTecnico() {		return nombreTecnico;	}
 	public void setNombreTecnico(String nombreTecnico) {		this.nombreTecnico = nombreTecnico;	}
@@ -38,8 +44,13 @@ public class DtoReporteConsulta {
 
 	public String getServicio() {		return servicio;	}
 	public void setServicio(String servicio) {		this.servicio = servicio;	}
-	
+	 
 	public double getMonto() {		return monto;	}
 	public void setMonto(double monto) {		this.monto = monto;	}
+	
+	public String getFechaString() { 	
+		SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd");
+		return form.format(fecha);	}
+
 	
 }

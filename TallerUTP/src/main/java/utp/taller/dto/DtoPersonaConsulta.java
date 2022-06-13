@@ -43,5 +43,8 @@ public abstract class DtoPersonaConsulta {
 	public void setEstadoActivo(boolean estadoActivo) {		this.estadoActivo = estadoActivo;	}
 	
 	public String getEstado() {	return estadoActivo ? "Activo" : "Inactivo";}
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
 	
 }

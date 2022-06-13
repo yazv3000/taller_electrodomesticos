@@ -16,17 +16,19 @@
 
 .caja__busqueda{
 	display: grid;
-	
 }
 
 .entrada {
     width: 150px;
     background: var(--grad-form);
-    color: white;
+    color: white !important;
     font-family: "Audiowide";
     border:none;
     padding: 5px;
     margin-bottom: 10px;
     border-radius: 5px;
     text-align: center;
+}
+.inpuat{
+	color: white !important;
 }

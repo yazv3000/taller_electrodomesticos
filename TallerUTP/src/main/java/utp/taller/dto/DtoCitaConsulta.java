@@ -19,6 +19,7 @@ public class DtoCitaConsulta implements Serializable{
 	private String horaAtencion;
 	private Set<DtoServicioAtencion> servicios;
 	private String tipoElectrodomestico;
+	private String lugar;
 	
 	// MÉTODOS GETTER & SETTER
 	public int getIdAtencion() {		return idAtencion;	}
@@ -50,5 +51,8 @@ public class DtoCitaConsulta implements Serializable{
 		DtoServicioAtencion prin = servicios.stream().filter(s-> s.getIdServicio() !=5 && s.getIdServicio()!=9).findFirst().get();
 		return prin;
 	}
+	
+	public String getLugar() {	return lugar;}
+	public void setLugar(String lugar) {	this.lugar = lugar;	}
 	
 }

@@ -315,11 +315,11 @@ WITH (
   security_barrier=true
 ) 
 AS
-select A.id_atencion, H.fecha_atencion,
-Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as tecnico,
-Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2),'  ',' ')) as cliente,
+select A.id_atencion, H.fecha_atencion, H.hora_inicio as hora,
+T.id_persona as id_tecnico, Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as tecnico,
+C.id_persona as id_cliente, Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2),'  ',' ')) as cliente,
 TE.nom_tipo_electro as electrodomestico, M.nombre_marca as marca,
-string_agg(S.nombre_serv, ', ') as servicio_realizado,
+string_agg(S.nombre_serv, ', ') as servicios,
 A.monto_total
 from atencion A
 inner join horario_atencion H on A.id_horario = H.id_horario 
@@ -331,7 +331,7 @@ left join marca M on M.id_marca = E.id_marca
 left join detalle_atencion D on A.id_atencion = D.id_atencion
 left join servicio S on D.id_servicio = S.id_servicio
 where estado_atencion = 'Finalizado' and A.estado_activ
-group by A.id_atencion, H.fecha_atencion, tecnico, cliente, electrodomestico, marca, monto_total;
+group by A.id_atencion, H.fecha_atencion, hora, T.id_persona, C.id_persona, tecnico, cliente, electrodomestico, marca, monto_total;
 ----------------------------------------------------------
 /*********************************************************
   SCRIPT : FUNCIONES: taller_utp (POSTGRESQL)
@@ -506,25 +506,26 @@ LANGUAGE plpgsql;
 ----------------------------------------------------------
 --	REPORTES
 ----------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_reportes_x_tecnico(tec_busqueda character varying, fecha_1 date, fecha_2 date DEFAULT CURRENT_DATE)
-RETURNS TABLE(id_atencion integer, fecha_atencion date, tecnico character varying, cliente character varying, 
-			  electrodomestico character varying, marca character varying, servicio_realizado character varying, monto_total numeric)
+CREATE OR REPLACE FUNCTION public.f_reportes_x_tecnico(id_tec integer, fecha_1 date, fecha_2 date DEFAULT CURRENT_DATE)
+RETURNS TABLE(id_atencion integer, fecha_atencion date, hora time, tecnico character varying, cliente character varying, 
+			  electrodomestico character varying, marca character varying, servicios character varying, monto_total numeric)
 AS 
 $$
-select * from v_atenciones_finalizadas
-where upper(tecnico) like '%'||upper(tec_busqueda)||'%'
+select id_atencion, fecha_atencion, hora, tecnico, cliente, electrodomestico, marca, servicios, monto_total
+from v_atenciones_finalizadas
+where id_tecnico = id_tec
 and fecha_atencion between fecha_1 and fecha_2
 $$
 LANGUAGE SQL;
-
 ----------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_reportes_x_cliente(cli_busqueda character varying, fecha_1 date, fecha_2 date DEFAULT CURRENT_DATE, monto_1 numeric DEFAULT 0.00, monto_2 numeric DEFAULT 99999999.99)
-RETURNS TABLE(id_atencion integer, fecha_atencion date, tecnico character varying, cliente character varying, 
-			  electrodomestico character varying, marca character varying, servicio_realizado character varying, monto_total numeric)
+CREATE OR REPLACE FUNCTION public.f_reportes_x_cliente(id_cli integer, fecha_1 date, fecha_2 date DEFAULT CURRENT_DATE, monto_1 numeric DEFAULT 0.00, monto_2 numeric DEFAULT 99999999.99)
+RETURNS TABLE(id_atencion integer, fecha_atencion date, hora time, tecnico character varying, cliente character varying, 
+			  electrodomestico character varying, marca character varying, servicios character varying, monto_total numeric)
 AS 
 $$
-select * from v_atenciones_finalizadas
-where upper(cliente) like '%'||upper(cli_busqueda)||'%'
+select id_atencion, fecha_atencion, hora, tecnico, cliente, electrodomestico, marca, servicios, monto_total
+from v_atenciones_finalizadas
+where id_cliente = id_cli
 and fecha_atencion between fecha_1 and fecha_2
 and monto_total between monto_1 and monto_2
 $$
@@ -533,6 +534,28 @@ LANGUAGE SQL;
 /*********************************************************
   SCRIPT : PROCEDIMIENTOS: taller_utp (POSTGRESQL)
 *********************************************************/
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_tecnicos_con_horario(mes integer,anyo integer)
+    RETURNS TABLE(id_persona integer, nombres character varying) 
+    LANGUAGE 'sql'
+AS $BODY$	  
+select distinct VT.id_persona, VT.nombres from 
+v_tecnicos VT right join horario_atencion H 
+on VT.id_persona = H.id_tecnico 
+where EXTRACT(MONTH FROM H.fecha_atencion) = mes and EXTRACT(YEAR FROM h.fecha_atencion) = anyo
+$BODY$;
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_nuevo_horario(
+	IN id_tecnico integer,
+	IN fecha date,
+	IN hora time without time zone)
+LANGUAGE 'sql'
+AS $BODY$
+INSERT INTO public.horario_atencion
+(id_tecnico, fecha_atencion, hora_inicio, estado)
+VALUES
+($1, $2, $3, 'Disponible');
+$BODY$;
 ----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_nuevo_cliente
 (	nom_1 character varying default null,
@@ -781,7 +804,7 @@ FOR monto IN select monto_servicio from detalle_atencion where id_atencion = id_
 	total = total+COALESCE(monto, 0);
 end loop;
 
-update atencion set monto_total = total where id_atencion = id_aten;
+update atencion set monto_total = total, estado_atencion='Finalizado' where id_atencion = id_aten;
 
 END
 $$
@@ -1230,31 +1253,3 @@ INSERT INTO public.pieza(nombre_pieza, stock, precio_pieza, id_categoria)
 	('Condensador para horno microondas Sharp', 120, 146.00, 8),
 	('Botón plateado para horno microondas Bosch', 280, 24.00, 8);
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_tecnicos_con_horario(
-	mes integer,
-	anyo integer)
-    RETURNS TABLE(id_persona integer, nombres character varying) 
-    LANGUAGE 'sql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-    ROWS 1000
-
-AS $BODY$
- 			  
-select distinct VT.id_persona, VT.nombres from 
-v_tecnicos VT right join horario_atencion H 
-on VT.id_persona = H.id_tecnico 
-where EXTRACT(MONTH FROM H.fecha_atencion) = mes and EXTRACT(YEAR FROM h.fecha_atencion) = anyo
-$BODY$;
----------------------------------------------------------------------------------
-CREATE OR REPLACE PROCEDURE public.sp_nuevo_horario(
-	IN id_tecnico integer,
-	IN fecha date,
-	IN hora time without time zone)
-LANGUAGE 'sql'
-AS $BODY$
-INSERT INTO public.horario_atencion
-(id_tecnico, fecha_atencion, hora_inicio, estado)
-VALUES
-($1, $2, $3, 'Disponible');
-$BODY$;

@@ -11,6 +11,7 @@
 		<maven.compiler.source>17</maven.compiler.source> <!-- sintaxis -->
 		<maven.compiler.target>17</maven.compiler.target> <!-- motor de jvm -->
 	</properties>
+
 	<!-- More Project Information -->
 	<organization>
 		<name>Universidad Tecnológica del Perú</name>
@@ -24,6 +25,11 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
+			<version>6.19.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
 			<version>6.19.1</version>
 		</dependency>
 	</dependencies>

@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import utp.taller.controller.email.EnvioCorreo;
-import utp.taller.controller.email.EnvioCorreo2;
 import utp.taller.dao.DaoHorario;
 import utp.taller.dao.DaoTecnico;
 import utp.taller.dto.DtoTecnicoNombre;

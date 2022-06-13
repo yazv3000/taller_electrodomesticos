@@ -60,6 +60,7 @@ public class ServletHorariosDisponibles extends HttpServlet {
 		switch (accion) {
 			case "listar":
 				Map<DtoTecnicoConsulta,List<Map<String, List<Horario>>>> lstHorarios = todosLosHorarios();
+				
 				request.setAttribute("lsthorario", lstHorarios);
 				request.getRequestDispatcher("/vista/cliente/horarios.jsp").forward(request, response);
 			break;
