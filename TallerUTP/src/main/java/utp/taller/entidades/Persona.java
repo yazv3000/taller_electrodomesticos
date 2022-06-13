@@ -1,7 +1,5 @@
 package utp.taller.entidades;
 
-import java.util.Arrays;
-
 public abstract class Persona {
 
 		// ATRIBUTOS
@@ -14,7 +12,7 @@ public abstract class Persona {
 		private int idDistrito;
 		private String direccion;
 		private String email, contrasena;
-		private byte[] foto;
+		private String rutaFoto;
 		private boolean estadoActivo;
 
 		// CONSTRUCTORES
@@ -62,10 +60,10 @@ public abstract class Persona {
 		public void setNroDocumento(String nro_doc)			
 			{this.nro_doc = nro_doc;}
 		
-		public byte[] getFoto() 
-			{return foto;}
-		public void setFoto(byte[] foto)
-			{this.foto = foto;}
+		public String getRutaFoto() 
+			{return rutaFoto;}
+		public void setRutaFoto(String rutaFoto)
+			{this.rutaFoto = rutaFoto;}
 
 		public String getTelefono() 		
 			{return telefono;}
@@ -98,14 +96,5 @@ public abstract class Persona {
 			{return estadoActivo;	}
 		public void setEstadoActivo(boolean estadoActivo) 
 			{this.estadoActivo = estadoActivo;}
-
-		@Override
-		public String toString() {
-			return "Persona [idUsuario=" + idUsuario + ", idPersona=" + idPersona + ", nombrePrin=" + nombrePrin
-					+ ", nombreSec=" + nombreSec + ", apePrin=" + apePrin + ", apeSec=" + apeSec + ", tipoDocumento="
-					+ tipoDocumento + ", nro_doc=" + nro_doc + ", telefono=" + telefono + ", idDistrito=" + idDistrito
-					+ ", direccion=" + direccion + ", email=" + email + ", contrasena=" + contrasena + ", foto="
-					+ Arrays.toString(foto) + ", estadoActivo=" + estadoActivo + "]";
-		}
 
 }

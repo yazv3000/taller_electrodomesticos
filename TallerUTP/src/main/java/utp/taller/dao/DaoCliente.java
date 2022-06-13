@@ -35,7 +35,7 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 				dtoClie.setRol(rs.getString(3));
 				dtoClie.setUsername(rs.getString(4));
 				dtoClie.setEmail(rs.getString(5));
-				dtoClie.setProfilePic(rs.getBytes(6));
+				dtoClie.setProfilePic(rs.getString(6));
 			}
 			cnx.close();
 			
@@ -77,7 +77,7 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 				cli.setDireccion(rs.getString(11));
 				cli.setEmail(rs.getString(12));
 				cli.setContrasena(rs.getString(13));
-				cli.setFoto(rs.getBytes(14));
+				cli.setRutaFoto(rs.getString(14));
 				cli.setEstadoActivo(rs.getBoolean(15));
 			}
 			
@@ -107,9 +107,8 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 			stm.setInt(8, cli.getIdDistrito());
 			stm.setString(9, cli.getDireccion());
 			stm.setString(10, cli.getEmail());
-			//stm.setString(11, cli.getContrasena());
-			stm.setString(11, "por defecto");
-			stm.setBytes(12, cli.getFoto());
+			stm.setString(11, cli.getContrasena());
+			stm.setString(12, cli.getRutaFoto());
 			stm.execute(); 
 			cnx.close();
 		} catch (SQLException e) {
@@ -138,7 +137,7 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 			stm.setString(12, c.getEmail());
 			stm.setString(13, c.getContrasena());
 			stm.setBoolean(14, c.isEstadoActivo());
-			stm.setBytes(15, c.getFoto());
+			stm.setString(15, c.getRutaFoto());
 			stm.execute(); 
 			cnx.close();
 		} catch (SQLException e) {
@@ -161,6 +160,29 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 			throw new RuntimeException(e);
 		}
 		return 0;
+	}
+	
+	public DtoClienteConsulta consultarDtoNombres(String nombreCliente) {
+		DtoClienteConsulta cli = new DtoClienteConsulta();
+
+		String sql = "select * from v_clientes where upper(nombres) like ?";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setString(1, "%"+nombreCliente.toUpperCase()+"%");
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				cli = recuperarDatosDto(rs);
+			}
+			cnx.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return cli;
 	}
 	
 	// LISTA DE CLIENTES PARA MOSTRAR EN LA TABLA DE MANTENIMIENTO
@@ -214,31 +236,6 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 		}
 		return lst;
 	}
-	
-	public DtoClienteConsulta consultarDtoCliente(int idCliente) {
-		DtoClienteConsulta cli = new DtoClienteConsulta();
-
-		String sql = "select * from v_clientes where id_persona=?";
-
-		cnx = getConnection();
-		ResultSet rs = null;
-
-		try {
-			stm = cnx.prepareStatement(sql);
-			stm.setInt(1, idCliente);
-			rs = stm.executeQuery();
-			if (rs.next()) {
-				cli = recuperarDatosDto(rs);
-			}
-			cnx.close();
-			
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return cli;
-	}
-		
-
 
 	// MÉTODOS PRIVADOS
 	private DtoClienteConsulta recuperarDatosDto(ResultSet rs ) {

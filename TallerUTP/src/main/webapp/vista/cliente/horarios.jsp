@@ -1,16 +1,15 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ page session="true" %>
+<c:set var="context" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
-<html>
+<html lang="es-PE">
 <head>
-<meta charset="ISO-8859-1">
-<c:set var="context" value="${pageContext.request.contextPath}" />
-<link rel="stylesheet" href="${context}/css/horario.css">
-<script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
+	<meta charset="ISO-8859-1">
+	<link rel="stylesheet" href="${context}/css/horario.css">
+	<script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
 
-<title>Insert title here</title>
 </head>
 <body>
 
@@ -22,7 +21,15 @@
             <div class="tecnico">
                 <div class="tecnico__datos">
                     <div class="tecnico__img">
-                        <img src="${context}/img/tony.jpg" alt="" >
+                    <c:set var="foto_tecnico" value="${horarios.key.getRutaFoto()}" />
+                     <c:choose>
+                       <c:when test="${foto_tecnico==null}">
+                       <img class="nav__img" src="${context}/default.jpg" alt="">
+                       </c:when>
+                       <c:otherwise>
+				        <img class="nav__img" src="${context}/${foto_tecnico}" alt="">
+				    </c:otherwise>
+                      </c:choose>
                     </div>
                     <h3><c:out value="${horarios.key.getNombreCompleto()}"/></h3>
                     <p class="tecnico__nombre"><c:out value="${horarios.key.getEspecialidad()}"/></p>
@@ -55,9 +62,12 @@
 	                                                <c:forEach var="hora" items="${dia.value}"> 
 	                                                    <tr>
 	                                                        <td class="tabla-2__hora">
-	                                                        	<Button onclick="location.href='ServletCita?accion=resumen&servicio=${servicio}&idHorario=${hora.getIdHorario()}'">
-	                                                        		<c:out value="${hora.getHoraInicio()}"/>
-	                                                        	</Button>
+	                                                        <form action="${context}/ServletNuevaCita" method="post">
+										                    	<input type="hidden" name="horario" value="${hora.getIdHorario()}" />
+										                    	<!--  Desabilita el boton de horario dependiendo de si este está disponible o no -->
+										                    	<button class="serv__link ${hora.getEstado() ne 'Disponible' ? 'desactivado':''}"  ${hora.getEstado() ne 'Disponible' ? 'disabled':''} type="submit" name="accion" value="cita_domicilio"><c:out value="${hora.getHoraInicio()}"/></button>
+										                    	
+										                	</form>
 	                                                        </td>
 	                                                    </tr>
 													</c:forEach>
@@ -72,7 +82,7 @@
 	                    </c:forEach>
 	                    </ul>
                     </div>
-                    <button class="mostrar__horas">Mostrar mas Horas</button>
+                    <button class="mostrar__horas">Mostrar más Horas</button>
                 </div>       
             </div>
             </c:forEach>

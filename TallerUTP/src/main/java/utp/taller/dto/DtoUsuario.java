@@ -1,15 +1,19 @@
 
 package utp.taller.dto;
 
-public class DtoUsuario {
+import java.io.Serializable;
 
+public class DtoUsuario implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	
 	// ATRIBUTOS
 	private int idPersona;
 	private String idUsuario;
 	private String rol;
 	private String username;
 	private String email;
-	private byte[] profilePic;
+	private String profilePic;
 	
 	// CONSTRUCTORES
 	public DtoUsuario() {	}
@@ -30,8 +34,8 @@ public class DtoUsuario {
 	public String getEmail() {		return email;	}
 	public void setEmail(String email) {		this.email = email;	}
 
-	public byte[] getProfilePic() {		return profilePic;	}
-	public void setProfilePic(byte[] profilePic) {		this.profilePic = profilePic;	}
+	public String getProfilePic() {		return profilePic;	}
+	public void setProfilePic(String profilePic) {		this.profilePic = profilePic;	}
 	
 
 }

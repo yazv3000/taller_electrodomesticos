@@ -20,17 +20,16 @@
 <body>
 	
 	<div class="contenido">
-	<h1>TABLA DE<span>ELECTRODOMESTICOS</span></h1>
+	<h1 class="titulo">TABLA DE <span>ELECTRODOMESTICOS</span></h1>
 	    <div class="tabla" id="myTable">
 	        <div class="tabla__tools">
 	            <ul>
 	            	<li><button class="fa-solid fa-plus-square icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"></button></li>
 	                <li><button class="fa-solid fa-pen icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
-	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarElectrodomestico?accion=listar'" >Todos</button></li>
+	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarElectrodomestico?accion=listar&lista=todos'" >Todos</button></li>
 	                <li><button type="button" class="btn btn-success" onclick="location.href='ServletGestionarElectrodomestico?accion=listar&lista=activos'" >Activos</button><li>
 	                <li><button type="button" class="btn btn-danger" onclick="location.href='ServletGestionarElectrodomestico?accion=listar&lista=inactivos'">Inactivos</button><li>
 	            </ul>
-	            <input class="tabla_buscar" type="text" placeholder="Filtrar">
 	        </div>
 	        <div class="tabla__contenido">
 	            <table id="tabla__Cliente" >
@@ -56,10 +55,10 @@
 							<td> <c:out value="${e.getNombrePropietario()}"></c:out> </td>		
 							<td>
 									<c:if  test="${e.isEstadoActivo()}">
-										<a class="fa-solid fa-toggle-on" href="${context}/ServletGestionarElectrodomestico?accion=desactivar&id=${e.getIdElectrodomestico()}"></a>									
+										<a class="activado" href="${context}/ServletGestionarElectrodomestico?accion=desactivar&id=${e.getIdElectrodomestico()}"><span></span></a>									
 									</c:if>
 									<c:if test="${!e.isEstadoActivo()}">
-										<a class="fa-solid fa-toggle-off" href="${context}/ServletGestionarElectrodomestico?accion=activar&id=${e.getIdElectrodomestico()}"></a>	
+										<a class="desactivado" href="${context}/ServletGestionarElectrodomestico?accion=activar&id=${e.getIdElectrodomestico()}"><span></span></a>	
 									</c:if>
 							</td>
 						</tr>

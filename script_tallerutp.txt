@@ -4,13 +4,22 @@
 ----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.servicio
 (
-    id_servicio char(9) NOT NULL,
+    id_servicio serial NOT NULL,
     nombre_serv character varying(50) NOT NULL,
     descripcion text NOT NULL,
-    precio_ref numeric NOT NULL,
 	estado_activ boolean NOT NULL DEFAULT true,
-	foto_serv bytea,
+	foto_serv character varying(200),
 	PRIMARY KEY (id_servicio)
+);
+---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.actividades_servicio
+(
+	id_actividad serial NOT NULL,
+	id_servicio integer NOT NULL,
+    nombre_actividad character varying(200) NOT NULL,
+	precio numeric NOT NULL,
+	PRIMARY KEY (id_actividad),
+	CONSTRAINT fk_ser FOREIGN KEY (id_servicio) REFERENCES public.servicio(id_servicio) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 ---------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.tipo_documento
@@ -59,7 +68,7 @@ CREATE TABLE IF NOT EXISTS public.persona
 	anios_experiencia integer,
 	fecha_ingreso date,
 	fecha_baja date,
-	foto bytea,
+	foto character varying(200),
     estado_activ boolean NOT NULL DEFAULT true,
     PRIMARY KEY (id_persona),
 	CONSTRAINT fk_tdoc FOREIGN KEY (id_tipo_doc) REFERENCES public.tipo_documento(id_tipo_doc) ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -112,7 +121,7 @@ CREATE TABLE IF NOT EXISTS public.electrodomestico
     id_electrodomestico serial NOT NULL,
     nro_serie character varying(20),
     id_tipo_electro integer NOT NULL,
-	modelo character varying(40) NOT NULL,
+	modelo character varying(40),
     id_marca integer NOT NULL,
 	id_propietario integer NOT NULL,
 	estado_activ boolean NOT NULL DEFAULT true,
@@ -124,21 +133,17 @@ CREATE TABLE IF NOT EXISTS public.electrodomestico
 CREATE TABLE IF NOT EXISTS public.atencion
 (
     id_atencion serial NOT NULL,
-    id_cliente integer NOT NULL,
     id_electro integer NOT NULL,
-    id_tecnico integer NOT NULL,
+    id_horario integer NOT NULL,
     fecha_reserva_cita date,
-    fecha_atencion date NOT NULL DEFAULT CURRENT_DATE,
-    hora_atencion time NOT NULL,
     tipo character varying(30) NOT NULL,		-- En taller / A domicilio
 	estado_atencion character varying(30) NOT NULL,
-    presupuesto numeric,
+    falla_descrita text,
 	monto_total numeric,
 	estado_activ boolean NOT NULL DEFAULT true,
     PRIMARY KEY (id_atencion),
-    CONSTRAINT fk_cli FOREIGN KEY (id_cliente) REFERENCES public.persona(id_persona) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_elct FOREIGN KEY (id_electro) REFERENCES public.electrodomestico(id_electrodomestico) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_tec FOREIGN KEY (id_tecnico) REFERENCES public.persona(id_persona) ON UPDATE CASCADE ON DELETE RESTRICT
+    CONSTRAINT fk_hor FOREIGN KEY (id_horario) REFERENCES public.horario_atencion(id_horario) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_elct FOREIGN KEY (id_electro) REFERENCES public.electrodomestico(id_electrodomestico) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 ---------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.categoria_pieza
@@ -164,14 +169,32 @@ CREATE TABLE IF NOT EXISTS public.pieza
 CREATE TABLE IF NOT EXISTS public.detalle_atencion
 (
  	id_atencion integer NOT NULL,
-	id_servicio char(9) NOT NULL,
-	monto numeric NOT NULL,
-	id_pieza integer,
-	observacion text,
+	id_servicio integer NOT NULL,
+	monto_servicio numeric,
+	observacion_tec text,
+	estado_completo boolean NOT NULL DEFAULT false,
 	PRIMARY KEY (id_atencion, id_servicio),
-	CONSTRAINT fk_aten FOREIGN KEY (id_atencion) REFERENCES public.atencion(id_atencion) ON UPDATE CASCADE ON DELETE RESTRICT,
-	CONSTRAINT fk_ser FOREIGN KEY (id_servicio) REFERENCES public.servicio(id_servicio) ON UPDATE CASCADE ON DELETE RESTRICT,
-	CONSTRAINT fk_pieza FOREIGN KEY (id_pieza) REFERENCES public.pieza(id_pieza) ON UPDATE CASCADE ON DELETE RESTRICT
+	CONSTRAINT fk_serv FOREIGN KEY (id_servicio) REFERENCES public.servicio(id_servicio) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.detalle_actividades
+(
+	id_atencion integer NOT NULL,
+	id_servicio integer NOT NULL,
+	id_actividad integer,
+	PRIMARY KEY (id_atencion, id_servicio, id_actividad),
+	CONSTRAINT fk_deta FOREIGN KEY (id_atencion, id_servicio) REFERENCES public.detalle_atencion(id_atencion, id_servicio),
+	CONSTRAINT fk_acv FOREIGN KEY (id_actividad) REFERENCES public.actividades_servicio(id_actividad) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+----------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.detalle_piezas_usadas
+(
+	id_atencion integer NOT NULL,
+	id_servicio integer NOT NULL,
+	id_pieza integer,
+	PRIMARY KEY (id_atencion, id_servicio, id_pieza),
+	CONSTRAINT fk_detp FOREIGN KEY (id_atencion, id_servicio) REFERENCES public.detalle_atencion(id_atencion, id_servicio),
+	CONSTRAINT fk_pza FOREIGN KEY (id_pieza) REFERENCES public.pieza(id_pieza) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 ----------------------------------------------------------
 /*********************************************************
@@ -213,12 +236,23 @@ AS
 select T.id_persona, U.id_user, 
 Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as nombres,
 E.nombre_esp as especialidad,
-T.telefono, D.nombre_distrito, T.direccion, U.email, T.estado_activ
+T.telefono, D.nombre_distrito, T.direccion, U.email, T.foto, T.estado_activ
 from public.persona T inner join public.usuario U on T.id_persona = U.id_persona
 left join public.especialidad E on E.id_especialidad = T.id_especialidad
 left join public.distrito D on T.id_distrito = D.id_distrito
 where U.id_rol=3;
 ----------------------------------------------------------
+CREATE OR REPLACE VIEW public.v_electrodomesticos
+WITH (
+  security_barrier=true
+) 
+AS
+select E.id_electrodomestico, E.nro_serie, TE.nom_tipo_electro as tipo,
+E.modelo, M.nombre_marca as marca, 
+E.id_propietario, C.nombres as propietario, E.estado_activ
+from electrodomestico E inner join tipo_electrodomestico TE on TE.id_tipo_electro = E.id_tipo_electro 
+inner join marca M on E.id_marca = M.id_marca
+inner join v_clientes C on C.id_persona = E.id_propietario;
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_piezas
 WITH (
@@ -239,17 +273,72 @@ left join usuario U on U.id_persona = T.id_persona where U.id_rol = 3 and H.fech
 CREATE OR REPLACE VIEW public.v_citas
 WITH (
   security_barrier=true
+) AS
+ SELECT a.id_atencion,
+    c.id_persona AS id_cliente,
+    a.id_electro,
+    t.id_persona AS id_tecnico,
+    a.fecha_reserva_cita,
+    h.fecha_atencion,
+    h.hora_inicio,
+    a.tipo,
+    a.falla_descrita,
+	a.estado_atencion
+   FROM atencion a
+     JOIN horario_atencion h ON a.id_horario = h.id_horario
+     JOIN electrodomestico e ON e.id_electrodomestico = a.id_electro
+     LEFT JOIN persona t ON t.id_persona = h.id_tecnico
+     LEFT JOIN persona c ON c.id_persona = e.id_propietario
+  WHERE a.estado_atencion::text = 'Pendiente'::text AND a.estado_activ;
+----------------------------------------------------------
+CREATE OR REPLACE VIEW public.v_citas_domicilio
+WITH (
+  security_barrier=true
 ) 
 AS
-select id_atencion, id_cliente, id_electro, id_tecnico, fecha_reserva_cita, fecha_atencion, hora_atencion, tipo 
-from atencion 
-where estado_atencion = 'Pendiente' and estado_activ;
+select A.id_atencion,
+C.id_persona as id_cliente,
+C.nombres as nombre_cliente,
+concat(C.nombre_distrito,', ',c.direccion) as direc_cliente,
+E.tipo as tipo_electro,
+T.id_persona as id_tecnico, T.nombres as nombre_tecnico,
+H.fecha_atencion, H.hora_inicio, A.tipo as lugar
+from atencion A inner join horario_atencion H on A.id_horario = H.id_horario 
+inner join v_electrodomesticos E on E.id_electrodomestico = A.id_electro
+left join v_tecnicos T on T.id_persona = H.id_tecnico
+left join v_clientes C on C.id_persona = E.id_propietario  
+where estado_atencion = 'Pendiente'
+and A.estado_activ;
+----------------------------------------------------------
+CREATE OR REPLACE VIEW public.v_atenciones_finalizadas
+WITH (
+  security_barrier=true
+) 
+AS
+select A.id_atencion, H.fecha_atencion, H.hora_inicio as hora,
+T.id_persona as id_tecnico, Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as tecnico,
+C.id_persona as id_cliente, Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2),'  ',' ')) as cliente,
+TE.nom_tipo_electro as electrodomestico, M.nombre_marca as marca,
+string_agg(S.nombre_serv, ', ') as servicios,
+A.monto_total
+from atencion A
+inner join horario_atencion H on A.id_horario = H.id_horario 
+inner join electrodomestico E on A.id_electro = E.id_electrodomestico
+left join persona T on T.id_persona = H.id_tecnico
+left join persona C on C.id_persona = E.id_propietario 
+left join tipo_electrodomestico TE on TE.id_tipo_electro = E.id_tipo_electro
+left join marca M on M.id_marca = E.id_marca
+left join detalle_atencion D on A.id_atencion = D.id_atencion
+left join servicio S on D.id_servicio = S.id_servicio
+where estado_atencion = 'Finalizado' and A.estado_activ
+group by A.id_atencion, H.fecha_atencion, hora, T.id_persona, C.id_persona, tecnico, cliente, electrodomestico, marca, monto_total;
+----------------------------------------------------------
 /*********************************************************
   SCRIPT : FUNCIONES: taller_utp (POSTGRESQL)
 *********************************************************/
 ----------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_validar_acceso(user_rol integer, correo character varying(254), contrasena text)
-RETURNS TABLE(id_persona integer, id_user char(10), rol character varying(30), nombre_completo character varying(112), correo character varying(254), foto bytea)
+CREATE OR REPLACE FUNCTION public.f_validar_acceso(user_rol integer, correo character varying, contrasena text)
+RETURNS TABLE(id_persona integer, id_user char(10), rol character varying, nombre_completo character varying, correo character varying, foto character varying)
 AS 
 $$ 
 select 
@@ -265,9 +354,9 @@ LANGUAGE SQL;
 --	CONSULTAS
 ----------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.f_consultar_cliente(id_cliente integer)
-RETURNS TABLE(id_cliente integer, id_user char(10), nom1 character varying(30), nom2 character varying(30), ape1 character varying(30), ape2 character varying(30),
-			  id_tdoc integer, nro_doc character varying(15), telefono character varying(9), id_distrito integer, direccion text,
-			  email character varying(254), contra text, foto bytea, estado boolean)
+RETURNS TABLE(id_cliente integer, id_user char(10), nom1 character varying, nom2 character varying, ape1 character varying, ape2 character varying,
+			  id_tdoc integer, nro_doc character varying, telefono character varying(9), id_distrito integer, direccion text,
+			  email character varying, contra text, foto character varying, estado boolean)
 AS 
 $$ 
 select
@@ -283,9 +372,9 @@ $$
 LANGUAGE SQL;
 ----------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.f_consultar_encargado(id_encargado integer)
-RETURNS TABLE(id_enc integer, id_user char(10), nom1 character varying(30), nom2 character varying(30), ape1 character varying(30), ape2 character varying(30),
-			  id_tdoc integer, nro_doc character varying(15), telefono character varying(9), id_distrito integer, direccion text,
-			  email character varying(254), contra text, foto bytea, estado boolean)
+RETURNS TABLE(id_enc integer, id_user char(10), nom1 character varying, nom2 character varying, ape1 character varying, ape2 character varying,
+			  id_tdoc integer, nro_doc character varying, telefono character varying, id_distrito integer, direccion text,
+			  email character varying, contra text, foto character varying, estado boolean)
 AS 
 $$ 
 select
@@ -301,10 +390,10 @@ $$
 LANGUAGE SQL;
 ----------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.f_consultar_tecnico(id_tecnico integer)
-RETURNS TABLE(id_tec integer, id_user char(10), nom1 character varying(30), nom2 character varying(30), ape1 character varying(30), ape2 character varying(30),
-			  id_tdoc integer, nro_doc character varying(15), especialidad integer, a_exp integer,
-			  telefono character varying(9), id_distrito integer, direccion text,
-			  email character varying(254), contra text, foto bytea, estado boolean)
+RETURNS TABLE(id_tec integer, id_user char(10), nom1 character varying, nom2 character varying, ape1 character varying, ape2 character varying,
+			  id_tdoc integer, nro_doc character varying, especialidad integer, a_exp integer,
+			  telefono character varying, id_distrito integer, direccion text,
+			  email character varying, contra text, foto character varying, estado boolean)
 AS 
 $$ 
 select
@@ -319,6 +408,25 @@ where U.id_rol=3 and T.id_persona = id_tecnico
 $$
 LANGUAGE SQL;
 ----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_consultar_horario(id_hora integer)
+RETURNS TABLE
+(id_hora integer, 
+ tecnico character varying, 
+ especialidad character varying, 
+ telefono character varying,
+ foto character varying,
+ fecha date, 
+ hora time)
+AS 
+$$ 			  
+select H.id_horario, 
+T.nombres,T.especialidad,T.telefono,T.foto,
+H.fecha_atencion, H.hora_inicio
+from v_tecnicos T inner join horario_atencion H on H.id_tecnico = T.id_persona
+where H.id_horario = id_hora;
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.f_consultar_pieza(id_pieza integer)
 RETURNS TABLE
 (	id integer,	nombre_pieza character varying, id_categoria integer, nom_categoria character varying,
@@ -330,6 +438,49 @@ from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria
 where id_pieza=$1
 $$
 LANGUAGE SQL;
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_resumen_atencion(id_aten integer)
+RETURNS table (id_atencion integer, nombre_cliente text, telefono character varying, distrito character varying,
+			   direccion text,
+			   fecha_atencion date, id_servicio integer, nombre_serv character varying, nro_serie character varying,
+			   tipo_electro character varying, modelo character varying, marca character varying, 
+			   hora_inicio time, lugar character varying, falla_descrita text, fecha_reserva_cita date, estado_atencion character varying)
+AS 
+$$
+DECLARE
+	id_diag integer;
+	id_visit integer;
+BEGIN
+select s.id_servicio into id_visit from public.servicio s where s.nombre_serv like 'Visita%';
+select s.id_servicio into id_diag from public.servicio s where s.nombre_serv like 'Diagn_stico%';
+
+RETURN query 
+	SELECT ci.id_atencion,
+    cli.nombres,
+    cli.telefono,
+    cli.nombre_distrito,
+    cli.direccion,
+    ci.fecha_atencion,
+	s.id_servicio,
+    s.nombre_serv,
+    e.nro_serie,
+    e.tipo AS tipo_electro,
+    e.modelo,
+    e.marca,
+    ci.hora_inicio,
+    ci.tipo,
+    ci.falla_descrita,
+    ci.fecha_reserva_cita,
+	ci.estado_atencion
+   FROM v_clientes cli
+     JOIN v_citas ci ON cli.id_persona = ci.id_cliente
+     JOIN detalle_atencion d ON d.id_atencion = ci.id_atencion
+     JOIN servicio s ON d.id_servicio = s.id_servicio
+     JOIN v_electrodomesticos e ON e.id_electrodomestico = ci.id_electro
+	 where ci.id_atencion=$1 and d.id_servicio not in (id_diag, id_visit);
+END
+$$
+LANGUAGE plpgsql;
 ----------------------------------------------------------
 --	INSERCIONES
 ----------------------------------------------------------
@@ -353,6 +504,59 @@ END
 $$
 LANGUAGE plpgsql;
 ----------------------------------------------------------
+--	REPORTES
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_reportes_x_tecnico(id_tec integer, fecha_1 date, fecha_2 date DEFAULT CURRENT_DATE)
+RETURNS TABLE(id_atencion integer, fecha_atencion date, hora time, tecnico character varying, cliente character varying, 
+			  electrodomestico character varying, marca character varying, servicios character varying, monto_total numeric)
+AS 
+$$
+select id_atencion, fecha_atencion, hora, tecnico, cliente, electrodomestico, marca, servicios, monto_total
+from v_atenciones_finalizadas
+where id_tecnico = id_tec
+and fecha_atencion between fecha_1 and fecha_2
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_reportes_x_cliente(id_cli integer, fecha_1 date, fecha_2 date DEFAULT CURRENT_DATE, monto_1 numeric DEFAULT 0.00, monto_2 numeric DEFAULT 99999999.99)
+RETURNS TABLE(id_atencion integer, fecha_atencion date, hora time, tecnico character varying, cliente character varying, 
+			  electrodomestico character varying, marca character varying, servicios character varying, monto_total numeric)
+AS 
+$$
+select id_atencion, fecha_atencion, hora, tecnico, cliente, electrodomestico, marca, servicios, monto_total
+from v_atenciones_finalizadas
+where id_cliente = id_cli
+and fecha_atencion between fecha_1 and fecha_2
+and monto_total between monto_1 and monto_2
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
+/*********************************************************
+  SCRIPT : PROCEDIMIENTOS: taller_utp (POSTGRESQL)
+*********************************************************/
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_tecnicos_con_horario(mes integer,anyo integer)
+    RETURNS TABLE(id_persona integer, nombres character varying) 
+    LANGUAGE 'sql'
+AS $BODY$	  
+select distinct VT.id_persona, VT.nombres from 
+v_tecnicos VT right join horario_atencion H 
+on VT.id_persona = H.id_tecnico 
+where EXTRACT(MONTH FROM H.fecha_atencion) = mes and EXTRACT(YEAR FROM h.fecha_atencion) = anyo
+$BODY$;
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_nuevo_horario(
+	IN id_tecnico integer,
+	IN fecha date,
+	IN hora time without time zone)
+LANGUAGE 'sql'
+AS $BODY$
+INSERT INTO public.horario_atencion
+(id_tecnico, fecha_atencion, hora_inicio, estado)
+VALUES
+($1, $2, $3, 'Disponible');
+$BODY$;
+----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_nuevo_cliente
 (	nom_1 character varying default null,
 	nom_2 character varying default null,
@@ -365,7 +569,7 @@ CREATE OR REPLACE PROCEDURE public.sp_nuevo_cliente
 	direccion text default null,
 	correo character varying default null,
 	contrasena text default null,
-	foto bytea  default null) 
+	foto character varying default null) 
 AS 
 $$
 DECLARE
@@ -400,7 +604,7 @@ CREATE OR REPLACE PROCEDURE public.sp_nuevo_encargado
 	correo character varying default null,
 	contrasena text default null, 
  	fec_ingreso date default CURRENT_DATE,
- 	foto bytea default null) 
+ 	foto character varying default null) 
 AS 
 $$
 DECLARE
@@ -437,7 +641,7 @@ CREATE OR REPLACE PROCEDURE public.sp_nuevo_tecnico
  	id_esp integer default null,
  	a_exp integer default null,
  	fec_ingreso date default CURRENT_DATE,
- 	foto bytea default null)
+ 	foto character varying default null)
 AS 
 $$
 DECLARE
@@ -459,6 +663,23 @@ END
 $$
 LANGUAGE plpgsql;
 ----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_nuevo_electrodomestico
+(	nro_serie character varying default null,
+	id_tipo_electro integer default null,
+	modelo character varying default null,
+	id_marca integer default null,
+ 	id_propietario integer default null,
+ 	estado_activ boolean default true
+)
+AS
+$$
+INSERT INTO public.electrodomestico
+	(nro_serie, id_tipo_electro, modelo, id_marca, id_propietario, estado_activ)
+VALUES 
+($1, $2, $3, $4, $5, $6);
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_nueva_pieza
 (	nombre character varying,
  	id_cat integer,
@@ -474,26 +695,120 @@ $$
 LANGUAGE SQL;
 ----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_nueva_cita
-(	id_cliente integer,
- 	id_electro integer,
- 	id_tecnico integer,
- 	lugar character varying,
- 	fecha_atencion date,
- 	hora_atencion time,
+( 	id_electro integer,
  	id_horario integer,
+ 	id_serv integer,
+ 	lugar character varying,
+ 	falla text,
  	fecha_reserva date default CURRENT_DATE)
 AS 
 $$
+DECLARE
+	id_cita integer;
+	id_diag integer;
+	id_visit integer;
+BEGIN
 INSERT INTO public.atencion
-(id_cliente, id_electro, id_tecnico, tipo, fecha_atencion, hora_atencion, fecha_reserva_cita, estado_atencion)
+(id_electro, id_horario, tipo, falla_descrita, fecha_reserva_cita, estado_atencion)
 VALUES
-($1, $2, $3, $4, $5, $6, $8, 'Pendiente');
+($1, $2, $4, $5, $6, 'Pendiente');
+SELECT max(id_atencion) into id_cita from public.atencion;
+
+-- Insertar servicios de visita, diagnóstico y servicio principal
+select id_servicio into id_visit from public.servicio where nombre_serv like 'Visita%';
+select id_servicio into id_diag from public.servicio where nombre_serv like 'Diagn_stico%';
+
+INSERT INTO public.detalle_atencion(id_atencion, id_servicio, estado_completo)
+VALUES 
+(id_cita, id_visit, false),
+(id_cita, id_serv, false),
+(id_cita, id_diag, false);
+
+-- Actualizar horario del técnico
 UPDATE public.horario_atencion
-set estado = 'Reservado' where id_horario = $7;
+set estado = 'Reservado' where horario_atencion.id_horario = $2;
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_agregar_venta(id_aten integer, monto numeric)
+AS 
+$$
+DECLARE
+	id_serv_venta integer;
+BEGIN
+select id_servicio into id_serv_venta from public.servicio where nombre_serv like 'Venta%';
+IF NOT EXISTS (
+	select * from public.detalle_atencion 
+	where id_atencion = id_aten and id_servicio=id_serv_venta) 
+THEN
+	INSERT INTO public.detalle_atencion(id_atencion, id_servicio, monto_servicio, estado_completo)
+		VALUES (id_aten, id_serv_venta, monto, true);
+END IF;
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_uso_pieza(id_aten integer, id_serv integer, id_pza integer, cant bigint)
+AS 
+$$
+INSERT INTO public.detalle_piezas_usadas(id_atencion, id_servicio, id_pieza)
+	VALUES (id_aten, id_serv, id_pza);
+UPDATE public.pieza set stock = stock-cant;
 $$
 LANGUAGE SQL;
 ----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_agregar_actividad(id_aten integer, id_serv integer, id_activi integer)
+AS 
+$$
+BEGIN
+IF NOT EXISTS (
+	select * from public.detalle_actividades 
+	where id_atencion = id_aten and id_servicio=id_serv and id_actividad=id_activi) 
+	THEN
+    INSERT INTO public.detalle_actividades(id_atencion, id_servicio, id_actividad)
+	VALUES (id_aten, id_serv, id_activi);
+END IF;
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
 --	ACTUALIZACIONES
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_fin_atencion_domicilio(id_aten integer, id_serv integer, 
+															 pres_aceptado boolean, c_visita numeric, c_diag numeric, c_serv numeric)
+AS 
+$$
+DECLARE
+	id_diag integer;
+	id_visit integer;
+	monto numeric;
+	total numeric=0;
+BEGIN
+
+select id_servicio into id_visit from public.servicio where nombre_serv like 'Visita%';
+select id_servicio into id_diag from public.servicio where nombre_serv like 'Diagn_stico%';
+
+update detalle_atencion set monto_servicio = c_visita, estado_completo = true where id_atencion = id_aten and id_servicio = id_visit;
+update detalle_atencion set monto_servicio = c_diag, estado_completo = true where id_atencion = id_aten and id_servicio = id_diag;
+update detalle_atencion set monto_servicio = c_serv where id_atencion = id_aten and id_servicio = id_serv;
+
+IF pres_aceptado THEN
+	update detalle_atencion set estado_completo = true where id_atencion = id_aten and id_servicio = id_serv;
+ELSE
+	update detalle_atencion set observacio_tec = 'Presupuesto no aceptado' where id_atencion = id_aten and id_servicio = id_serv;
+END IF;
+
+FOR monto IN select monto_servicio from detalle_atencion where id_atencion = id_aten
+	loop
+	total = total+COALESCE(monto, 0);
+end loop;
+
+update atencion set monto_total = total, estado_atencion='Finalizado' where id_atencion = id_aten;
+
+END
+$$
+LANGUAGE plpgsql;
 ----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_actualizar_cliente
 (	id_cliente integer,
@@ -510,7 +825,7 @@ CREATE OR REPLACE PROCEDURE public.sp_actualizar_cliente
  	correo character varying default null,
  	contrasena text default null,
  	estado boolean default true,
- 	new_foto bytea default null) 
+ 	new_foto character varying default null) 
 AS 
 $$
 BEGIN
@@ -543,7 +858,7 @@ CREATE OR REPLACE PROCEDURE public.sp_actualizar_encargado
  	fec_ingreso date default null,	
  	fec_baja date default null,	
  	estado boolean default true,
- 	new_foto bytea default null)
+ 	new_foto character varying default null)
 AS 
 $$
 BEGIN
@@ -580,7 +895,7 @@ CREATE OR REPLACE PROCEDURE public.sp_actualizar_tecnico
  	fec_ingreso date default null,	
  	fec_baja date default null,	
  	estado boolean default true,
- 	new_foto bytea default null)
+ 	new_foto character varying default null)
 AS 
 $$
 BEGIN
@@ -630,62 +945,35 @@ BEGIN
 END
 $$
 LANGUAGE plpgsql;
-----------------------------------------------------------
---	REPORTES
-----------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_reportes_x_tecnico(id_tec integer, fecha_1 date, fecha_2 date DEFAULT CURRENT_DATE)
-RETURNS TABLE(id_atencion integer, fecha_atencion date, tecnico character varying(112), cliente character varying(112), 
-			  electrodomestico character varying(50), marca character varying(50), servicio_realizado character varying(50))
+---------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_cambiar_estado_pieza(id integer, estado boolean)
 AS 
 $$
-select A.id_atencion, A.fecha_atencion,
-Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as tecnico,
-Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2),'  ',' ')) as propietario,
-TE.nom_tipo_electro, M.nombre_marca,
-S.nombre_serv
-from atencion A
-inner join persona T on A.id_tecnico = T.id_persona
-inner join persona C on A.id_cliente = C.id_persona
-inner join electrodomestico E on A.id_electro = E.id_electrodomestico
-left join tipo_electrodomestico TE on TE.id_tipo_electro = E.id_tipo_electro
-left join marca M on M.id_marca = E.id_marca
-left join detalle_atencion D on A.id_atencion = D.id_atencion
-left join servicio S on D.id_servicio = S.id_servicio
-
-where estado_atencion = 'Finalizado' 
-and A.id_tecnico = id_tec
-and A.fecha_atencion between fecha_1 and fecha_2
-and A.estado_activ
+BEGIN
+	UPDATE public.pieza
+	set estado_activ = estado
+	where id_pieza = id;
+END
 $$
-LANGUAGE SQL;
+LANGUAGE plpgsql;
 ----------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_reportes_x_cliente(id_cli integer, fecha_1 date, fecha_2 date DEFAULT CURRENT_DATE, monto_1 numeric DEFAULT 0.00, monto_2 numeric DEFAULT 99999999.99)
-RETURNS TABLE(id_atencion integer, fecha_atencion date, cliente character varying(112),  
-			  electrodomestico character varying(50), marca character varying(50), 
-			  servicio_realizado character varying(50), monto numeric,
-			  tecnico character varying(112))
+CREATE OR REPLACE PROCEDURE public.sp_cambiar_estado_electrodomestico(id integer, estado boolean)
 AS 
 $$
-select A.id_atencion, A.fecha_atencion,
-Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2),'  ',' ')) as cliente,
-TE.nom_tipo_electro, M.nombre_marca,
-S.nombre_serv,
-D.monto,
-Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as tecnico
-from atencion A
-inner join persona T on A.id_tecnico = T.id_persona
-inner join persona C on A.id_cliente = C.id_persona
-inner join electrodomestico E on A.id_electro = E.id_electrodomestico
-left join tipo_electrodomestico TE on TE.id_tipo_electro = E.id_tipo_electro
-left join marca M on M.id_marca = E.id_marca
-left join detalle_atencion D on A.id_atencion = D.id_atencion
-left join servicio S on D.id_servicio = S.id_servicio
-
-where estado_atencion = 'Finalizado' 
-and A.id_cliente = id_cli
-and A.fecha_atencion between fecha_1 and fecha_2
-and D.monto between monto_1 and monto_2
-and A.estado_activ
+BEGIN
+	UPDATE public.electrodomestico
+	set estado_activ = estado
+	where id_electrodomestico = id;
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
+CREATE OR REPLACE PROCEDURE public.sp_desactivar_horarios_pasados()
+AS 
+$$
+UPDATE horario_atencion 
+set estado = 'Desactivado'
+where (fecha_atencion + hora_inicio + interval '30 minutes') <= LOCALTIMESTAMP and estado = 'Disponible';
 $$
 LANGUAGE SQL;
 ----------------------------------------------------------
@@ -693,17 +981,32 @@ LANGUAGE SQL;
   SCRIPT : INSERCIÓN DE DATOS: taller_utp (POSTGRESQL)
 *********************************************************/
 ----------------------------------------------------------
-INSERT INTO public.servicio(id_servicio, nombre_serv, descripcion, precio_ref)
+INSERT INTO public.servicio(nombre_serv, descripcion, estado_activ, foto_serv)
 	VALUES
-	('SERV-0001', 'Instalaciones', 'Deja la instalación de tus artefactos en manos de los expertos.', 100.00),
-	('SERV-0002', 'Reparaciones', 'Soluciona las averías de tus artefactos con repuestos originales.', 100.00),
-	('SERV-0003', 'Conversiones', 'Realiza la conversión de tu cocina a gas natural.', 100.00),
-	('SERV-0004', 'Mantenimiento', 'Prolonga la vida útil de tus artefactos con cuidados preventivos.', 100.00),
-	('SERV-0005', 'Diagnóstico técnico', 'Si tu artefacto presenta averías, solicita evaluación técnica del equipo.', 100.00),
-	('SERV-0006', 'Asesoría técnica', 'Recibe asesoría sobre la configuración y uso de tus artefactos.', 100.00),
-	('SERV-0007', 'Venta de accesorios', 'Encuentra los accesorios originales que necesitas para tus artefactos.', 100.00),
-	('SERV-0008', 'Estudio de factibilidad', 'Verifica si el espacio donde se instalará el artefacto cuenta con las condiciones técnicas, eléctricas y de gasfitería necesarias, para el óptimo funcionamiento del producto.', 100.00),
-	('SERV-0009', 'Visitas técnicas', 'Solicita la visita técnica de nuestros expertos para realizar el diagnóstico o reparación del artefacto en tu hogar.', 100.00);
+	('Instalaciones', 'Deja la instalación de tus artefactos en manos de los expertos.', true, 'img/servicios/instalacion.png'),
+	('Reparaciones', 'Soluciona las averías de tus artefactos con repuestos originales.', true, 'img/servicios/reparacion.png'),
+	('Conversiones', 'Realiza la conversión de tu cocina a gas natural.', true, 'img/servicios/conversiones.png'),
+	('Mantenimiento', 'Prolonga la vida útil de tus artefactos con cuidados preventivos.', true, 'img/servicios/mantenimiento.png'),
+	('Diagnóstico técnico', 'Si tu artefacto presenta averías, solicita evaluación técnica del equipo.', false, 'img/servicios/diagnostico.png'),
+	('Asesoría técnica', 'Recibe asesoría sobre la configuración y uso de tus artefactos.', true, 'img/servicios/asesoria.png'),
+	('Venta de accesorios', 'Encuentra los accesorios originales que necesitas para tus artefactos.', false, NULL),
+	('Estudio de factibilidad', 'Verifica si el espacio donde se instalará el artefacto cuenta con las condiciones técnicas, eléctricas y de gasfitería necesarias, para el óptimo funcionamiento del producto.', true, 'img/servicios/factibilidad.png'),
+	('Visitas técnicas', 'Solicita la visita técnica de nuestros expertos para realizar el diagnóstico o reparación del artefacto en tu hogar.', false, NULL);
+---------------------------------------------------------
+DO $$
+declare
+	rec record;
+	nombre_actividad character varying;
+	query text;
+begin
+	query := 'select * from servicio limit 4';
+   for rec in execute query loop
+		for cnt in 1..6 loop
+			INSERT INTO public.actividades_servicio(id_servicio, nombre_actividad, precio)
+			VALUES (rec.id_servicio, concat(substring(rec.nombre_serv,0,4), '_00',cnt), floor(random() * 20 + 5)::numeric);
+		 end loop;
+	end loop;
+END $$;
 ---------------------------------------------------------
 INSERT INTO public.tipo_documento(nom_tipo_doc)
 	VALUES
@@ -747,79 +1050,119 @@ INSERT INTO public.especialidad(nombre_esp)
 	('Reparación de aire acondicionado');
 ---------------------------------------------------------
 --ENCARGADO
-INSERT INTO public.persona(nombre_1, nombre_2, apellido_1, apellido_2, id_tipo_doc, nro_doc, telefono, id_distrito, direccion, fecha_ingreso, fecha_baja)
+INSERT INTO public.persona(nombre_1, nombre_2, apellido_1, apellido_2, id_tipo_doc, nro_doc, telefono, id_distrito, direccion, fecha_ingreso, fecha_baja, foto)
 	VALUES
-	('Alexandre', 'Vidal', 'Rodriguez', 'Coronado', 1, '65486516', '950036349', 4, 'Calle San Sebastián, 79', '2012-10-01', '2020-12-31'),
-	('John', NULL, 'Doe', NULL, 2, '007629205', '941069548', 3, 'Av. Parra, 65', '2021-01-01', NULL);
+	('Alexandre', 'Vidal', 'Rodriguez', 'Coronado', 1, '65486516', '950036349', 4, 'Calle San Sebastián, 79', '2012-10-01', '2020-12-31', 'img/personas/m1.jpg'),
+	('John', NULL, 'Doe', NULL, 2, '007629205', '941069548', 3, 'Av. Parra, 65', '2021-01-01', NULL, 'img/personas/m2.jpg');
 
 INSERT INTO public.usuario(id_user, id_rol, id_persona, email, contra, estado_activ)
 	VALUES
-	('ENC-000001', 2, 1, 'admin01.utp@gmail.com', '123abc', false),
-	('ENC-000002', 2, 2, 'admin02.utp@gmail.com', '123abc', true);
+	('ENC-000001', 2, 1, 'admin01.utp@gmail.com', 'encargado123', false),
+	('ENC-000002', 2, 2, 'admin02.utp@gmail.com', 'encargado123', true);
 
 --TÉCNICOS
-INSERT INTO public.persona(nombre_1, nombre_2, apellido_1, apellido_2, id_tipo_doc, nro_doc, telefono, id_distrito, direccion, id_especialidad, anios_experiencia, fecha_ingreso)
+INSERT INTO public.persona(nombre_1, nombre_2, apellido_1, apellido_2, id_tipo_doc, nro_doc, telefono, id_distrito, direccion, id_especialidad, anios_experiencia, fecha_ingreso, foto)
 	VALUES
-	('Guillermo', NULL, 'Smith', 'Coppola', 1, '61614803', '997555176', 4, 'Av. Los Ángeles, 542', 1, 5, '2012-12-13'),
-	('Eduardo', NULL, 'Vallejo', 'Pereira', 1, '28423490', '974673951', 4, 'Av. Las Vegas, 123', 1, 2, '2013-12-16'),
-	('Adriana', NULL, 'Jordan', 'Rodriguez', 1, '40476142', '963306299', 4,  'Av. Las Malvinas, 213', 2, 1, '2014-8-12'),
-	('Andrea', NULL, 'Valdivia', 'Segales', 1, '48804278', '985130731', 4, 'Calle Amauta, 138', 1, 4, '2015-10-02'),
-	('Mario', NULL, 'Diaz', 'Torres', 1, '39840290', '938781368', 5, 'Av. Los Acres, 64', 1, 1, '2016-05-10'),
-	('Melman', NULL, 'Schwimmer', NULL, 2, '001925687', '974594323', 4, 'Urb. Los cipreses, A9', 1, 2, '2017-02-23'),
-	('Jennifer', NULL, 'Anco', 'Mamani', 1, '65246344', '938995970', 5, 'Av. Independecia, 71', 2, 4, '2018-11-09'),
-	('Alex', NULL, 'Cruz', 'Leon', 1, '44402460', '968696753', 4, 'Urb. Los cipreses, B1', 1, 3, '2019-05-10'),
-	('Jose', NULL, 'Perez', 'Rodriguez', 1, '50502291', '963725720', 5, 'Av. Argentina, 256', 2, 10, '2020-10-23'),
-	('Juan', 'Jose', 'Molina', 'Quispe', 1, '62289072', '994832406', 4, 'Calle Tahuaycani, 312', 1, 8, '2021-03-01');
+	('Guillermo', NULL, 'Smith', 'Coppola', 1, '61614803', '997555176', 4, 'Av. Los Ángeles, 542', 1, 5, '2012-12-13', 'img/personas/m3.jpg'),
+	('Eduardo', NULL, 'Vallejo', 'Pereira', 1, '28423490', '974673951', 4, 'Av. Las Vegas, 123', 1, 2, '2013-12-16', 'img/personas/m4.jpg'),
+	('Adriana', NULL, 'Jordan', 'Rodriguez', 1, '40476142', '963306299', 4,  'Av. Las Malvinas, 213', 2, 1, '2014-8-12', 'img/personas/f1.jpg'),
+	('Andrea', NULL, 'Valdivia', 'Segales', 1, '48804278', '985130731', 4, 'Calle Amauta, 138', 1, 4, '2015-10-02', 'img/personas/f2.jpg'),
+	('Mario', NULL, 'Diaz', 'Torres', 1, '39840290', '938781368', 5, 'Av. Los Acres, 64', 1, 1, '2016-05-10', 'img/personas/m5.jpg'),
+	('Melman', NULL, 'Schwimmer', NULL, 2, '001925687', '974594323', 4, 'Urb. Los cipreses, A9', 1, 2, '2017-02-23', 'img/personas/m6.jpg'),
+	('Jennifer', NULL, 'Anco', 'Mamani', 1, '65246344', '938995970', 5, 'Av. Independecia, 71', 2, 4, '2018-11-09', 'img/personas/f3.jpg'),
+	('Alex', NULL, 'Cruz', 'Leon', 1, '44402460', '968696753', 4, 'Urb. Los cipreses, B1', 1, 3, '2019-05-10', 'img/personas/m7.jpg'),
+	('Jose', NULL, 'Perez', 'Rodriguez', 1, '50502291', '963725720', 5, 'Av. Argentina, 256', 2, 10, '2020-10-23', 'img/personas/m8.jpg'),
+	('Juan', 'Jose', 'Molina', 'Quispe', 1, '62289072', '994832406', 4, 'Calle Tahuaycani, 312', 1, 8, '2021-03-01', 'img/personas/m9.jpg');
 	
 INSERT INTO public.usuario(id_user, id_rol, id_persona, email, contra)
 	VALUES
-	('TEC-000001', 3, 3, 'smithgil@gmail.com', 'abc123'),
-	('TEC-000002', 3, 4, 'perava@gmai.com', 'abc123'),
-	('TEC-000003', 3, 5, 'adr.jordan@gmail.com', 'abc123'),
-	('TEC-000004', 3, 6, 'andrea.valdivia@gmail.com', 'abc123'),
-	('TEC-000005', 3, 7, 'mario.diaz@gmail.com', 'abc123'),
-	('TEC-000006', 3, 8, 'melman.schwimmer@gmail.com', 'abc123'),
-	('TEC-000007', 3, 9, 'jennifer.anco@gmail.com', 'abc123'),
-	('TEC-000008', 3, 10, 'alex.cruz@gmail.com', 'abc123'),
-	('TEC-000009', 3, 11, 'jose.perez@gmail.com', 'abc123'),
-	('TEC-000010', 3, 12, 'juan.molina@gmail.com', 'abc123');
+	('TEC-000001', 3, 3, 'smithgil@gmail.com', 'tecnico123'),
+	('TEC-000002', 3, 4, 'perava@gmai.com', 'tecnico123'),
+	('TEC-000003', 3, 5, 'adr.jordan@gmail.com', 'tecnico123'),
+	('TEC-000004', 3, 6, 'andrea.valdivia@gmail.com', 'tecnico123'),
+	('TEC-000005', 3, 7, 'mario.diaz@gmail.com', 'tecnico123'),
+	('TEC-000006', 3, 8, 'melman.schwimmer@gmail.com', 'tecnico123'),
+	('TEC-000007', 3, 9, 'jennifer.anco@gmail.com', 'tecnico123'),
+	('TEC-000008', 3, 10, 'alex.cruz@gmail.com', 'tecnico123'),
+	('TEC-000009', 3, 11, 'jose.perez@gmail.com', 'tecnico123'),
+	('TEC-000010', 3, 12, 'juan.molina@gmail.com', 'tecnico123');
 
 --CLIENTES
-INSERT INTO public.persona(nombre_1, nombre_2, apellido_1, apellido_2, id_tipo_doc, nro_doc, telefono, id_distrito, direccion)
+INSERT INTO public.persona(nombre_1, nombre_2, apellido_1, apellido_2, id_tipo_doc, nro_doc, telefono, id_distrito, direccion, foto)
 	VALUES
-	('Luis', NULL, 'Gamarra', 'Alcantara', 1, '68968558', '942256809', 4, 'Av. Parra, 313'),
-	('Paul', NULL, 'Gutierrez', 'Manrique', 1, '79734822', '962122495', 4,'Av. Perú, 232'),
-	('Juan', 'Pablo', 'Martinez', 'Lopez', 1, '51476446','943182888', 4,'Av. Argentina, 221'),
-	('Leticia', NULL, 'Perez', 'Carpdevila', 1, '41005783','973308244', 4, 'Urb. Casa Blanca, B8'),
-	('Edmundo', NULL, 'Quintana', 'Morante', 1, '29648571', '935067763', 4, 'Av. Paisajista, 407'),
-	('Nicolas', NULL, 'Morales', 'Guillen', 1, '25918192', '998050058', 4, 'Urb. Zafiro, B11'),
-	('Adrian', NULL, 'Ruiz', 'Villanueva', 1, '48722307','991349745', 4, 'Av. Porongoche, 606'),
-	('William', NULL, 'Hammond', NULL, 2, '10459734080','953574916', 4, 'Calle César Vallejo, 89'),
-	('Tookha', NULL, 'Garcia', 'Ghoul', 1, '56703261','984503612', 4, 'Jr. 28 de julo, 503'),
-	('Gloria', NULL, 'Smith', NULL, 2, '00129073500', '935122495', 4, 'Av. Manuela Casárez, A7'); 
+	('Luis', NULL, 'Gamarra', 'Alcantara', 1, '68968558', '942256809', 4, 'Av. Parra, 313', 'img/personas/m9.jpg'),
+	('Paul', NULL, 'Gutierrez', 'Manrique', 1, '79734822', '962122495', 4,'Av. Perú, 232', 'img/personas/m8.jpg'),
+	('Juan', 'Pablo', 'Martinez', 'Lopez', 1, '51476446','943182888', 4,'Av. Argentina, 221', 'img/personas/m7.jpg'),
+	('Leticia', NULL, 'Perez', 'Carpdevila', 1, '41005783','973308244', 4, 'Urb. Casa Blanca, B8', 'img/personas/f5.jpg'),
+	('Edmundo', NULL, 'Quintana', 'Morante', 1, '29648571', '935067763', 4, 'Av. Paisajista, 407', 'img/personas/m6.jpg'),
+	('Nicolas', NULL, 'Morales', 'Guillen', 1, '25918192', '998050058', 4, 'Urb. Zafiro, B11', 'img/personas/m5.jpg'),
+	('Adrian', NULL, 'Ruiz', 'Villanueva', 1, '48722307','991349745', 4, 'Av. Porongoche, 606', 'img/personas/m4.jpg'),
+	('William', NULL, 'Hammond', NULL, 2, '10459734080','953574916', 4, 'Calle César Vallejo, 89', 'img/personas/m3.jpg'),
+	('Tookha', NULL, 'Garcia', 'Ghoul', 1, '56703261','984503612', 4, 'Jr. 28 de julo, 503', 'img/personas/f4.jpg'),
+	('Gloria', NULL, 'Smith', NULL, 2, '00129073500', '935122495', 4, 'Av. Manuela Casárez, A7', 'img/personas/f3.jpg'); 
 
 INSERT INTO public.usuario(id_user, id_rol, id_persona, email, contra)
 	 VALUES
-	 ('CLI-000001', 1, 1, 'alexandre.rodriguez@gmail.com', 'def456'),
-	 ('CLI-000002', 1, 13, 'alcangama@gmail.com', 'def456'),
-	 ('CLI-000003', 1, 14, 'gutman@gmail.com', 'def456'),
-	 ('CLI-000004', 1, 15, 'martilop@gmail.com', 'def456'),
-	 ('CLI-000005', 1, 16, 'leticia.perez@gmail.com', 'def456'),
-	 ('CLI-000006', 1, 17, 'ed.quintana@gmail.com', 'def456'),
-	 ('CLI-000007', 1, 18, 'nicola.morales@gmail.com', 'def456'),
-	 ('CLI-000008', 1, 19, 'adrian.ruiz@gmail.com', 'def456'),
-	 ('CLI-000009', 1, 20, 'william.hammond@gmail.com', 'def456'),
-	 ('CLI-000010', 1, 21, 'tookha.garcia@gmail.com', 'def456'),
-	 ('CLI-000011', 1, 22, 'gloria.smith@gmail.com', 'def456');
+	 ('CLI-000001', 1, 1, 'alexandre.rodriguez@gmail.com', 'cliente123'),
+	 ('CLI-000002', 1, 13, 'alcangama@gmail.com', 'cliente123'),
+	 ('CLI-000003', 1, 14, 'gutman@gmail.com', 'cliente123'),
+	 ('CLI-000004', 1, 15, 'martilop@gmail.com', 'cliente123'),
+	 ('CLI-000005', 1, 16, 'leticia.perez@gmail.com', 'cliente123'),
+	 ('CLI-000006', 1, 17, 'ed.quintana@gmail.com', 'cliente123'),
+	 ('CLI-000007', 1, 18, 'nicola.morales@gmail.com', 'cliente123'),
+	 ('CLI-000008', 1, 19, 'adrian.ruiz@gmail.com', 'cliente123'),
+	 ('CLI-000009', 1, 20, 'william.hammond@gmail.com', 'cliente123'),
+	 ('CLI-000010', 1, 21, 'tookha.garcia@gmail.com', 'cliente123'),
+	 ('CLI-000011', 1, 22, 'gloria.smith@gmail.com', 'cliente123');
 ---------------------------------------------------------
+DO $$
+begin
+   for cnt in 3..12 loop
+    IF cnt%2 = 0 THEN
 INSERT INTO public.horario_atencion(id_tecnico, fecha_atencion, hora_inicio, estado)
 	VALUES
-	(3, CURRENT_DATE, '07:00', 1),
-	(3, CURRENT_DATE, '08:00', 1),
-	(3, CURRENT_DATE + INTERVAL '1 day', '09:00', 1),
-	(4, CURRENT_DATE, '16:00', 1),
-	(4, CURRENT_DATE + INTERVAL '1 day', '07:00', 1),
-	(20, CURRENT_DATE+ INTERVAL '2 day', '09:00', 1);
+	(cnt, CURRENT_DATE, '07:00', 'Disponible'),
+	(cnt, CURRENT_DATE, '10:00', 'Reservado'),
+	(cnt, CURRENT_DATE, '13:00', 'Disponible'),
+	(cnt, CURRENT_DATE, '16:00', 'Disponible'),
+	(cnt, CURRENT_DATE, '19:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '1 day', '07:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '1 day', '10:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '1 day', '13:00', 'Reservado'),
+	(cnt, CURRENT_DATE + INTERVAL '1 day', '16:00', 'Reservado'),
+	(cnt, CURRENT_DATE + INTERVAL '2 day', '07:00', 'Reservado'),
+	(cnt, CURRENT_DATE + INTERVAL '2 day', '10:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '2 day', '13:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '2 day', '16:00', 'Reservado'),
+	(cnt, CURRENT_DATE + INTERVAL '2 day', '19:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '3 day', '07:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '3 day', '10:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '4 day', '07:00', 'Reservado'),
+	(cnt, CURRENT_DATE + INTERVAL '4 day', '07:00', 'Reservado'),
+	(cnt, CURRENT_DATE + INTERVAL '5 day', '10:00', 'Disponible');
+	else
+	INSERT INTO public.horario_atencion(id_tecnico, fecha_atencion, hora_inicio, estado)
+	VALUES
+	(cnt, CURRENT_DATE, '08:00', 'Disponible'),
+	(cnt, CURRENT_DATE, '11:00', 'Reservado'),
+	(cnt, CURRENT_DATE, '14:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '1 day', '08:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '1 day', '11:00', 'Reservado'),
+	(cnt, CURRENT_DATE + INTERVAL '1 day', '14:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '1 day', '17:00', 'Reservado'),
+	(cnt, CURRENT_DATE + INTERVAL '2 day', '08:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '2 day', '11:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '2 day', '14:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '2 day', '17:00', 'Reservado'),
+	(cnt, CURRENT_DATE + INTERVAL '3 day', '08:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '3 day', '11:00', 'Reservado'),
+	(cnt, CURRENT_DATE + INTERVAL '3 day', '14:00', 'Disponible'),
+	(cnt, CURRENT_DATE + INTERVAL '4 day', '08:00', 'Reservado'),
+	(cnt, CURRENT_DATE + INTERVAL '4 day', '11:00', 'Reservado'),
+	(cnt, CURRENT_DATE + INTERVAL '5 day', '08:00', 'Disponible');
+	END IF;
+   end loop;
+END $$;
 ---------------------------------------------------------
 INSERT INTO public.tipo_electrodomestico(nom_tipo_electro)
 	VALUES
@@ -884,11 +1227,6 @@ INSERT INTO public.electrodomestico(nro_serie, id_tipo_electro, modelo, id_marca
 	('3913511', 14, 'WA17T6260BW', 6, 20),
 	('3958671', 10, 'Monet', 1, 21);
 ---------------------------------------------------------
-INSERT INTO public.atencion(id_cliente, id_electro, id_tecnico, fecha_atencion, hora_atencion, tipo, estado_atencion)
-	VALUES
-	(20, 1, 3, '2022-05-12', '12:00', 'A domicilio', 'Pendiente'),
-	(21, 2, 4, '2022-05-12', '09:45', 'A domicilio', 'Pendiente');
----------------------------------------------------------
 INSERT INTO public.categoria_pieza(nombre_cat)
 	VALUES
 	('Lavadoras'),
@@ -914,3 +1252,4 @@ INSERT INTO public.pieza(nombre_pieza, stock, precio_pieza, id_categoria)
 	('Kit Instalacion Lavaplatos', 500, 58.90, 7),
 	('Condensador para horno microondas Sharp', 120, 146.00, 8),
 	('Botón plateado para horno microondas Bosch', 280, 24.00, 8);
+---------------------------------------------------------------------------------

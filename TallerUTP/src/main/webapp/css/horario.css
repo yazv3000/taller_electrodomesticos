@@ -203,6 +203,11 @@ body {
     box-shadow: inset 3px 3px 3px rgb(122, 122, 122), 3px 3px 3px rgb(10, 10, 10);
 }
 
+/*COMPLETAR*/
+.tabla-2__hora .desactivado {
+ 	background: gray;
+ }
+
 
 .tabla-2__hora button:active {
     color:white;
@@ -282,6 +287,7 @@ body {
     }
     
 }
+
 
 
 

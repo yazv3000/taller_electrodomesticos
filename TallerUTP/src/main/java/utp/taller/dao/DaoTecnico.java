@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utp.config.Conexion;
-import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoTecnicoConsulta;
+import utp.taller.dto.DtoTecnicoNombre;
 import utp.taller.dto.DtoUsuario;
 import utp.taller.entidades.Tecnico;
 
@@ -36,7 +36,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 				dtoTec.setRol(rs.getString(3));
 				dtoTec.setUsername(rs.getString(4));
 				dtoTec.setEmail(rs.getString(5));
-				dtoTec.setProfilePic(rs.getBytes(6));
+				dtoTec.setProfilePic(rs.getString(6));
 			}
 			cnx.close();
 			
@@ -79,7 +79,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 				tec.setDireccion(rs.getString(13));
 				tec.setEmail(rs.getString(14));
 				tec.setContrasena(rs.getString(15));
-				tec.setFoto(rs.getBytes(16));
+				tec.setRutaFoto(rs.getString(16));
 				tec.setEstadoActivo(rs.getBoolean(17));
 			}
 			
@@ -111,7 +111,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 			stm.setInt(12, tec.getIdEspecialidad());
 			stm.setInt(13, tec.getAniosExperiencia());
 			stm.setObject(14, LocalDate.now());
-			stm.setBytes(15, tec.getFoto());
+			stm.setString(15, tec.getRutaFoto());
 			
 			stm.execute();
 			cnx.close();
@@ -145,7 +145,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 			stm.setObject(16, LocalDate.now());
 			stm.setObject(17, null);
 			stm.setBoolean(18, tec.isEstadoActivo());
-			stm.setBytes(19, tec.getFoto());
+			stm.setString(19, tec.getRutaFoto());
 
 			stm.execute();
 			cnx.close();
@@ -224,6 +224,29 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 		return lst;
 	}
 	
+	public DtoTecnicoConsulta consultarDtoNombres(String nombreTecnico) {
+		DtoTecnicoConsulta tec = new DtoTecnicoConsulta();
+
+		String sql = "select * from v_tecnicos where upper(nombres) like ?";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setString(1, "%"+nombreTecnico.toUpperCase()+"%");
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				tec = recuperarDatosDto(rs);
+			}
+			cnx.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return tec;
+	}
+
 	// MÉTODOS PRIVADOS
 	private DtoTecnicoConsulta recuperarDatosDto(ResultSet rs ) {
 		DtoTecnicoConsulta tec = new DtoTecnicoConsulta();
@@ -236,6 +259,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 				tec.setDistrito(rs.getString("nombre_distrito"));			
 				tec.setDireccion(rs.getString("direccion"));
 				tec.setEmail(rs.getString("email"));
+				tec.setRutaFoto(rs.getString("foto"));
 				tec.setEstadoActivo(rs.getBoolean("estado_activ"));
 				
 		} catch (SQLException e) {
@@ -244,4 +268,79 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 		return tec;
 	}
 	
+	// LISTAR TECNICOS CON HORARIO 
+		public List<DtoTecnicoNombre> listarTecnicoConHorario  (int mes, int anyo){
+			String sql ="select * from f_tecnicos_con_horario(?,?) ";
+			List<DtoTecnicoNombre> lst = new ArrayList<DtoTecnicoNombre>();
+			cnx = getConnection();
+			try {
+				stm = cnx.prepareStatement(sql);
+				stm.setInt(1, mes);
+				stm.setInt(2, anyo);
+				ResultSet rs = null;
+				rs = stm.executeQuery();
+
+				while (rs.next()) {
+					DtoTecnicoNombre dtoTec = new DtoTecnicoNombre();
+					dtoTec.setId(rs.getInt(1));
+					dtoTec.setNombre(rs.getString(2));
+					lst.add(dtoTec);
+				}	
+				cnx.close();
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			return lst;
+		}
+		//FALTA VER SI FINCIONA SIN ESTE
+		// LISTAR TECNICOS SIN HORARIO 	
+		public List<DtoTecnicoNombre> listarTecnicoSinHorario (){
+	
+			String sql ="select id_persona, nombres from v_tecnicos";
+			List<DtoTecnicoNombre> lst = new ArrayList<DtoTecnicoNombre>();
+			cnx = getConnection();
+			try {
+				stm = cnx.prepareStatement(sql);
+				ResultSet rs = null;
+				rs = stm.executeQuery();
+
+				while (rs.next()) {
+					DtoTecnicoNombre dtoTec = new DtoTecnicoNombre();
+					dtoTec.setId(rs.getInt(1));
+					dtoTec.setNombre(rs.getString(2));
+					lst.add(dtoTec);
+				}	
+				cnx.close();
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			return lst;
+		}
+		// LISTAR TECNICOS SIN HORARIO 	
+		public List<DtoTecnicoNombre> listarTecnicos(){
+	
+			String sql ="select id_persona, nombres from v_tecnicos";
+			List<DtoTecnicoNombre> lst = new ArrayList<DtoTecnicoNombre>();
+			cnx = getConnection();
+			try {
+				stm = cnx.prepareStatement(sql);
+
+				ResultSet rs = null;
+				rs = stm.executeQuery();
+
+				while (rs.next()) {
+					DtoTecnicoNombre dtoTec = new DtoTecnicoNombre();
+					dtoTec.setId(rs.getInt(1));
+					dtoTec.setNombre(rs.getString(2));
+					lst.add(dtoTec);
+				}	
+				cnx.close();
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			return lst;
+		}
 }

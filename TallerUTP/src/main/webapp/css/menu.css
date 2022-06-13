@@ -32,10 +32,6 @@ body{
     display: flex;
 }
 
-.asunto {
-    /* overflow-y: auto; */
-    /* z-index: -100; */
-}
 
 /*===== MENÚ =====*/
 
@@ -123,7 +119,7 @@ body{
 }
 
 .nav__link:hover {
-    background-color: #2473cd ;
+    background-color: #2473cd !important;
     transform: scale(1.15);
 }
 

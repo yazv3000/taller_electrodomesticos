@@ -154,7 +154,7 @@ label {
 .form__contenedor {
     display:grid;
     grid-template-columns: repeat(2,1fr);
-    gap: 20px;
+    gap: 23px;
     padding: 10px
 }
 
@@ -186,7 +186,7 @@ label {
 
 .form__input:focus + .form__label,
 .form__input:not(:placeholder-shown) + .form__label {
-    transform: translateY(-15px) scale(.7);
+    transform: translateY(-20px) scale(.9);
     transform-origin: left top;
     color: var(--secundario);
 }
@@ -284,7 +284,8 @@ label {
     cursor: pointer;
 }
 .activado {
-	display: block;
+	
+	display: flex;
 	margin: auto;
 	width: 40px;
 	height: 25px;
@@ -294,20 +295,18 @@ label {
 }
 
 .activado span {
-	display: block;
-	width: 15px;
-	height: 15px;
-	outline:2px solid var(--primario);
+	width: 12px;
+	height: 12px;
 	background-color: rgb(167,253,72);
 	border-radius: 50%;
-	margin-top:2px;
+	margin: auto;
 	margin-left: 18px;
 }
 
 .desactivado {
 	margin: auto;
 	position: relative;
-	display: block;
+	display: flex;
 	width: 40px;
 	height: 25px;
 	border-radius: 1000px;
@@ -315,12 +314,10 @@ label {
 }
 
 .desactivado span {
-	display: block;
-	width: 15px;
-	height: 15px;
-	outline:2px solid var(--primario);
+	width: 12px;
+	height: 12px;
 	background-color: #dc3545;
 	border-radius: 50%;
-	margin-top:2px;
-	margin-left: 3px;
+	margin: auto;
+	margin-right: 18px;
 }

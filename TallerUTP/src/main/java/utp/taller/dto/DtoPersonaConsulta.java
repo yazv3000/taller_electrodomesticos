@@ -10,7 +10,9 @@ public abstract class DtoPersonaConsulta {
 	private String distrito;
 	private String direccion;
 	private String email;
+	private String rutaFoto;
 	private boolean estadoActivo;
+	private String estado;
 	
 	// MÉTODOS GETTER & SETTER
 	public String getIdUsuario() {return idUsuario;	}
@@ -34,7 +36,15 @@ public abstract class DtoPersonaConsulta {
 	public String getEmail() {		return email;	}
 	public void setEmail(String email) {		this.email = email;	}
 	
+	public String getRutaFoto() {		return rutaFoto;	}
+	public void setRutaFoto(String rutaFoto) {		this.rutaFoto = rutaFoto;	}
+	
 	public boolean isEstadoActivo() {		return estadoActivo;	}
 	public void setEstadoActivo(boolean estadoActivo) {		this.estadoActivo = estadoActivo;	}
-
+	
+	public String getEstado() {	return estadoActivo ? "Activo" : "Inactivo";}
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+	
 }

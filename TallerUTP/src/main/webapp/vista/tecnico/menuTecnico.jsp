@@ -1,18 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<c:set var="context" value="${pageContext.request.contextPath}" /> 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es-PE">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <c:set var="context" value="${pageContext.request.contextPath}" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
     <link rel="icon" href="${context}/img/Logoa.png" type="image/png" >
     <link rel="stylesheet" href="${context}/css/menu-tecnico.css">
-    <title>Document</title>
 </head>
 <body>
     <nav class="navegador">
@@ -26,23 +25,36 @@
 
                 <ul class="nav__lista nav__lista--ocultar">
                     <li class="nav__item">
-                        <a href="${context}/tecnico-citas.jsp" class="nav__link" target="marco">Citas</a>
+                        <a href="${context}/ServletActualizarAtencion" class="nav__link" target="marco">Citas</a>
                         <div class="nav__linea"></div>
                     </li>
                     <li class="nav__item">
-                        <a href="${context}/ServletGestionarHorario?accion=listarTecnico" class="nav__link" target="marco">Horario</a>
+                        <a href="${context}/ServletHorariosDisponibles?accion=listarTecnico" class="nav__link" target="marco">Horarios</a>
                         <div class="nav__linea"></div>
                     </li>  
                     <li class="nav__item">
-                        <a href="#" class="nav__link" target="">Nuevo</a>
+                        <a href="${context}/ServletAtencionTaller?accion=tan&&id=<c:out value="${sessionScope.dtoUsuario.getIdPersona()}"/>" class="nav__link" target="marco">Taller</a>
                         <div class="nav__linea"></div>
                     </li>      
                 </ul>
                 
+                <!--===== DATOS DEL USUARIO =====-->
                 <div class="nav__user">
-                    <img class="nav__img" src="${context}/img/tony.jpg" alt="">
-                    <a class="nav__name" href="#">Tony Stark</a>
+                	 <c:set var="foto_perfil" value="${sessionScope.dtoUsuario.getProfilePic()}" />
+              	     <c:choose>
+                       <c:when test="${foto_perfil==null}">
+                       	<img class="nav__img" src="${context}/img/personas/default.jpg" alt="">
+                       </c:when>
+                       <c:otherwise>
+				        <img class="nav__img" src="${context}/${foto_perfil}" alt="">
+				    </c:otherwise>
+                      </c:choose>
+                    
+                    <a class="nav__name" href="#"><c:out value="${sessionScope.dtoUsuario.getUsername()}"/></a>
+                	 <a class="cerrar" href="${context}/ServletLogout"  class="cerrar"><i class="fa-solid fa-arrow-right-from-bracket icono"></i></a>
+                	
                 </div>
+                <!--====FIN DATOS DEL USUARIO ====-->
                 <div class="nav__barras">
                     <i class="fa-solid fa-bars icono"></i>
                 </div>
@@ -50,7 +62,7 @@
         </div>
     </nav>
 
-    <iframe src="${context}/tecnico-citas.jsp" class="marco" name="marco" src="" frameborder="0"></iframe>
+    <iframe src="${context}/ServletActualizarAtencion" class="marco" name="marco" frameborder="0"></iframe>
     <script src="${context}/js/menu-tec.js"></script>
 </body>
 </html>

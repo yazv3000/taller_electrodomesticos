@@ -23,17 +23,16 @@
 
 <body>
 	<div class="contenido">
-		<h1>TABLA DE<span>TECNICOS</span></h1>
+		<h1 class="titulo">TABLA DE <span>TECNICOS</span></h1>
 	    <div class="tabla">
 	        <div class="tabla__tools">
 	            <ul>
 					<li><button class="fa-solid fa-plus-square icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"></button></li>
 	                <li><button class="fa-solid fa-pen icono" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button></li>
-	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarTecnico?accion=listar'" >Todos</button></li>
+	                <li><button type="button" class="btn btn-primary" onclick="location.href='ServletGestionarTecnico?accion=listar&lista=todos'" >Todos</button></li>
 	                <li><button type="button" class="btn btn-success" onclick="location.href='ServletGestionarTecnico?accion=listar&lista=activos'" >Activos</button><li>
 	                <li><button type="button" class="btn btn-danger" onclick="location.href='ServletGestionarTecnico?accion=listar&lista=inactivos'">Inactivos</button><li>
 	            </ul>
-	            <input class="tabla_buscar" type="text" placeholder="Filtrar">
 	        </div>
 	        
 	        <div class="tabla__contenido">
@@ -62,10 +61,10 @@
 							<td> <c:out value="${t.getEmail()}"></c:out> </td>	
 							<td>
 								<c:if  test="${t.isEstadoActivo()}">
-									<a class="fa-solid fa-toggle-on" href="${context}/ServletGestionarTecnico?accion=desactivar&id=${t.getIdPersona()}"><span></span></a>									
+									<a class="activado" href="${context}/ServletGestionarTecnico?accion=desactivar&id=${t.getIdPersona()}"><span></span></a>									
 								</c:if>
 								<c:if test="${!t.isEstadoActivo()}">
-									<a class="fa-solid fa-toggle-off" href="${context}/ServletGestionarTecnico?accion=activar&id=${t.getIdPersona()}"><span></span></a>	
+									<a class="desactivado" href="${context}/ServletGestionarTecnico?accion=activar&id=${t.getIdPersona()}"><span></span></a>	
 								</c:if>
 							</td>		
 	                    </tr>
@@ -123,7 +122,7 @@
 			                <option class="form__opcion" value=3  ${tec.getTipoDocumento() == 3 ? 'selected' : ''}>Otros</option>
 			            </select>
 			            <div class="form__grupo">
-			                <input type="number" id="num-doc2" class="form__input form-control" placeholder=" " name="num_doc" required>
+			                <input type="text"  pattern="[0-9]{15}" id="num-doc2" class="form__input form-control" placeholder=" " name="num_doc" required>
 			                <label for="name" class="form__label">Número de Documento:</label>
 			                <span class="form__line"></span>
 			            </div>
