@@ -6,18 +6,21 @@ public class Pieza {
 		private int idPieza;
 		private String nomPieza;
 		private long stock;
+		private long cantidadComprar;
 		private double precio;
-		private String categoria;
+		private CategoriaPieza categoria;
+		private boolean estadoActivo;
 	
 		// CONSTRUCTORES
 		public Pieza() { }
 
-		public Pieza(int idPieza, String nomPieza, long stock, double precio, String categoria) {
+		public Pieza(int idPieza, String nomPieza, long stock, double precio, CategoriaPieza categoria, boolean estado) {
 			this.idPieza = idPieza;
 			this.nomPieza = nomPieza;
 			this.stock = stock;
 			this.precio = precio;
 			this.categoria = categoria;
+			this.estadoActivo = estado;
 		}
 
 		// MÉTODOS GETTER & SETTER
@@ -27,13 +30,25 @@ public class Pieza {
 		public String getNomPieza() {			return nomPieza;		}
 		public void setNomPieza(String nomPieza) {			this.nomPieza = nomPieza;		}
 
+		public long getCantidadComprar() {	return cantidadComprar;	}
+		public void setCantidadComprar(long cantidadComprar) {	this.cantidadComprar = cantidadComprar;	}
+
 		public long getStock() {			return stock;		}
 		public void setStock(long stock) {			this.stock = stock;		}
 		
 		public double getPrecio() {			return precio;		}
 		public void setPrecio(double precio) {			this.precio = precio;		}
 
-		public String getCategoria() {			return categoria;		}
-		public void setCategoria(String categoria) {			this.categoria = categoria;		}
+		public CategoriaPieza getCategoria() {			return categoria;		}
+		public void setCategoria(CategoriaPieza categoria) {			this.categoria = categoria;		}
 
+		public boolean isEstadoActivo() {			return estadoActivo;		}
+		public void setEstadoActivo(boolean estadoActivo) {			this.estadoActivo = estadoActivo;		}
+
+		@Override
+		public String toString() {
+			return "Pieza [idPieza=" + idPieza + ", nomPieza=" + nomPieza + ", stock=" + stock + ", precio=" + precio
+					+ ", categoria=" + categoria + ", estadoActivo=" + estadoActivo + "]";
+		}
+		
 }

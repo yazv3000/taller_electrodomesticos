@@ -2,25 +2,34 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap");
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Tangerine&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Tangerine&display=swap');
+
 /*===== VARIABLES CSS =====*/
 
 :root {
-    /* --primario :rgb(33, 42, 52); */
     --primario: rgb(33, 33, 33);
     --fondo: rgb(25, 23, 21);
-    --secundario: #2473cd ;
+    --secundario: #2473cd;
 }
 
 /*===== BASE =====*/
-*,::before,::after{
-  box-sizing: border-box;
+*,
+::before,
+::after {
+    box-sizing: border-box;
 }
-body{
-  overflow: hidden;
-  margin: 0;
-  background-color:var(--fondo);
-  /* position: absolute; */
-  /* background-color: black; */
+
+body {
+    overflow-x: hidden;
+    margin: 0;
+
+    /* background-color:var(--fondo); */
+    /* position: absolute; */
+    /* background-color: black; */
 }
 
 .inicio_fondo {
@@ -36,7 +45,7 @@ body{
     /* background-color: green; */
     padding: 15px;
     width: 200px;
-    display:flex;
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -48,7 +57,7 @@ body{
 
 .logo h2 {
     font-size: 40px;
-    font-family: Poppins;
+    font-family: Audiowide;
     position: relative;
     left: 60px;
     color: white;
@@ -63,146 +72,61 @@ body{
 .menu {
     height: 80px;
     width: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
-    display:flex;
-    justify-content:center;
+    display: flex;
+    justify-content: center;
     top: 0;
 }
 
 
 .navi {
     width: 992px;
-    height: 80px;
-    /* background-color: cornflowerblue; */
-    display:flex;
+    display: flex;
     justify-content: space-between;
+    margin-right: 30px;
 }
 
 .navi ul {
-    display:flex;
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
     padding-right: 50px;
+    gap: 40px;
+    height: 80px;
+    padding: 0;
+    margin: 0
 }
 
 .navi ul li {
     font-family: Poppins;
     list-style: none;
-    padding: 10px 20px;
     cursor: pointer;
-
+    padding: 5px 0;
 }
 
-.navi ul li:hover {
-    border-bottom: 2px solid var(--secundario);
+.navi ul li a:hover {
+    border-bottom: 3px solid var(--secundario);
 }
 
 .navi ul li a {
     text-decoration: none;
     color: white;
+    height: 70px;
+    line-height: 70px;
+    display: block;
+    text-align: center;
+    transition: .3s;
 }
 
 .navi ul li a:hover {
-    color:gray;
+    color: gray;
 }
 
 /* ===== HEXAGONOS ===== */
 
-/* .contenedor {
-    width: 100%;
-    height: 100vh;
-    display:flex;
-    align-items: center;
-    justify-content: center;
-}
-
-img {
-    position: absolute;
-    height: 100vh;
-    width: 100%;
-}
-
-.titulo {
-    position: absolute;
-    background-color: none;
-    color: gray;
-    z-index: 300;
-    font-size: 100px;
-    top: -300px;
-    font-family: Poppins;
-}
-.menu {
-    height: 80px;
-    width: 100%;
-    background-color: rgba(0,0,0,0.5);
-}
-
-.hex {
-    position: relative;
-    background-color: rgb(24, 24, 148)
-}
-
-.hex__sombra {
-    filter: drop-shadow(0 0 10px rgb(40, 162, 227));
-}
-
-.hex__conf {
-    position: absolute;
-    height: 173px;
-    width: 200px;
-
-    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-
-    transition: 2s;
-
-}
-
-.hex__conf::after {
-    content: "";
-    position: absolute;
-    inset: 5px;
-    background-color:rgb(24, 24, 148);
-    background: url(../img/servicio.png);
-    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-    box-shadow: inset 0 0 10px rgb(40, 162, 227);
-}
-
-.hex__conf:hover {
-    transform: rotateY(180deg);
-}
-
-.hex-1 {
-    top: -90px;
-    left: 165px;
-}
-
-.hex-2 {
-    top: 90px;
-    left: 165px;
-}
-
-.hex-3 {
-    top: 0px;
-    left: 325px;
-}
-
-.hex-4 {
-    top: -90px;
-    left: -165px;
-}
-
-.hex-5 {
-    top: 90px;
-    left: -165px;
-}
-
-.hex-6 {
-    top: 0px;
-    left: -325px;
-} */
-
 .contenedor {
     height: 100vh;
-    display:flex;
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -214,7 +138,7 @@ img {
 }
 
 .hex__fondo {
-    position:absolute;
+    position: absolute;
     width: 100%;
     height: 100%;
     background-color: var(--secundario);
@@ -222,6 +146,7 @@ img {
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     transition: 2s;
 }
+
 .hex__img {
     background-color: var(--primario);
     height: 100%;
@@ -269,4 +194,174 @@ img {
     bottom: 0px;
     left: -310px;
 }
+
+/* ===== INICIAR SESION ===== */
+
+.modal__sesion {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s;
+    --transladar: translateY(-100vh);
+}
+
+.modal--mostrar {
+    opacity: 1;
+    pointer-events: unset;
+    transition: opacity 0.6s;
+    transform: translateY(0);
+    --transladar: translateY(0);
+}
+
+.modal__contenedor {
+    background-color: var(--primario);
+    margin: auto;
+    box-shadow: 5px 5px 10px black;
+    max-width: 400px;
+    max-height: 100%;
+    background-color: var(--primario);
+    border-radius: 20px;
+    padding: 3em 2.5em;
+    position: relative;
+    transform: var(--transladar);
+    transition: 0.8s;
+}
+
+.modal__formulario {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+}
+
+.modal__cont__cerrar {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal__cerrar {
+    color: white;
+    font-family: Poppins;
+    /* background-color: var(--secundario); */
+    background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    padding: 5px 17px;
+    border-radius: 50%;
+    font-size: 25px;
+    cursor: pointer;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    transition: .3s;
+    position: relative;
+    left: 180px;
+    top: -10px;
+}
+
+.modal__cerrar:hover {
+    transform: scale(1.1);
+}
+
+.formTituloLogin {
+    color: white;
+    font-size: 2em;
+    font-family:'Audiowide', 'Tangerine', "Noto Sans";
+    padding: 0;
+    margin: 0;
+}
+
+.form__logo {
+    width: 150px;
+    margin: 20px 0;
+}
+
+.correo {
+    width: 80% ;
+    padding: 5px 10px;
+    background-color: var(--fondo) !important ;
+    border: 1px solid var(--fondo) !important ;
+    border-radius: 5px;
+    color: white !important;
+    font-size: 16px;
+    margin-bottom: 20px;
+    font-family: Poppins;
+}
+
+.pass {
+    width: 80%;
+    padding: 5px 10px;
+    background-color: var(--fondo) !important;
+    border: 1px solid var(--fondo) !important ;
+    border-radius: 5px;
+    color: white !important;
+    font-size: 16px;
+    margin-bottom: 30px;
+    font-family: Poppins;
+}
+
+.form__selector {
+    padding: 5px 10px;
+    margin-bottom: 40px;
+    background-color: var(--secundario);
+    border: 1px solid var(--secundario);
+    border-radius: 5px;
+    color: white;
+    font-size: 17px;
+}
+
+
+.btn__ingresar {
+    width: 50%;
+    font-size: 20px;
+    font-family: 'Audiowide';
+    text-transform: uppercase;
+    background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    border: 1px solid rgb(61, 61, 192);
+    border-radius: 5px;
+    color: white;
+    transition: 0.6s;
+    font-weight: 400;
+    padding: 10px;
+}
+
+.btn__ingresar:hover {
+    background: var(--primario);
+    border: 1px solid var(--secundario);
+    color: var(--secundario);
+    cursor: pointer;
+}
+.btn__sinCuenta {
+    width: 70%;
+    font-size: 20px;
+    font-family: 'Audiowide';
+    text-transform: uppercase;
+    color: white;
+    transition: 0.6s;
+    font-weight: 400;
+    padding: 10px;
+    background-color: #212121;
+    border: none;
+}
+
+.btn__sinCuenta:hover {
+    color: var(--secundario);
+    cursor: pointer;
+}
+/* Change autocomplete styles in WebKit */
+	input:-webkit-autofill,
+	input:-webkit-autofill:hover, 
+	input:-webkit-autofill:focus,
+	textarea:-webkit-autofill,
+	textarea:-webkit-autofill:hover,
+	textarea:-webkit-autofill:focus,
+	select:-webkit-autofill,
+	select:-webkit-autofill:hover,
+	select:-webkit-autofill:focus {
+        -webkit-text-fill-color: white;
+		box-shadow: 0 0 0px 0.25rem var(--fondo) inset;
+	  -webkit-box-shadow: 0 0 0px 1000px var(--fondo) inset;
+	}
 

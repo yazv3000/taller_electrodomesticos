@@ -10,51 +10,34 @@ import java.util.List;
 import utp.config.Conexion;
 import utp.taller.entidades.Servicio;
 
-public class DaoServicio extends Conexion implements BaseDAO<Servicio> {
-
-	/*
-	 * TABLA SERVICIO
-	 * 
-	 * id_servicio | nom_serv | desc_serv
-	 */
+public class DaoServicio extends Conexion implements CRUD<Servicio> {
 
 	Connection cnx = null;
 	PreparedStatement stm = null;
 
 	@Override
-	public List<Servicio> listar() {
-
-		List<Servicio> lst = new ArrayList<Servicio>();
-		Servicio s = null;
-
-		String sql = "select * from servicio";
-
+	public Servicio consultarId(int id) {
+		Servicio serv = new Servicio();
+		
+		String sql = "select * from servicio where id_servicio=?";
+		
 		cnx = getConnection();
 		ResultSet rs = null;
 
 		try {
 			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, id);
 			rs = stm.executeQuery();
-
-			while (rs.next()) {
-				s = new Servicio();
-				s.setIdServicio(rs.getInt(1));
-				s.setNomServicio(rs.getString(2));
-				s.setDescripcion(rs.getString(3));
-
-				lst.add(s);
+			if (rs.next()) {
+				serv = recuperarDatosServicio(rs);
 			}
-			
 			cnx.close();
-
+			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
-		}/* finally {
-			 try { if(rs != null) rs.close(); if(stm != null) stm.close(); if(cnx != null)
-			 cnx.close(); } catch (Exception e2){}	 
-		}*/
-		return lst;
-
+		}
+		
+		return serv;
 	}
 
 	@Override
@@ -84,7 +67,7 @@ public class DaoServicio extends Conexion implements BaseDAO<Servicio> {
 			stm = cnx.prepareStatement(sql);
 			stm.setString(1, s.getNomServicio());
 			stm.setString(2, s.getDescripcion());
-			stm.setInt(3, s.getIdServicio());
+			//stm.setInt(3, s.getIdServicio());
 			stm.executeUpdate();
 			cnx.commit();
 			cnx.close();
@@ -95,20 +78,69 @@ public class DaoServicio extends Conexion implements BaseDAO<Servicio> {
 	}
 
 	@Override
-	public int eliminar(int id) {
+	public int cambiarEstado(int id, boolean estado) {
 		
-		String sql = "delete from servicio where id_servicio=?";
+		return 0;
+	}
+	
+	// LISTAR SERVICIOS
+	public List<Servicio> listar() {
+
+		List<Servicio> lst = new ArrayList<Servicio>();
+		Servicio serv = null;
+		String sql = "select * from servicio";
+
 		cnx = getConnection();
+		ResultSet rs = null;
 		try {
-			cnx.setAutoCommit(false);
 			stm = cnx.prepareStatement(sql);
-			stm.setInt(1, id);
-			stm.executeUpdate();
-			cnx.commit();
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				serv = recuperarDatosServicio(rs);
+				lst.add(serv);
+			}
 			cnx.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		return 0;
+		return lst;
+	}
+	
+	public List<Servicio> listar(boolean estado){
+		List<Servicio> lst = new ArrayList<Servicio>();
+		Servicio serv = null;
+		String sql = "select * from servicio where estado_activ=?";
+
+		cnx = getConnection();
+		ResultSet rs = null;
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setBoolean(1, estado);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				serv = recuperarDatosServicio(rs);
+				lst.add(serv);
+			}
+			cnx.close();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return lst;
+	}
+	
+	private Servicio recuperarDatosServicio(ResultSet rs ) {
+		Servicio serv = new Servicio();
+		try {
+			serv.setIdServicio(rs.getInt("id_servicio"));
+			serv.setNomServicio(rs.getString("nombre_serv"));
+			serv.setDescripcion(rs.getString("descripcion"));
+			serv.setEstadoActivo(rs.getBoolean("estado_activ"));
+			serv.setRutaImgServicio(rs.getString("foto_serv"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return serv;
 	}
 }

@@ -1,13 +1,16 @@
 package utp.taller.dto;
 
-public class DtoClienteConsulta extends DtoPersonaConsulta{
+import java.io.Serializable;
 
-	// MÉTODOS GETTER & SETTER
-	public String getIdTecnico() {			return this.getIdPersona();		}
-	public void setIdTecnico(String idTecnico) {			this.setIdPersona(idTecnico);		}
+public class DtoClienteConsulta extends DtoPersonaConsulta implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	// MÉTODOS GETTER & SETTER
-	public String getIdCliente() {		return this.getIdPersona(); }
-	public void setIdCliente(String idCliente) {		this.setIdPersona(idCliente);	}
+	public int getIdPersonaCliente() {	return this.getIdPersona();	}
+	public void setIdPersonaCliente(int idPersona) {		this.setIdPersona(idPersona);	}
+		
+	public String getIdUsuarioCliente() {		return this.getIdUsuario(); }
+	public void setIdUsuarioCliente(String idUsuario) {		this.setIdUsuario(idUsuario);	}
 	
 }
