@@ -1,0 +1,276 @@
+/*===== GOOGLE FONTS =====*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap");
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Roboto:wght@100;300;500&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Tangerine&display=swap');
+/*===== VARIABLES CSS =====*/
+
+:root {
+    --primario: rgb(33, 33, 33);
+    --fondo: rgb(25, 23, 21);
+    --secundario: #2473cd ;
+    --grad-form: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    --grad-fondo: linear-gradient(270deg, rgba(23,30,41,1) 0%, rgba(38,45,62,1) 100%);
+    --grad-img: linear-gradient(180deg, rgba(61,154,234,1) 0%, rgba(73,84,238,1) 100%);
+    --grad-boton: linear-gradient(90deg, rgba(96,195,241,1) 0%, rgba(73,58,251,1) 100%);
+	--color-modal: rgba(23,30,41,1);
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0px;
+    margin:0
+}
+
+body {
+    background-color: var(--fondo)!Important;   
+}
+
+.titulo {
+    text-align: center;
+    margin: 50px 0;
+    color: white;
+    font-family: "Audiowide";
+}
+
+.titulo span {
+    color: var(--secundario)
+}
+
+.contenedor-electro {
+	
+    display: flex; 
+    justify-content: center;
+}
+
+.cont-electro {
+    width: 800px;
+    background: var(--grad-fondo);
+    box-shadow: inset 4px 2px 10px rgb(122, 122, 122),4px 2px 10px black;     
+    border-radius: 20px;
+    padding-top: 50px;
+}
+
+.electro {
+    display:grid;
+    grid-template-columns: repeat(2,1fr);
+}
+
+.formato{
+    padding:20px;
+    position: relative;
+}
+
+.electro-1 select {
+    width: 100%;
+    padding: 10px;
+    font-family: "Poppins";
+    font-weight: bold;
+    background: var(--grad-form);
+    outline-style: none;
+    border:none;
+    color: white;
+    border-radius: 5px;
+}
+
+.electro-1 select option {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.electro-2 label{
+    position: absolute;
+    left: 20px;
+    line-height: 45px;
+    margin-left: 10px;
+    font-family:"Poppins";
+    color: gray;
+    transition:  0.3s;
+}
+.electro-2 input {
+    width: 100%;
+    height:100%;
+    padding: 10px;
+    font-family: "Audiowide";
+    border-radius: 5px;
+    background-color: var(--grad-fondo);
+    color: white;
+    outline: 2px solid gray;
+    border: none;
+    
+}
+
+.electro-2 input:focus {
+    outline: 2px solid var(--secundario);
+}
+
+.electro-2 input:focus ~ label,
+.electro-2 input:not(:placeholder-shown) ~ label {
+    transform: translateY(-40px) scale(0.8);
+    left: 0px;
+    color: var(--secundario);
+    
+}
+
+.electro-2 label {
+    pointer-events: none;
+}
+
+.electro-3 select {
+    width: 100%;
+    padding: 10px;
+    font-family: "Poppins";
+    font-weight: bold;
+    background: var(--grad-form);
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.electro-3 select option {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+
+
+.electro-4 label{
+    position: absolute;
+    left: 20px;
+    line-height: 45px;
+    margin-left: 10px;
+    font-family:"Poppins";
+    color: gray;
+    transition: 0.3s;
+    pointer-events: none;
+}
+
+.electro-4 input{
+    width: 100%;
+    height:100%;
+    padding: 10px;
+    font-family: "Audiowide";
+    border-radius: 5px;
+    color: white;
+    background-color: var(--grad-fondo);
+    outline: 2px solid gray;
+    border: none;
+}
+
+.electro-4 input:focus {
+    outline: 2px solid var(--secundario);
+}
+
+.electro-4 input:focus ~ label,
+.electro-4 input:not(:placeholder-shown) ~ label {
+    transform: translateY(-40px) scale(0.8);
+    left: 0px;
+    color: var(--secundario);
+}
+
+.electro-5 {
+    grid-column: 1/3;
+    margin: 20px auto;
+    position:relative;
+}
+
+.electro-5 label {
+    position:absolute;
+    left: 0;
+    margin-left: 10px;
+    margin-top:10px;
+    padding-left: 20px;
+    color:gray;
+    font-family:"Poppins";
+    pointer-events: none;
+    transition: .3s;
+}
+.electro-5 textarea{
+    width:760px;
+    padding: 10px;
+    font-family: "Poppins";
+    color: white;
+    background-color: var(--grad-fondo);
+    border-radius: 5px;
+    outline: 2px solid gray;
+    border: none;
+}
+
+.electro-5 textarea:focus{
+    outline: 2px solid var(--secundario);
+}
+
+.electro-5 textarea:focus ~ label,
+.electro-5 textarea:not(:placeholder-shown) ~ label{
+    transform: translateY(-40px) scale(0.8);
+    left: 0px;
+    color: var(--secundario);
+    transform-origin: left top; 
+}
+
+
+/* MODAL */
+
+.contenedor {
+    max-width: 600px !important;
+}
+
+.modal-content {
+    border-radius: 20px!important;
+    padding: 40px;
+}
+
+.titulo-modal {
+    color: var(--secundario);
+    text-align: center;
+    font-family: "Audiowide";
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+
+}
+
+.contenido-modal {
+    background: var(--color-modal)!important;
+}
+
+.cita {
+    border: 2px solid gray;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    position: relative;
+    border-radius: 5px;
+    margin-bottom: 20px; 
+    
+}
+
+.cita::after {
+    content: "Cita Tecnica";
+    font-family: "Audiowide";
+    color: var(--secundario);
+    position: absolute;
+    background: var(--color-modal);
+    transform: translateY(-15px) translateX(10px);
+    padding: 0 10px;
+    font-size: 1.1rem;
+}
+
+.etiqueta-1 {
+    color: var(--secundario);
+    font-family: "Audiowide";
+    font-size: 0.9rem;
+    margin: 5px 0;
+}
+
+.etiqueta-2 {
+    color: white;
+    font-family: "Poppins";
+    margin: 5px 0;
+    line-height: 24px;
+}
+
+.controles {
+    display:flex;
+    justify-content:space-around
+}
