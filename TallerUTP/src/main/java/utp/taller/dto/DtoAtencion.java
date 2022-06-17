@@ -26,6 +26,7 @@ public class DtoAtencion implements Serializable {
 	private String tipoAtencion;
 	private String fallaDescrita;
 	private String estado;
+	private String montoTotal;
 
 	// CONSTRUCTORES
 	public DtoAtencion() {	}
@@ -66,5 +67,19 @@ public class DtoAtencion implements Serializable {
 
 	public String getFallaDescrita() {	return fallaDescrita;	}
 	public void setFallaDescrita(String fallaDescrita) {	this.fallaDescrita = fallaDescrita;	}
-			
+
+	public String getMontoTotal() {	return montoTotal;}
+	public void setMontoTotal(String montoTotal) {	this.montoTotal = montoTotal;}
+
+	@Override
+	public String toString() {
+		return "DtoAtencion [idAtencion=" + idAtencion + ", cliente=" + cliente + ", servicio=" + servicio
+				+ ", electrodomestico=" + electrodomestico + ", fechaCita=" + fechaCita + ", fechaReservaCita="
+				+ fechaReservaCita + ", horaCita=" + horaCita + ", electrodomesticoTipo=" + electrodomesticoTipo
+				+ ", electrodomesticoMarca=" + electrodomesticoMarca + ", tipoAtencion=" + tipoAtencion
+				+ ", fallaDescrita=" + fallaDescrita + ", estado=" + estado + ", montoTotal=" + montoTotal + "]";
+	}
+	
+	
+	
 }

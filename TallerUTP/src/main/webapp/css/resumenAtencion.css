@@ -58,6 +58,10 @@
     /* background-color: green; */
 }
 
+.largo{
+	grid-column: 1/5;
+}
+
 .grid__items span {
     font-family: "Poppins";
     color: white;

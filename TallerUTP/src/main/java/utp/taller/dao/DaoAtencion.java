@@ -21,6 +21,7 @@ import utp.taller.dto.DtoCitaConsulta;
 import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoNuevaCita;
 import utp.taller.dto.DtoNuevoAtencionTaller;
+import utp.taller.dto.DtoPresupuesto;
 import utp.taller.dto.DtoReporteConsulta;
 import utp.taller.dto.DtoServicioAtencion;
 import utp.taller.entidades.Electrodomestico;
@@ -88,6 +89,7 @@ public class DaoAtencion extends Conexion {
 				ate = new DtoAtencion();
 				ate.setIdAtencion(idAtencion);
 				DtoClienteConsulta cliente = new DtoClienteConsulta();
+				cliente.setEmail(rs.getString("email"));
 				cliente.setNombreCompleto(rs.getString("nombre_cliente"));
 				cliente.setTelefono(rs.getString("telefono"));
 				cliente.setDistrito(rs.getString("distrito"));
@@ -424,5 +426,30 @@ public class DaoAtencion extends Conexion {
 				e.printStackTrace();
 			}
 			return aten;
+		}
+		//OBTENER LISTA DE PRESUPUESTO
+		public List<DtoPresupuesto> listarPresupuesto(int idAtencion){
+			List<DtoPresupuesto> lst = new ArrayList<DtoPresupuesto>();
+			String sql = "select * from f_cuerpo_reporte(?) ";
+			DtoPresupuesto presupuesto = null;
+			cnx = getConnection();
+			ResultSet rs = null;
+
+			try {
+				stm = cnx.prepareStatement(sql);
+				stm.setInt(1, idAtencion);
+				rs = stm.executeQuery();
+				while (rs.next()) {
+					presupuesto = new DtoPresupuesto();
+					presupuesto.setServicio(rs.getString(2));
+					presupuesto.setNombre(rs.getString(3));
+					presupuesto.setPrecio(rs.getString(4));
+					lst.add(presupuesto);
+				}	
+				cnx.close();
+			}	catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			return lst;
 		}
 }

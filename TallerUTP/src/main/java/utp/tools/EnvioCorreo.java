@@ -21,7 +21,7 @@ import utp.taller.dto.DtoUsuario;
 import utp.taller.entidades.Electrodomestico;
 
 public class EnvioCorreo {
-	public void enviarCorreo(String correoDestino ) {
+	public void enviarCorreo(String correoDestino) {
 		String remitente = "tallerutp.oficial@gmail.com";
 		String clave = "tbwushvhyjherman"; //chochee
 		String destino = correoDestino;
