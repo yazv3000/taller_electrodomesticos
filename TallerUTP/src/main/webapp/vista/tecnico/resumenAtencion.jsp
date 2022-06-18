@@ -34,7 +34,7 @@
             <div class="grid__items"><i class="fa-solid fa-check-to-slot"></i><span>Marca: <c:out value="${ate.getElectrodomesticoMarca().getNombre()}"></c:out></span></div>
             <div class="grid__items"><i class="fa-solid fa-arrow-down-1-9"></i><span>Número de Serie: <c:out value="${ate.getElectrodomestico().getNroSerie()}"></c:out></span></div>
             <div class="grid__items"><i class="fa-solid fa-check-to-slot"></i><span>Modelo: <c:out value="${ate.getElectrodomestico().getModelo()}"></c:out></span></div>
-            <div class="grid__items"><i class="fa-solid fa-triangle-exclamation"></i><span>Falla: <c:out value="${ate.getFallaDescrita()}"></c:out></span></div>
+            <div class="grid__items largo"><i class="fa-solid fa-triangle-exclamation"></i><span>Falla: <c:out value="${ate.getFallaDescrita()}"></c:out></span></div>
         </div>
         
         Cambiar estado a ...
@@ -162,6 +162,7 @@
 	    <input class="total" name="txtPrecioPieza" value="${sessionScope.presupuesto2}" disabled>
 	</div>
 	</c:if>
+	<input type="hidden" name="generarPDF" value="hojaServicio">
 	<button class="actualizar" type="submit" name="accion" value="confirmar" style="margin: 0 calc(45% - 0px);">Confirmar</button>
 	</form>
 </body>

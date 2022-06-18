@@ -213,16 +213,15 @@ public class DaoPieza extends Conexion implements CRUD<Pieza> {
 	}
 
 
-	public int uso_pieza(int idAtencion, int idServicio, List<Pieza> listaPiezas) {
-		String sql = "call sp_uso_pieza(?, ?, ?, ?)";
+	public int uso_pieza(int idAtencion, List<Pieza> listaPiezas) {
+		String sql = "call sp_uso_pieza(?, ?, ?)";
 		cnx = getConnection();
 		try {
 			for (Pieza p : listaPiezas) {
 				stm = cnx.prepareStatement(sql);
 				stm.setInt(1, idAtencion);
-				stm.setInt(2, idServicio);
-				stm.setInt(3, p.getIdPieza());
-				stm.setLong(4, p.getCantidadComprar());
+				stm.setInt(2, p.getIdPieza());
+				stm.setLong(3, p.getCantidadComprar());
 
 				stm.execute();
 			}

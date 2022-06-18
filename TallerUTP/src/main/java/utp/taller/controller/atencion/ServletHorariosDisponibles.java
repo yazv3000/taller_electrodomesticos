@@ -94,7 +94,7 @@ public class ServletHorariosDisponibles extends HttpServlet {
 		// Map: 	key: DtoTecnicoConsulta
 		// 				value: lstHorarios
 		for (int i = 0; i < lstTecnicos.size(); i++) {
-			lstHorarios.put(lstTecnicos.get(i), obtenerHorario(lstTecnicos.get(i).getIdPersona(), 4));
+			lstHorarios.put(lstTecnicos.get(i), obtenerHorario(lstTecnicos.get(i).getIdPersona(), 7));
 		}
 		
 		return lstHorarios;
