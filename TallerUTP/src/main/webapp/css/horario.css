@@ -42,13 +42,13 @@ body {
     grid-template-columns: 1fr;
     margin: auto;
     max-width: 90%;
-    width: 800px;
+    width: 1200px;
     gap:30px;
 }
 
 .tecnico { 
     display: grid;
-    grid-template-columns: repeat(2,1fr);
+    grid-template-columns: repeat(3,1fr);
     background: var(--grad-fondo);
     border-radius: 20px;
     overflow: hidden;
@@ -103,6 +103,7 @@ body {
     border-left: 1px solid gray;
 	overflow: hidden;
     height: 350px; /*  observacion */
+    grid-column: 2/4;
     transition: all 0.3s
 }
 
@@ -148,21 +149,31 @@ body {
  .carrusel__contenido {
     width: 100%;   
     list-style: none;
-    
  }
  
  .carrusel__espacio {
 	transition: 0.3s;
  	height: 200px;
- 	overflow: hidden
+ 	overflow: hidden;
+ 	width: 800px;
+ 	overflow-y: auto; 
  }
+ 
+.carrusel__espacio::-webkit-scrollbar {
+	width: 10px;
+	background: var(--primario);
+}
+.carrusel__espacio::-webkit-scrollbar-thumb {
+	background: var(--grad-boton);
+	border-radius: 5px;
+}
  
 .carrusel__espacio--altura {
 	height: 380px;
 }
 
  .tabla-1 {
-    width: 400px;
+    width: 800px;
     
  }
 
@@ -203,17 +214,27 @@ body {
     box-shadow: inset 3px 3px 3px rgb(122, 122, 122), 3px 3px 3px rgb(10, 10, 10);
 }
 
-/*COMPLETAR*/
-.tabla-2__hora .desactivado {
- 	background: gray;
- }
-
 
 .tabla-2__hora button:active {
     color:white;
     text-shadow: 0 0 5px rgb(6, 6, 153),0 0 5px blue,0 0 5px blue;
     box-shadow: inset -3px -3px 3px rgb(122, 122, 122),inset 3px 3px 3px rgb(10, 10, 10);
 }
+
+/*COMPLETAR*/
+.tabla-2__hora .desactivado {
+	text-decoration: line-through;
+	box-shadow: none;
+	color: gray;
+	cursor:default;
+	
+ }
+ 
+ .tabla-2__hora .desactivado:active {
+ 	text-shadow: none;
+ 	color: gray;
+ 	box-shadow: none;
+ }
 
 .mostrar__horas {
 	width: 180px;
@@ -287,9 +308,3 @@ body {
     }
     
 }
-
-
-
-
-
-

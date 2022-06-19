@@ -58,7 +58,6 @@ public class ServletGestionarHorario extends HttpServlet {
 						for (int j = 0; j < lst.size(); j++) {
 							if (Integer.parseInt(idTecStrings[i]) == lst.get(j).getId()) {
 								lstInsertar.add(lst.get(j));
-
 							}
 						}
 					}
@@ -75,12 +74,13 @@ public class ServletGestionarHorario extends HttpServlet {
 				for (DtoTecnicoNombre dtoTecnico : lstInsertar) {
 					for (int i = 0; i < diasDelMes(mes, 2022); i++) {
 						for (int j = 0; j <= intervalo; j++) {
-							Horario horario = new Horario();
-							horario.setIdTecnico(dtoTecnico.getId());
-							horario.setFechaAtencion(calendar.getTime());
-							horario.setHoraInicio(((intervalo < 10) ? ("0" + (horaInicio + j)) : horaInicio + j) + ":00:00"); //ARREGLAR
-							daoHorario.insertarHorario(horario);
-
+							if(calendar.get(Calendar.DAY_OF_WEEK)!=1) {
+								Horario horario = new Horario();
+								horario.setIdTecnico(dtoTecnico.getId());
+								horario.setFechaAtencion(calendar.getTime());
+								horario.setHoraInicio(((intervalo < 10) ? ("0" + (horaInicio + j)) : horaInicio + j) + ":00:00"); //ARREGLAR
+								daoHorario.insertarHorario(horario);
+							}
 						}
 						calendar.add(Calendar.DATE, 1);
 					}

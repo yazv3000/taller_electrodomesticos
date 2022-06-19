@@ -31,10 +31,10 @@
                         <a href="${context}/ServletCitasCliente" class="nav__link" target="marco">Citas</a>
                         <div class="nav__linea"></div>
                     </li>   
-                    <li class="nav__item">
-                        <a href="${context}/ServletElectrodomesticos" class="nav__link" target="marco">Electrodomésticos</a>
-                        <div class="nav__linea"></div>
-                    </li>   
+<!--                     <li class="nav__item"> -->
+<%--                         <a href="${context}/ServletElectrodomesticos" class="nav__link" target="marco">Electrodomésticos</a> --%>
+<!--                         <div class="nav__linea"></div> -->
+<!--                     </li>    -->
                     <li class="nav__item">
                         <a href="${context}/ServletServicios" class="nav__link" target="marco">Servicios</a>
                         <div class="nav__linea"></div>

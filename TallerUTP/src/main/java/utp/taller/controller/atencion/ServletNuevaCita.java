@@ -31,7 +31,7 @@ public class ServletNuevaCita extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     private DtoNuevaCita dtoCita = new DtoNuevaCita();
-    private DaoAtencion daoaTE = new DaoAtencion();
+    private DaoAtencion daoAte = new DaoAtencion();
     public ServletNuevaCita() {
         super();   
     }
@@ -67,7 +67,7 @@ public class ServletNuevaCita extends HttpServlet {
     			daoAte.insertarCita(dtoCita);
     			
     			int idMaximo = daoAte.idMaxAtencion();
-    			DtoAtencion dtoAte = daoaTE.obtenerAtencion(idMaximo);
+    			DtoAtencion dtoAte = daoAte.obtenerAtencion(idMaximo);
     			request.setAttribute("generarPDF", generarPDF);
     			request.getSession().setAttribute("dtoAtencion", dtoAte);
     			request.getSession().setAttribute("dtoCita", dtoCita);

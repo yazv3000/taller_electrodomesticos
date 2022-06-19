@@ -15,7 +15,7 @@ public class DtoPresupuesto {
 	public void setServicio(String servicio) {	this.servicio = servicio;	}
 		
 	public String getPrecio() {	return precio;}
-	public void setPrecio(String precio) {		this.precio = precio;}
+	public void setPrecio(String precio) {		this.precio = "S/."+precio;}
 	
 	
 }

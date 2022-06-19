@@ -441,8 +441,8 @@ public class DaoAtencion extends Conexion {
 				rs = stm.executeQuery();
 				while (rs.next()) {
 					presupuesto = new DtoPresupuesto();
-					presupuesto.setServicio(rs.getString(2));
-					presupuesto.setNombre(rs.getString(3));
+					presupuesto.setServicio(rs.getString(3));
+					presupuesto.setNombre(rs.getString(2));
 					presupuesto.setPrecio(rs.getString(4));
 					lst.add(presupuesto);
 				}	
@@ -452,4 +452,16 @@ public class DaoAtencion extends Conexion {
 			}
 			return lst;
 		}
+
+//		public void bloquearHorarioDiaActual() {
+//			String sql = "call sp_desactivar_horarios_pasados()";
+//			cnx = getConnection();
+//			try {
+//				stm = cnx.prepareCall(sql);
+//				stm.execute();
+//				cnx.close();
+//			}	catch (SQLException e) {
+//				throw new RuntimeException(e);
+//			}
+//		}
 }

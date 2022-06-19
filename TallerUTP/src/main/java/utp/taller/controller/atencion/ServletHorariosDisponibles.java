@@ -90,11 +90,8 @@ public class ServletHorariosDisponibles extends HttpServlet {
 		
 		Map<DtoTecnicoConsulta, List<Map<String, List<Horario>>>> lstHorarios = new LinkedHashMap<>();
 		
-		// Recorre la lista de técnicos para obtener su lista de horarios
-		// Map: 	key: DtoTecnicoConsulta
-		// 				value: lstHorarios
 		for (int i = 0; i < lstTecnicos.size(); i++) {
-			lstHorarios.put(lstTecnicos.get(i), obtenerHorario(lstTecnicos.get(i).getIdPersona(), 4));
+			lstHorarios.put(lstTecnicos.get(i), obtenerHorario(lstTecnicos.get(i).getIdPersona(), 7));
 		}
 		
 		return lstHorarios;

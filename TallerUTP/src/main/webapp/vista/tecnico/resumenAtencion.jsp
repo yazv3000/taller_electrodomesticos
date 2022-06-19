@@ -108,7 +108,7 @@
     <div class="contenedor-act">
     	<div class="bordes">
 			<h2 class="sub-titulo">Piezas ofrecidas</h2>
-			<table class="tabla">
+			<table class="tabla" id="tabla__PiezasOfrecidas">
 				<thead>
 					<tr class="titulo-col">
 						<th> PIEZA </th>
