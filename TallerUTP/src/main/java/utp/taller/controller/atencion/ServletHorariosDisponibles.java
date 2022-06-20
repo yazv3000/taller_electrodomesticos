@@ -110,7 +110,7 @@ public class ServletHorariosDisponibles extends HttpServlet {
 		c.set(Calendar.SECOND, 0);
 		c.set(Calendar.MILLISECOND, 0);
 		Date fecha = c.getTime();
-		
+		c.add(Calendar.DATE, 1);
 		// Lista de horarios (de cada técnico) agrupados en weeks
 		List<Map<String, List<Horario>>> lstHorarioSemana = new ArrayList<>();
 		Map<String, List<Horario>> listaFechaHoras; 

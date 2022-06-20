@@ -15,6 +15,7 @@ import utp.taller.dao.DaoElectrodomestico;
 import utp.taller.dao.DaoHorario;
 import utp.taller.dao.DaoServicio;
 import utp.taller.dto.DtoAtencion;
+import utp.taller.dto.DtoElectrodomesticoConsulta;
 import utp.taller.dto.DtoHoraConsulta;
 import utp.taller.dto.DtoNuevaCita;
 import utp.taller.dto.DtoUsuario;
@@ -32,6 +33,9 @@ public class ServletNuevaCita extends HttpServlet {
        
     private DtoNuevaCita dtoCita = new DtoNuevaCita();
     private DaoAtencion daoAte = new DaoAtencion();
+    private DaoElectrodomestico daoElect = new DaoElectrodomestico();
+    private Electrodomestico electro = new Electrodomestico();
+    
     public ServletNuevaCita() {
         super();   
     }
@@ -50,6 +54,7 @@ public class ServletNuevaCita extends HttpServlet {
     		
     		listarMarcas(request);
     		listarTipos(request);
+    		listarElectrodomesticos(request);
     		
     		request.setAttribute("dtoCita", dtoCita);
     		request.getRequestDispatcher("/vista/cliente/reservaCita.jsp").forward(request, response);
@@ -78,7 +83,13 @@ public class ServletNuevaCita extends HttpServlet {
 //    			request.getRequestDispatcher("/vista/cliente/reservaCita.jsp").forward(request, response);
 //    		}
     		break;
+    	case "obtenerDatos":
+    		int idElectrodomestico = Integer.parseInt(request.getParameter("id"));
+    		electro = daoElect.consultarId(idElectrodomestico);
+    		request.setAttribute("el", electro);
+    		break;
     	}
+    	
     	
 	}
     
@@ -117,7 +128,12 @@ public class ServletNuevaCita extends HttpServlet {
 		List<ElectrodomesticoTipo> lst = daoElectro.listarTiposE();
 		request.setAttribute("lstTipos", lst);
 	}
-	
+	private void listarElectrodomesticos(HttpServletRequest request) {
+		DtoUsuario dtoUsuario = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");
+		DaoElectrodomestico daoElectro = new DaoElectrodomestico();
+		List<DtoElectrodomesticoConsulta> lst = daoElectro.listarDtoElectrodomesticosporCliente(dtoUsuario.getIdPersona());
+		request.getSession().setAttribute("lstElectro", lst);
+	}
 	private int registrarElectrodomestico(HttpServletRequest request) {
 		Electrodomestico electro = new Electrodomestico();
 		DtoUsuario propietario = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");

@@ -17,7 +17,7 @@
 	<!-- PRUEBA CONTRASEÑA -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 	<!-- Bootstrap CSS -->
 	<link
 		href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -65,7 +65,42 @@
 				</div>
 			</div>
 		</div>
-		<form class="electrodomestico" action="<%=request.getContextPath()%>/ServletNuevaCita" method="post" novalidate="novalidate">
+		<!-- CHOOSE -->
+		<c:choose>
+		<c:when test="${lstElectro.size() != 0}">
+			
+			<form class="tablaElectro" action="<%=request.getContextPath()%>/ServletNuevaCita" method="post" novalidate="novalidate">
+			<button class="fa-solid fa-plus-square icono3"></button>
+			<h2 class="electro__titulo">Selecciona uno de sus electrodomésticos</h2>
+			<table class="tabla" id="tabla" >
+	                <thead class="tabla__titulo">
+	                    <tr class="titulo-col" id="tabla__fila">
+	                        <th>ID</th>
+							<th>Nº SERIE</th>
+							<th>TIPO</th>
+							<th>MODELO</th>
+							<th>MARCA</th>
+							<th>ACCION</th>
+	                    </tr>
+	                </thead>
+	                <tbody class="tabla__info">
+	                	<c:forEach items="${lstElectro}" var="e">
+	                    <tr class="titulo-col" id="tabla__fila">
+	                        <td> <c:out value="${e.getIdElectrodomestico()}"></c:out> </td>
+							<td> <c:out value="${e.getNroSerie()}"></c:out> </td>
+							<td> <c:out value="${e.getTipo()}"></c:out> </td>
+							<td> <c:out value="${e.getModelo()}"></c:out> </td>
+							<td> <c:out value="${e.getMarca()}"></c:out> </td>	
+							<td><a href="${context}/ServletNuevaCita?accion=obtenerDatos&id=${e.getIdElectrodomestico()}"><i class="fa-solid fa-square-check icono2" ></i></a></td>
+						</tr>
+	                    </c:forEach>
+	                </tbody>
+	            </table>
+	            </form>
+		</c:when>
+		
+		<c:when test="${lstElectro.size() == 0}">
+			<form class="electrodomestico" action="<%=request.getContextPath()%>/ServletNuevaCita" method="post" novalidate="novalidate">
 			<h2 class="electro__titulo">Datos del Electrodomestico</h2>
 			<div class="electro">
 				<select class="electro__tipo electro__setup" name="tipo" id="">
@@ -101,8 +136,27 @@
 			</div>
 			
 		</form>
+		</c:when>
+	</c:choose>
+		
 		
 	</div>
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+	<script>
+	
+		$(document).ready(function () {
+	        $('#tabla').DataTable({
+	            "language": {
+	            	"sSearch":"Buscar",
+	            	"oPaginate":{
+	            		"sPrevious": "Anterior",
+	                	"sNext": "Siguiente"
+	            	}	
+	            }
+	        });
+	    }); 
+	</script>
 
 </body>
 </html>

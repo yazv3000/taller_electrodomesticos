@@ -76,16 +76,6 @@ CREATE TABLE IF NOT EXISTS public.persona
     CONSTRAINT fk_esp FOREIGN KEY (id_especialidad) REFERENCES public.especialidad(id_especialidad) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 ---------------------------------------------------------
-CREATE TABLE IF NOT EXISTS public.tecnico_servicio
-(
-
-id_tecnico integer NOT NULL,
-id_servicio integer NOT NULL,
-PRIMARY KEY (id_tecnico, id_servicio),
-CONSTRAINT fk_tesp FOREIGN KEY (id_tecnico) REFERENCES public.persona(id_persona) ON UPDATE CASCADE ON DELETE RESTRICT,
-CONSTRAINT fk_sesp FOREIGN KEY (id_servicio) REFERENCES public.servicio(id_servicio) ON UPDATE CASCADE ON DELETE RESTRICT
-);
----------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.usuario
 (
     id_user char(10) NOT NULL,
@@ -97,16 +87,6 @@ CREATE TABLE IF NOT EXISTS public.usuario
     PRIMARY KEY (id_user),
 	CONSTRAINT fk_rol FOREIGN KEY (id_rol) REFERENCES public.roles(id_rol) ON UPDATE CASCADE ON DELETE RESTRICT,
 	CONSTRAINT fk_per FOREIGN KEY (id_persona) REFERENCES public.persona(id_persona) ON UPDATE CASCADE ON DELETE CASCADE
-);
----------------------------------------------------------
-CREATE TABLE IF NOT EXISTS public.tecnico_servicio
-(
-
-id_tecnico integer NOT NULL,
-id_servicio integer NOT NULL,
-PRIMARY KEY (id_tecnico, id_servicio),
-CONSTRAINT fk_tesp FOREIGN KEY (id_tecnico) REFERENCES public.persona(id_persona) ON UPDATE CASCADE ON DELETE RESTRICT,
-CONSTRAINT fk_sesp FOREIGN KEY (id_servicio) REFERENCES public.servicio(id_servicio) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 ---------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.horario_atencion
@@ -146,16 +126,8 @@ CREATE TABLE IF NOT EXISTS public.electrodomestico
 	id_propietario integer NOT NULL,
 	estado_activ boolean NOT NULL DEFAULT true,
     PRIMARY KEY (id_electrodomestico),
-    CONSTRAINT fk_telec FOREIGN KEY (id_tipo_electro) REFERENCES public.tipo_electrodomestico(id_tipo_electro) ON UPDATE CASCADE ON DELETE RESTRICT
-);
----------------------------------------------------------
-CREATE TABLE IF NOT EXISTS public.electro_marca
-(
-   id_electrodomestico integer NOT NULL,
-   id_marca integer NOT NULL,
-   PRIMARY KEY (id_electrodomestico, id_marca),
-   CONSTRAINT fk_electro FOREIGN KEY (id_electrodomestico) REFERENCES public.electrodomestico(id_electrodomestico) ON UPDATE CASCADE ON DELETE RESTRICT,
-   CONSTRAINT fk_marca FOREIGN KEY (id_marca) REFERENCES public.marca(id_marca) ON UPDATE CASCADE ON DELETE RESTRICT
+    CONSTRAINT fk_telec FOREIGN KEY (id_tipo_electro) REFERENCES public.tipo_electrodomestico(id_tipo_electro) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_elct FOREIGN KEY (id_marca) REFERENCES public.marca(id_marca) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 ---------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.atencion
