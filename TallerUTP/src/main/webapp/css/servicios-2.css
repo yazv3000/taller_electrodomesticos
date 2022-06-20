@@ -21,7 +21,14 @@ body {
     background-color: var(--fondo);
     
 }
-
+body::-webkit-scrollbar {
+	width: 10px;
+	background: var(--fondo);
+}
+body::-webkit-scrollbar-thumb {
+	background: var(--secundario);
+	border-radius: 10px;
+}
 *{
     margin: 0;
     padding:0;
@@ -56,7 +63,7 @@ a {
     margin: auto;
     display: grid;
     grid-template-columns: repeat(3,1fr);
-    grid-template-rows: repeat(3,1fr);
+    grid-template-rows: repeat(2,1fr);
     gap:60px;
 }
 

@@ -1,5 +1,6 @@
 const boton = document.querySelector(".logo__icono");
 const lista = document.querySelector(".menu");
+const link = document.querySelectorAll(".nav__link");
 
 boton.addEventListener("click", () =>{
     lista.classList.toggle("nav__toggle");
@@ -12,4 +13,5 @@ for (let i = 0; i <link.length; i++) {
         link[i].style.backgroundColor = "#2473cd";
     });
 }
+
 

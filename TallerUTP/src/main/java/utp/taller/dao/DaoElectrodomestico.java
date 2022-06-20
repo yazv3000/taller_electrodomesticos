@@ -35,13 +35,14 @@ public class DaoElectrodomestico extends Conexion implements CRUD<Electrodomesti
 			rs = stm.executeQuery();
 			if (rs.next()){
 				elec = new Electrodomestico();
-				elec.setIdElectrod(rs.getInt(1));
-				elec.setNroSerie(rs.getString(2));
-				elec.setIdtipoElectrod(rs.getInt(3));
-				elec.setModelo(rs.getString(4));
-				elec.setIdmarca(rs.getInt(5));
-				elec.setIdpropietario(rs.getInt(6));
-				elec.setEstadoActivo(rs.getBoolean(7));
+				elec.setIdElectrod(rs.getInt("id_electrodomestico"));
+				elec.setNroSerie(rs.getString("nro_serie"));
+				elec.setIdtipoElectrod(rs.getInt("id_tipo_electro"));
+				elec.setModelo(rs.getString("modelo"));
+				elec.setIdmarca(rs.getInt("id_marca"));
+				System.out.println(elec.getIdmarca());
+				elec.setIdpropietario(rs.getInt("id_propietario"));
+				elec.setEstadoActivo(rs.getBoolean("estado_activ"));
 			}	
 			
 			cnx.close();
@@ -178,7 +179,6 @@ public class DaoElectrodomestico extends Conexion implements CRUD<Electrodomesti
 			electro.setModelo(rs.getString("modelo"));
 			electro.setMarca(rs.getString("marca"));
 			electro.setNombrePropietario(rs.getString("propietario"));
-			electro.setMarca(rs.getString("marca"));
 			electro.setEstadoActivo(rs.getBoolean("estado_activ"));
 				
 		} catch (SQLException e) {
@@ -187,11 +187,6 @@ public class DaoElectrodomestico extends Conexion implements CRUD<Electrodomesti
 		return electro;
 	}
 
-
-
-
-	
-	
 	// CONSULTAR MARCAS
 	public List<ElectrodomesticoMarca> listarMarcas() {
 
@@ -275,4 +270,31 @@ public class DaoElectrodomestico extends Conexion implements CRUD<Electrodomesti
 		return idElectro;
 	}
 	
+	public List<DtoElectrodomesticoConsulta> listarDtoElectrodomesticosporCliente(int idPropietario) {
+
+		List<DtoElectrodomesticoConsulta> lst = new ArrayList<DtoElectrodomesticoConsulta>();
+		DtoElectrodomesticoConsulta elec = new DtoElectrodomesticoConsulta();
+		
+		String sql = "select * from v_electrodomesticos where id_propietario=?";
+		
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, idPropietario);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				elec = recuperarDatosDto(rs);
+				lst.add(elec);
+			}
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return lst;
+	}
 }

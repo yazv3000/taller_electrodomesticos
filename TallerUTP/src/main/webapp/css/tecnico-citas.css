@@ -23,6 +23,14 @@
     padding: 0px;
     margin:0
 }
+body::-webkit-scrollbar {
+	width: 10px;
+	background: var(--fondo);
+}
+body::-webkit-scrollbar-thumb {
+	background: var(--secundario);
+	border-radius: 10px;
+}
 
 .titulo-1 {
     color: white;

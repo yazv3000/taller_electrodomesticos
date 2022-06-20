@@ -1,60 +1,142 @@
+-- cambios en especialidad
 /*********************************************************
    SCRIPT : CREACIÓN DE LA BD: taller_utp (POSTGRESQL)
 *********************************************************/
+--========================================================
+-- SERVICIOS
 ----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.servicio
 (
-    id_servicio serial NOT NULL,
+    id_servicio integer NOT NULL,
     nombre_serv character varying(50) NOT NULL,
+	nombre_pl character varying(50) NOT NULL,
     descripcion text NOT NULL,
 	estado_activ boolean NOT NULL DEFAULT true,
 	foto_serv character varying(200),
 	PRIMARY KEY (id_servicio)
 );
----------------------------------------------------------
+CREATE SEQUENCE IF NOT EXISTS public.servicio_seq increment 1 start 1 OWNED BY servicio.id_servicio;
+ALTER TABLE ONLY public.servicio ALTER COLUMN id_servicio SET DEFAULT nextval('public.servicio_seq'::regclass);
+----------------------------------------------------------
+INSERT INTO public.servicio(id_servicio, nombre_serv, nombre_pl, descripcion, estado_activ, foto_serv)
+	VALUES
+	(1, 'Visita técnica', 'Visitas técnicas', 'Solicita la visita técnica de nuestros expertos para realizar el diagnóstico o reparación del artefacto en tu hogar.', false, NULL),
+	(2, 'Diagnóstico técnico', 'Diagnósticos técnicos', 'Si tu artefacto presenta averías, solicita evaluación técnica del equipo.', false, 'img/servicios/diagnostico.png'),
+	(3, 'Instalación', 'Instalaciones', 'Deja la instalación de tus artefactos en manos de los expertos.', true, 'img/servicios/instalacion.png'),
+	(4, 'Reparación', 'Reparaciones', 'Soluciona las averías de tus artefactos con repuestos originales.', true, 'img/servicios/reparacion.png'),
+	(5, 'Conversión', 'Conversiones', 'Realiza la conversión de tu cocina a gas natural.', true, 'img/servicios/conversiones.png'),
+	(6, 'Mantenimiento', 'Mantenimientos', 'Prolonga la vida útil de tus artefactos con cuidados preventivos.', true, 'img/servicios/mantenimiento.png'),
+	(7, 'Asesoría técnica', 'Asesorías técnicas', 'Recibe asesoría sobre la configuración y uso de tus artefactos.', true, 'img/servicios/asesoria.png'),
+	(8, 'Venta de piezas', 'Ventas de piezas', 'Encuentra los accesorios originales que necesitas para tus artefactos.', false, NULL),
+	(9, 'Estudio de factibilidad', 'Estudios de factibilidad', 'Verifica si el espacio donde se instalará el artefacto cuenta con las condiciones técnicas, eléctricas y de gasfitería necesarias, para el óptimo funcionamiento del producto.', true, 'img/servicios/factibilidad.png');
+SELECT setval('public.servicio_seq', 10, false);
+--========================================================
+-- ACTIVIDADES O SUBSERVICIOS
+----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.actividades_servicio
 (
-	id_actividad serial NOT NULL,
+	id_actividad integer NOT NULL,
 	id_servicio integer NOT NULL,
     nombre_actividad character varying(200) NOT NULL,
 	precio numeric NOT NULL,
 	PRIMARY KEY (id_actividad),
-	CONSTRAINT fk_ser FOREIGN KEY (id_servicio) REFERENCES public.servicio(id_servicio) ON UPDATE CASCADE ON DELETE RESTRICT
+	CONSTRAINT fk_serv1 FOREIGN KEY (id_servicio) REFERENCES public.servicio(id_servicio) ON UPDATE CASCADE ON DELETE RESTRICT
 );
----------------------------------------------------------
+CREATE SEQUENCE IF NOT EXISTS public.actividad_seq increment 1 start 1 OWNED BY actividades_servicio.id_actividad;
+ALTER TABLE ONLY public.actividades_servicio ALTER COLUMN id_actividad SET DEFAULT nextval('public.actividad_seq'::regclass);
+----------------------------------------------------------
+DO $$
+declare
+	rec record;
+	nombre_actividad character varying;
+	query text;
+begin
+	query := 'select * from servicio where id_servicio between 3 and 6';
+   for rec in execute query loop
+		for cnt in 1..6 loop
+			INSERT INTO public.actividades_servicio(id_servicio, nombre_actividad, precio)
+			VALUES (rec.id_servicio, concat(substring(rec.nombre_serv,0,4), '_00',cnt), floor(random() * 10 + 3)::numeric);
+		 end loop;
+	end loop;
+END $$;
+--========================================================
+-- DOCUMENTO DE IDENTIDAD
+----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.tipo_documento
 (
-    id_tipo_doc serial NOT NULL,
+    id_tipo_doc integer NOT NULL,
     nom_tipo_doc character varying(30) NOT NULL,
     PRIMARY KEY (id_tipo_doc)
 );
----------------------------------------------------------
+CREATE SEQUENCE IF NOT EXISTS public.tipo_doc_seq increment 1 start 1 OWNED BY tipo_documento.id_tipo_doc;
+ALTER TABLE ONLY public.tipo_documento ALTER COLUMN id_tipo_doc SET DEFAULT nextval('public.tipo_doc_seq'::regclass);
+----------------------------------------------------------
+INSERT INTO public.tipo_documento(nom_tipo_doc)
+	VALUES
+	('DNI'),
+	('Carnet de Extranjería'),
+	('Otros');
+--========================================================
+-- DISTRITO
+----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.distrito
 (
-	id_distrito serial NOT NULL,
+	id_distrito integer NOT NULL,
     nombre_distrito character varying(40) NOT NULL,
 	estado_activ boolean NOT NULL DEFAULT true,
     PRIMARY KEY (id_distrito)
 );
+CREATE SEQUENCE IF NOT EXISTS public.distrito_seq increment 1 start 1 OWNED BY distrito.id_distrito;
+ALTER TABLE ONLY public.distrito ALTER COLUMN id_distrito SET DEFAULT nextval('public.distrito_seq'::regclass);
 ---------------------------------------------------------
+INSERT INTO public.distrito(id_distrito, nombre_distrito)
+	VALUES
+	(1, 'Alto Selva Alegre'),
+	(2, 'Arequipa'),
+	(3, 'Cayma'),
+	(4, 'Cerro Colorado'),
+	(5, 'Characato'),
+	(6, 'Chiguata'),
+	(7, 'Jacobo Hunter'),
+	(8, 'Jose Luis Bustamante y Ribero'),
+	(9, 'La Joya'),
+	(10, 'Mariano Melgar'),
+	(11, 'Miraflores'),
+	(12, 'Mollebaya'),
+	(13, 'Paucarpata'),
+	(14, 'Sabandia'),
+	(15, 'Sachaca'),
+	(16, 'Socabaya'),
+	(17, 'Tiabaya'),
+	(18, 'Uchumayo'),
+	(19, 'Yanahuana'),
+	(20, 'Yarabamba'),
+	(21, 'Yura');
+SELECT setval('public.distrito_seq', 22, false);
+--========================================================
+-- ROLES
+----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.roles
 (
-    id_rol serial NOT NULL,
+    id_rol integer NOT NULL,
 	nombre_rol character varying(30) NOT NULL,
 	PRIMARY KEY (id_rol)
 );
----------------------------------------------------------
-CREATE TABLE IF NOT EXISTS public.especialidad
-(
-    id_especialidad serial NOT NULL,
-    nombre_esp character varying(80) NOT NULL,
-    estado_activ boolean NOT NULL DEFAULT true,
-	PRIMARY KEY (id_especialidad)
-);
----------------------------------------------------------
+CREATE SEQUENCE IF NOT EXISTS public.roles_seq increment 1 start 1 OWNED BY roles.id_rol;
+ALTER TABLE ONLY public.roles ALTER COLUMN id_rol SET DEFAULT nextval('public.roles_seq'::regclass);
+----------------------------------------------------------
+INSERT INTO public.roles(id_rol, nombre_rol)
+	VALUES
+	(1, 'Cliente'),
+	(2, 'Encargado'),
+	(3, 'Técnico');
+SELECT setval('public.roles_seq', 4, false);
+--========================================================
+-- PERSONAS & USUARIOS
+----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.persona
 (
-    id_persona serial NOT NULL,
+    id_persona integer NOT NULL,
     nombre_1 character varying(30) NOT NULL,
 	nombre_2 character varying(30),
     apellido_1 character varying(30) NOT NULL,
@@ -64,7 +146,6 @@ CREATE TABLE IF NOT EXISTS public.persona
 	telefono character varying(9) NOT NULL,
 	id_distrito integer NOT NULL,
     direccion text NOT NULL,
-	id_especialidad integer,
 	anios_experiencia integer,
 	fecha_ingreso date,
 	fecha_baja date,
@@ -72,10 +153,11 @@ CREATE TABLE IF NOT EXISTS public.persona
     estado_activ boolean NOT NULL DEFAULT true,
     PRIMARY KEY (id_persona),
 	CONSTRAINT fk_tdoc FOREIGN KEY (id_tipo_doc) REFERENCES public.tipo_documento(id_tipo_doc) ON UPDATE CASCADE ON DELETE RESTRICT,
-	CONSTRAINT fk_distr FOREIGN KEY (id_distrito) REFERENCES public.distrito(id_distrito) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_esp FOREIGN KEY (id_especialidad) REFERENCES public.especialidad(id_especialidad) ON UPDATE CASCADE ON DELETE RESTRICT
+	CONSTRAINT fk_distr FOREIGN KEY (id_distrito) REFERENCES public.distrito(id_distrito) ON UPDATE CASCADE ON DELETE RESTRICT
 );
----------------------------------------------------------
+CREATE SEQUENCE IF NOT EXISTS public.persona_seq increment 1 start 1 OWNED BY persona.id_persona;
+ALTER TABLE ONLY public.persona ALTER COLUMN id_persona SET DEFAULT nextval('public.persona_seq'::regclass);
+---------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.usuario
 (
     id_user char(10) NOT NULL,
@@ -86,53 +168,296 @@ CREATE TABLE IF NOT EXISTS public.usuario
 	estado_activ boolean NOT NULL DEFAULT true,
     PRIMARY KEY (id_user),
 	CONSTRAINT fk_rol FOREIGN KEY (id_rol) REFERENCES public.roles(id_rol) ON UPDATE CASCADE ON DELETE RESTRICT,
-	CONSTRAINT fk_per FOREIGN KEY (id_persona) REFERENCES public.persona(id_persona) ON UPDATE CASCADE ON DELETE CASCADE
+	CONSTRAINT fk_persona FOREIGN KEY (id_persona) REFERENCES public.persona(id_persona) ON UPDATE CASCADE ON DELETE CASCADE
 );
----------------------------------------------------------
+CREATE SEQUENCE IF NOT EXISTS public.usuario_seq increment 1 start 1 OWNED BY usuario.id_user;
+ALTER TABLE ONLY public.usuario ALTER COLUMN id_user SET DEFAULT nextval('public.usuario_seq'::regclass);
+---------------------------------------------------
+--ENCARGADO
+INSERT INTO public.persona(id_persona, nombre_1, nombre_2, apellido_1, apellido_2, id_tipo_doc, nro_doc, telefono, id_distrito, direccion, fecha_ingreso, fecha_baja, foto)
+	VALUES
+	(1, 'Alexandre', 'Vidal', 'Rodriguez', 'Coronado', 1, '65486516', '950036349', 4, 'Calle San Sebastián, 79', '2012-10-01', '2020-12-31', 'img/personas/m1.jpg'),
+	(2, 'John', NULL, 'Doe', NULL, 2, '007629205', '941069548', 3, 'Av. Parra, 65', '2021-01-01', NULL, 'img/personas/m2.jpg');
+
+INSERT INTO public.usuario(id_user, id_rol, id_persona, email, contra, estado_activ)
+	VALUES
+	('ENC-000001', 2, 1, 'admin01.utp@gmail.com', 'encargado123', false),
+	('ENC-000002', 2, 2, 'admin02.utp@gmail.com', 'encargado123', true);
+
+--TÉCNICOS
+INSERT INTO public.persona(id_persona, nombre_1, nombre_2, apellido_1, apellido_2, id_tipo_doc, nro_doc, telefono, id_distrito, direccion, anios_experiencia, fecha_ingreso, foto)
+	VALUES
+	(3, 'Guillermo', NULL, 'Smith', 'Coppola', 1, '61614803', '997555176', 4, 'Av. Los Ángeles, 542', 5, '2012-12-13', 'img/personas/m3.jpg'),
+	(4, 'Eduardo', NULL, 'Vallejo', 'Pereira', 1, '28423490', '974673951', 4, 'Av. Las Vegas, 123', 2, '2013-12-16', 'img/personas/m4.jpg'),
+	(5, 'Adriana', NULL, 'Jordan', 'Rodriguez', 1, '40476142', '963306299', 4,  'Av. Las Malvinas, 213', 1, '2014-8-12', 'img/personas/f1.jpg'),
+	(6, 'Andrea', NULL, 'Valdivia', 'Segales', 1, '48804278', '985130731', 4, 'Calle Amauta, 138', 4, '2015-10-02', 'img/personas/f2.jpg'),
+	(7, 'Mario', NULL, 'Diaz', 'Torres', 1, '39840290', '938781368', 5, 'Av. Los Acres, 64', 1, '2016-05-10', 'img/personas/m5.jpg'),
+	(8, 'Melman', NULL, 'Schwimmer', NULL, 2, '001925687', '974594323', 4, 'Urb. Los cipreses, A9', 2, '2017-02-23', 'img/personas/m6.jpg'),
+	(9, 'Jennifer', NULL, 'Anco', 'Mamani', 1, '65246344', '938995970', 5, 'Av. Independecia, 71', 4, '2018-11-09', 'img/personas/f3.jpg'),
+	(10, 'Alex', NULL, 'Cruz', 'Leon', 1, '44402460', '968696753', 4, 'Urb. Los cipreses, B1', 3, '2019-05-10', 'img/personas/m7.jpg'),
+	(11, 'Jose', NULL, 'Perez', 'Rodriguez', 1, '50502291', '963725720', 5, 'Av. Argentina, 256', 10, '2020-10-23', 'img/personas/m8.jpg'),
+	(12, 'Juan', 'Jose', 'Molina', 'Quispe', 1, '62289072', '994832406', 4, 'Calle Tahuaycani, 312', 8, '2021-03-01', 'img/personas/m9.jpg');
+	
+INSERT INTO public.usuario(id_user, id_rol, id_persona, email, contra)
+	VALUES
+	('TEC-000001', 3, 3, 'smithgil@gmail.com', 'tecnico123'),
+	('TEC-000002', 3, 4, 'perava@gmai.com', 'tecnico123'),
+	('TEC-000003', 3, 5, 'adr.jordan@gmail.com', 'tecnico123'),
+	('TEC-000004', 3, 6, 'andrea.valdivia@gmail.com', 'tecnico123'),
+	('TEC-000005', 3, 7, 'mario.diaz@gmail.com', 'tecnico123'),
+	('TEC-000006', 3, 8, 'melman.schwimmer@gmail.com', 'tecnico123'),
+	('TEC-000007', 3, 9, 'jennifer.anco@gmail.com', 'tecnico123'),
+	('TEC-000008', 3, 10, 'alex.cruz@gmail.com', 'tecnico123'),
+	('TEC-000009', 3, 11, 'jose.perez@gmail.com', 'tecnico123'),
+	('TEC-000010', 3, 12, 'juan.molina@gmail.com', 'tecnico123');
+
+--CLIENTES
+INSERT INTO public.persona(id_persona, nombre_1, nombre_2, apellido_1, apellido_2, id_tipo_doc, nro_doc, telefono, id_distrito, direccion, foto)
+	VALUES
+	(13, 'Luis', NULL, 'Gamarra', 'Alcantara', 1, '68968558', '942256809', 4, 'Av. Parra, 313', 'img/personas/m9.jpg'),
+	(14, 'Paul', NULL, 'Gutierrez', 'Manrique', 1, '79734822', '962122495', 4,'Av. Perú, 232', 'img/personas/m8.jpg'),
+	(15, 'Juan', 'Pablo', 'Martinez', 'Lopez', 1, '51476446','943182888', 4,'Av. Argentina, 221', 'img/personas/m7.jpg'),
+	(16, 'Leticia', NULL, 'Perez', 'Carpdevila', 1, '41005783','973308244', 4, 'Urb. Casa Blanca, B8', 'img/personas/f5.jpg'),
+	(17, 'Edmundo', NULL, 'Quintana', 'Morante', 1, '29648571', '935067763', 4, 'Av. Paisajista, 407', 'img/personas/m6.jpg'),
+	(18, 'Nicolas', NULL, 'Morales', 'Guillen', 1, '25918192', '998050058', 4, 'Urb. Zafiro, B11', 'img/personas/m5.jpg'),
+	(19, 'Adrian', NULL, 'Ruiz', 'Villanueva', 1, '48722307','991349745', 4, 'Av. Porongoche, 606', 'img/personas/m4.jpg'),
+	(20, 'William', NULL, 'Hammond', NULL, 2, '10459734080','953574916', 4, 'Calle César Vallejo, 89', 'img/personas/m3.jpg'),
+	(21, 'Tookha', NULL, 'Garcia', 'Ghoul', 1, '56703261','984503612', 4, 'Jr. 28 de julo, 503', 'img/personas/f4.jpg'),
+	(22, 'Gloria', NULL, 'Smith', NULL, 2, '00129073500', '935122495', 4, 'Av. Manuela Casárez, A7', 'img/personas/f3.jpg'); 
+
+INSERT INTO public.usuario(id_user, id_rol, id_persona, email, contra)
+	 VALUES
+	 ('CLI-000001', 1, 1, 'alexandre.rodriguez@gmail.com', 'cliente123'),
+	 ('CLI-000002', 1, 13, 'alcangama@gmail.com', 'cliente123'),
+	 ('CLI-000003', 1, 14, 'gutman@gmail.com', 'cliente123'),
+	 ('CLI-000004', 1, 15, 'martilop@gmail.com', 'cliente123'),
+	 ('CLI-000005', 1, 16, 'leticia.perez@gmail.com', 'cliente123'),
+	 ('CLI-000006', 1, 17, 'ed.quintana@gmail.com', 'cliente123'),
+	 ('CLI-000007', 1, 18, 'nicola.morales@gmail.com', 'cliente123'),
+	 ('CLI-000008', 1, 19, 'adrian.ruiz@gmail.com', 'cliente123'),
+	 ('CLI-000009', 1, 20, 'william.hammond@gmail.com', 'cliente123'),
+	 ('CLI-000010', 1, 21, 'tookha.garcia@gmail.com', 'cliente123'),
+	 ('CLI-000011', 1, 22, 'gloria.smith@gmail.com', 'cliente123');
+SELECT setval('public.persona_seq', 23, false);
+--========================================================
+-- ESPECIALIDADES DE CADA TÉCNICO
+----------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.tecnico_especialidad
+(
+	id_tecnico integer NOT NULL,
+	id_servicio integer NOT NULL,
+	PRIMARY KEY (id_tecnico, id_servicio),
+	CONSTRAINT fk_tec1 FOREIGN KEY (id_tecnico) REFERENCES public.persona(id_persona) ON UPDATE CASCADE ON DELETE RESTRICT,
+	CONSTRAINT fk_serv2 FOREIGN KEY (id_servicio) REFERENCES public.servicio(id_servicio) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+----------------------------------------------------------
+INSERT INTO tecnico_especialidad (id_tecnico, id_servicio)
+VALUES 
+	(10, 3), (3, 4), (3, 5), (3, 6);
+DO $$
+BEGIN
+   for tec in 4..12 loop
+	 INSERT INTO tecnico_especialidad (id_tecnico, id_servicio) VALUES (tec, tec%3 + 3);
+   end loop;
+END $$;
+--========================================================
+-- HORARIOS DE ATENCIÓN POR TÉCNICO
+----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.horario_atencion
 (
-    id_horario serial NOT NULL,
+    id_horario integer NOT NULL,
     id_tecnico integer NOT NULL,
     fecha_atencion date NOT NULL,
     hora_inicio time NOT NULL,
 	estado character varying(30) NOT NULL,
     PRIMARY KEY (id_horario),
-    CONSTRAINT fk_hat FOREIGN KEY (id_tecnico) REFERENCES public.persona(id_persona) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT fk_tec1 FOREIGN KEY (id_tecnico) REFERENCES public.persona(id_persona) ON UPDATE CASCADE ON DELETE CASCADE
 );
----------------------------------------------------------
+CREATE SEQUENCE IF NOT EXISTS public.horario_seq increment 1 start 1 OWNED BY horario_atencion.id_horario;
+ALTER TABLE ONLY public.horario_atencion ALTER COLUMN id_horario SET DEFAULT nextval('public.horario_seq'::regclass);
+--========================================================
+-- TIPOS DE ELECTRODOMESTICO
+----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.tipo_electrodomestico
 (
-    id_tipo_electro serial NOT NULL,
+    id_tipo_electro integer NOT NULL,
     nom_tipo_electro character varying(50) NOT NULL,
 	estado_activ boolean NOT NULL DEFAULT true,
     PRIMARY KEY (id_tipo_electro)   
 );
+CREATE SEQUENCE IF NOT EXISTS public.tipo_electrodomestico_seq increment 1 start 1 OWNED BY tipo_electrodomestico.id_tipo_electro;
+ALTER TABLE ONLY public.tipo_electrodomestico ALTER COLUMN id_tipo_electro SET DEFAULT nextval('public.tipo_electrodomestico_seq'::regclass);
 ---------------------------------------------------------
+INSERT INTO public.tipo_electrodomestico(id_tipo_electro, nom_tipo_electro)
+	VALUES
+	(1, 'Lavadora'),
+	(2, 'Lavavajillas'),
+	(3, 'Refrigeradora'),
+	(4, 'Frigobar'),
+	(5, 'Dispensador de agua'),
+	(6, 'Cocina a gas'),
+	(7, 'Cocina eléctrica'),
+	(8, 'Horno eléctrico'),
+	(9, 'Horno microondas'),
+	(10, 'Extractor/Emprimidor'),
+	(11, 'Triturador de basura'),
+	(12, 'Aspiradora'),
+	(13, 'Aire acondicionado'),
+	(14, 'Calefactor'),
+	(15, 'Ventilador'),
+	(16, 'Secadora/secarropas'),
+	(17, 'Plancha'),
+	(18, 'Máquina de coser');
+SELECT setval('public.tipo_electrodomestico_seq', 19, false);
+--========================================================
+-- MARCAS DE ELECTRODOMESTICO
+----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.marca
 (
-    id_marca serial NOT NULL,
+    id_marca integer NOT NULL,
     nombre_marca character varying(50) NOT NULL,
 	estado_activ boolean NOT NULL DEFAULT true,
     PRIMARY KEY (id_marca)   
 );
+CREATE SEQUENCE IF NOT EXISTS public.marca_seq increment 1 start 0 minvalue 0 OWNED BY marca.id_marca;
+ALTER TABLE ONLY public.marca ALTER COLUMN id_marca SET DEFAULT nextval('public.marca_seq'::regclass);
 ---------------------------------------------------------
+INSERT INTO public.marca(id_marca, nombre_marca)
+	VALUES
+	(0, 'Otro'),
+	(1, 'Indurama'),
+	(2, 'Coldex'),
+	(3, 'General Electric'),
+	(4, 'Mabe'),
+	(5, 'Bosch'),
+	(6, 'Samsung'),
+	(7, 'Daewoo'),
+	(8, 'LG'),
+	(9, 'Westinghouse'),
+	(10, 'Frigidaire'),
+	(11, 'Sole'),
+	(12, 'Brasec'),
+	(13, 'Bryant'),
+	(14, 'Alfano'),
+	(15, 'Electra'),
+	(16, 'Coldpoint'),
+	(17, 'Hitachi'),
+	(18, 'Electrolux'),
+	(19, 'Kenmore'),
+	(20, 'Klimatic'),
+	(21, 'KitchenAid'),
+	(22, 'Midea'),
+	(23, 'Carrier'),
+	(24, 'Lennox'),
+	(25, 'York'),
+	(26, 'Sanyo'),
+	(27, 'Surrey'),
+	(28, 'Miray');
+SELECT setval('public.marca_seq', 29, false);
+--========================================================
+-- MARCAS DE ELECTRODOMESTICO
+----------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.electro_marca
+(
+    id_tipo_electro integer NOT NULL,
+	id_marca integer NOT NULL,
+    PRIMARY KEY (id_tipo_electro, id_marca),
+	CONSTRAINT fk_elct FOREIGN KEY (id_tipo_electro) REFERENCES public.tipo_electrodomestico(id_tipo_electro) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT fk_marca FOREIGN KEY (id_marca) REFERENCES public.marca(id_marca) ON UPDATE CASCADE ON DELETE CASCADE
+);
+INSERT INTO public.electro_marca(id_tipo_electro, id_marca)
+VALUES (1, 1),	(1, 4),	(1, 5),	(1, 6),	(1, 7),	(1, 8),	(1, 18), (1, 0);
+DO $$
+BEGIN
+   for tipo in 2..18 loop
+	 INSERT INTO public.electro_marca(id_tipo_electro, id_marca)
+	 VALUES (tipo, tipo+1),	(tipo, tipo+2),	(tipo, tipo+3), (tipo, 0);
+   end loop;
+END $$;
+--========================================================
+-- ELECTRODOMESTICO
+----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.electrodomestico
 (
-    id_electrodomestico serial NOT NULL,
+    id_electrodomestico integer NOT NULL,
     nro_serie character varying(20),
     id_tipo_electro integer NOT NULL,
-	modelo character varying(40),
     id_marca integer NOT NULL,
+	modelo character varying(40),
 	id_propietario integer NOT NULL,
 	estado_activ boolean NOT NULL DEFAULT true,
     PRIMARY KEY (id_electrodomestico),
-    CONSTRAINT fk_telec FOREIGN KEY (id_tipo_electro) REFERENCES public.tipo_electrodomestico(id_tipo_electro) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_elct FOREIGN KEY (id_marca) REFERENCES public.marca(id_marca) ON UPDATE CASCADE ON DELETE RESTRICT
+    CONSTRAINT fk_tipo_marca FOREIGN KEY (id_tipo_electro, id_marca) REFERENCES public.electro_marca(id_tipo_electro, id_marca) ON UPDATE CASCADE ON DELETE RESTRICT
 );
+CREATE SEQUENCE IF NOT EXISTS public.electrodomestico_seq increment 1 start 1 OWNED BY electrodomestico.id_electrodomestico;
+ALTER TABLE ONLY public.electrodomestico ALTER COLUMN id_electrodomestico SET DEFAULT nextval('public.electrodomestico_seq'::regclass);
+----------------------------------------------------------
+INSERT INTO public.electrodomestico(nro_serie, id_tipo_electro, modelo, id_marca, id_propietario)
+	VALUES
+	('3913511', 1, 'WA17T6260BW', 6, 20),
+	('3958671', 7, 'Monet', 9, 21);
+SELECT setval('public.marca_seq', 3, false);
+--========================================================
+-- CATEGORÍA DE PIEZA
+----------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.categoria_pieza
+(
+    id_categoria integer NOT NULL,
+    nombre_cat character varying(50) NOT NULL,
+	estado_activ boolean NOT NULL DEFAULT true,
+    PRIMARY KEY (id_categoria)
+);
+CREATE SEQUENCE IF NOT EXISTS public.categoria_pieza_seq increment 1 start 1 OWNED BY categoria_pieza.id_categoria;
+ALTER TABLE ONLY public.categoria_pieza ALTER COLUMN id_categoria SET DEFAULT nextval('public.categoria_pieza_seq'::regclass);
 ---------------------------------------------------------
+INSERT INTO public.categoria_pieza(id_categoria, nombre_cat)
+	VALUES
+	(1, 'Repuestos para Lavadoras'),
+	(2, 'Repuestos para Licuadoras'),
+	(3, 'Repuestos para Refrigeradores'),
+	(4, 'Repuestos para cocina'),
+	(5, 'Repuestos para Aire acondicionado'),
+	(6, 'Repuestos para Aspiradoras'),
+	(7, 'Repuestos para Lavaplatos'),
+	(8, 'Repuestos para Microondas');
+SELECT setval('public.categoria_pieza_seq', 9, false);
+--========================================================
+-- PIEZAS
+----------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.pieza
+(
+    id_pieza integer NOT NULL,
+    nombre_pieza character varying(200) NOT NULL,
+    stock bigint NOT NULL,
+    precio_pieza numeric NOT NULL,
+    id_categoria integer NOT NULL,
+	estado_activ boolean NOT NULL DEFAULT true,
+    PRIMARY KEY (id_pieza),
+    CONSTRAINT fk_cat FOREIGN KEY (id_categoria) REFERENCES public.categoria_pieza(id_categoria)
+);
+CREATE SEQUENCE IF NOT EXISTS public.pieza_seq increment 1 start 1 OWNED BY pieza.id_pieza;
+ALTER TABLE ONLY public.pieza ALTER COLUMN id_pieza SET DEFAULT nextval('public.pieza_seq'::regclass);
+---------------------------------------------------------
+INSERT INTO public.pieza(nombre_pieza, stock, precio_pieza, id_categoria)
+	VALUES 
+	('Manguera de entrada de lavadora de goma negra, 3/4 pulgadas x 5 pies', 300, 27.00, 1),
+	('Tapa De Vaso Para Licuadora Oster Flexible Nacional', 500, 10.00, 2),
+	('Timer Para Refrigerador Sankyo 220v 8 Horas Ge Mabe Wr9x553', 1000, 27.50, 3),
+	('Valvula De Carga De Servicio Para Refrigeración 10 cm importado 887702', 220, 5.00, 3),
+	('Bomba electromagnética de desagüe de lavadora Askoll 35W 220V 60HZ', 144, 169.90, 1),
+	('Cuchilla para Sistema de Nutrición Oster Xpert Series BLSTXPN7002/7003', 2000, 108.00, 2),
+	('Chisperos Para Cocina', 750, 77.00, 4),
+	('Filtro De Carbón Campana Indurama', 80, 70.00, 4),
+	('Juego de Limpieza Profeisional NT DN 40', 1000, 280.50, 6),
+	('Kit Instalacion Lavaplatos', 500, 58.90, 7),
+	('Condensador para horno microondas Sharp', 120, 146.00, 8),
+	('Botón plateado para horno microondas Bosch', 280, 24.00, 8);
+--========================================================
+-- CITAS & ATENCIONES TALLER/DOMICILIO
+----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.atencion
 (
-    id_atencion serial NOT NULL,
+    id_atencion integer NOT NULL,
     id_electro integer NOT NULL,
     id_horario integer NOT NULL,
     fecha_reserva_cita date,
@@ -145,26 +470,8 @@ CREATE TABLE IF NOT EXISTS public.atencion
     CONSTRAINT fk_hor FOREIGN KEY (id_horario) REFERENCES public.horario_atencion(id_horario) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk_elct FOREIGN KEY (id_electro) REFERENCES public.electrodomestico(id_electrodomestico) ON UPDATE CASCADE ON DELETE RESTRICT
 );
----------------------------------------------------------
-CREATE TABLE IF NOT EXISTS public.categoria_pieza
-(
-    id_categoria serial NOT NULL,
-    nombre_cat character varying(50) NOT NULL,
-	estado_activ boolean NOT NULL DEFAULT true,
-    PRIMARY KEY (id_categoria)
-);
----------------------------------------------------------
-CREATE TABLE IF NOT EXISTS public.pieza
-(
-    id_pieza serial NOT NULL,
-    nombre_pieza character varying(200) NOT NULL,
-    stock bigint NOT NULL,
-    precio_pieza numeric NOT NULL,
-    id_categoria integer NOT NULL,
-	estado_activ boolean NOT NULL DEFAULT true,
-    PRIMARY KEY (id_pieza),
-    CONSTRAINT fk_cat FOREIGN KEY (id_categoria) REFERENCES public.categoria_pieza(id_categoria)
-);
+CREATE SEQUENCE IF NOT EXISTS public.atencion_seq increment 1 start 1 OWNED BY atencion.id_atencion;
+ALTER TABLE ONLY public.atencion ALTER COLUMN id_atencion SET DEFAULT nextval('public.atencion_seq'::regclass);
 ---------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.detalle_atencion
 (
@@ -192,6 +499,7 @@ CREATE TABLE IF NOT EXISTS public.detalle_piezas_usadas
 	id_atencion integer NOT NULL,
 	id_servicio integer NOT NULL,
 	id_pieza integer,
+	cantidad integer,
 	PRIMARY KEY (id_atencion, id_servicio, id_pieza),
 	CONSTRAINT fk_detp FOREIGN KEY (id_atencion, id_servicio) REFERENCES public.detalle_atencion(id_atencion, id_servicio),
 	CONSTRAINT fk_pza FOREIGN KEY (id_pieza) REFERENCES public.pieza(id_pieza) ON UPDATE CASCADE ON DELETE RESTRICT
@@ -204,76 +512,68 @@ CREATE TABLE IF NOT EXISTS public.detalle_piezas_usadas
 --	PERSONAS
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_clientes
-WITH (
-  security_barrier=true
-) 
+WITH (  security_barrier=true) 
 AS
-select C.id_persona, U.id_user, 
-Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2),'  ',' ')) as nombres,
-C.telefono, D.nombre_distrito, C.direccion, U.email, C.estado_activ
-from public.persona C inner join public.usuario U on C.id_persona = U.id_persona
-left join public.distrito D on C.id_distrito = D.id_distrito
-where U.id_rol=1
-order by U.id_user;
+	select C.id_persona, U.id_user, 
+	Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2),'  ',' ')) as nombres,
+	C.telefono, D.nombre_distrito, C.direccion, U.email, C.estado_activ
+	from public.persona C inner join public.usuario U on C.id_persona = U.id_persona
+	left join public.distrito D on C.id_distrito = D.id_distrito
+	where U.id_rol=1 order by U.id_user;
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_encargados
-WITH (
-  security_barrier=true
-) 
+WITH (  security_barrier=true) 
 AS
-select E.id_persona, U.id_user, 
-Rtrim(replace(concat(E.nombre_1,' ',E.nombre_2,' ',E.apellido_1,' ',E.apellido_2),'  ',' ')) as nombres,
-E.telefono, D.nombre_distrito, E.direccion, U.email, E.estado_activ
-from public.persona E inner join public.usuario U on E.id_persona = U.id_persona
-left join public.distrito D on E.id_distrito = D.id_distrito
-where U.id_rol=2;
+	select E.id_persona, U.id_user, 
+	Rtrim(replace(concat(E.nombre_1,' ',E.nombre_2,' ',E.apellido_1,' ',E.apellido_2),'  ',' ')) as nombres,
+	E.telefono, D.nombre_distrito, E.direccion, U.email, E.estado_activ
+	from public.persona E inner join public.usuario U on E.id_persona = U.id_persona
+	left join public.distrito D on E.id_distrito = D.id_distrito
+	where U.id_rol=2;
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_tecnicos
-WITH (
-  security_barrier=true
-) 
+WITH (  security_barrier=true) 
 AS
-select T.id_persona, U.id_user, 
-Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as nombres,
-E.nombre_esp as especialidad,
-T.telefono, D.nombre_distrito, T.direccion, U.email, T.foto, T.estado_activ
-from public.persona T inner join public.usuario U on T.id_persona = U.id_persona
-left join public.especialidad E on E.id_especialidad = T.id_especialidad
-left join public.distrito D on T.id_distrito = D.id_distrito
-where U.id_rol=3;
+	select T.id_persona, U.id_user, 
+	Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as nombres,
+	'Especialista en '||string_agg(S.nombre_pl, ', ') as especialidad,
+	T.telefono, D.nombre_distrito, T.direccion, U.email, T.foto, T.estado_activ
+	from public.persona T inner join public.usuario U on T.id_persona = U.id_persona
+	left join public.tecnico_especialidad E on E.id_tecnico = T.id_persona
+	left join public.servicio S on E.id_servicio = S.id_servicio
+	left join public.distrito D on T.id_distrito = D.id_distrito
+	where U.id_rol=3
+	group by T.id_persona, U.id_user, nombres, T.telefono, D.nombre_distrito, T.direccion, U.email, T.foto, T.estado_activ
+	order by U.id_user;
+----------------------------------------------------------
+CREATE OR REPLACE VIEW public.v_especialidades
+WITH (  security_barrier=true) 
+AS
+	select id_servicio as id_especialidad, 'Especialista en '||nombre_pl as especialidad from servicio
+	where id_servicio in (3,4,5,6,7,9);
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_electrodomesticos
-WITH (
-  security_barrier=true
-) 
+WITH (  security_barrier=true) 
 AS
-select E.id_electrodomestico, E.nro_serie, TE.nom_tipo_electro as tipo,
-E.modelo, M.nombre_marca as marca, 
-E.id_propietario, C.nombres as propietario, E.estado_activ
-from electrodomestico E inner join tipo_electrodomestico TE on TE.id_tipo_electro = E.id_tipo_electro 
-inner join marca M on E.id_marca = M.id_marca
-inner join v_clientes C on C.id_persona = E.id_propietario;
+	select E.id_electrodomestico, E.nro_serie, TE.nom_tipo_electro as tipo,
+	E.modelo, M.nombre_marca as marca, 
+	E.id_propietario, C.nombres as propietario, E.estado_activ
+	from electrodomestico E inner join tipo_electrodomestico TE on TE.id_tipo_electro = E.id_tipo_electro 
+	inner join marca M on E.id_marca = M.id_marca
+	inner join v_clientes C on C.id_persona = E.id_propietario;
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_piezas
-WITH (
-  security_barrier=true
-) 
+WITH (  security_barrier=true) 
 AS
-select P.id_pieza, P.nombre_pieza, P.id_categoria, C.nombre_cat, P.precio_pieza, P.stock, P.estado_activ
-from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria;
+	select P.id_pieza, P.nombre_pieza, P.id_categoria, C.nombre_cat, P.precio_pieza, P.stock, P.estado_activ
+	from pieza P inner join categoria_pieza C on P.id_categoria = C.id_categoria;
 ----------------------------------------------------------
-CREATE OR REPLACE VIEW public.v_horarios
-WITH (
-  security_barrier=true
-) 
-AS
-select H.* from persona T inner join horario_atencion H on H.id_tecnico = T.id_persona
-left join usuario U on U.id_persona = T.id_persona where U.id_rol = 3 and H.fecha_atencion >= CURRENT_DATE;
+
+
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_citas
-WITH (
-  security_barrier=true
-) AS
+WITH (  security_barrier=true)
+AS
  SELECT a.id_atencion,
     c.id_persona AS id_cliente,
     a.id_electro,
@@ -292,9 +592,7 @@ WITH (
   WHERE a.estado_atencion::text = 'Pendiente'::text AND a.estado_activ;
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_citas_domicilio
-WITH (
-  security_barrier=true
-) 
+WITH (  security_barrier=true) 
 AS
 select A.id_atencion,
 C.id_persona as id_cliente,
@@ -391,7 +689,7 @@ LANGUAGE SQL;
 ----------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.f_consultar_tecnico(id_tecnico integer)
 RETURNS TABLE(id_tec integer, id_user char(10), nom1 character varying, nom2 character varying, ape1 character varying, ape2 character varying,
-			  id_tdoc integer, nro_doc character varying, especialidad integer, a_exp integer,
+			  id_tdoc integer, nro_doc character varying, arr_especialidad integer[], a_exp integer,
 			  telefono character varying, id_distrito integer, direccion text,
 			  email character varying, contra text, foto character varying, estado boolean)
 AS 
@@ -400,11 +698,15 @@ select
 T.id_persona, U.id_user,
 T.nombre_1, T.nombre_2, T.apellido_1, T.apellido_2,
 T.id_tipo_doc, T.nro_doc,
-T.id_especialidad, T.anios_experiencia,
+array_agg(E.id_servicio) as arr_especialidad,
+T.anios_experiencia,
 T.telefono, T.id_distrito, T.direccion,
 U.email, U.contra, T.foto, T.estado_activ
 from persona T inner join usuario U on T.id_persona = U.id_persona
-where U.id_rol=3 and T.id_persona = id_tecnico
+left join tecnico_especialidad E on E.id_tecnico = T.id_persona
+where U.id_rol=3 and T.id_persona = $1
+group by T.id_persona, U.id_user, T.nombre_1, T.nombre_2, T.apellido_1, T.apellido_2, T.id_tipo_doc, T.nro_doc, T.anios_experiencia,
+T.telefono, T.id_distrito, T.direccion, U.email, U.contra, T.foto, T.estado_activ
 $$
 LANGUAGE SQL;
 ----------------------------------------------------------
@@ -427,6 +729,24 @@ where H.id_horario = id_hora;
 $$
 LANGUAGE SQL;
 ----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_horarios_x_tecnico(id_tec integer)
+    RETURNS TABLE(id_horario integer, id_tecnico integer, fecha_atencion date, hora_inicio time, estado character varying) 
+AS $$
+	select H.* from persona T inner join horario_atencion H on H.id_tecnico = T.id_persona
+	left join usuario U on U.id_persona = T.id_persona where U.id_rol = 3 and H.fecha_atencion >= CURRENT_DATE and id_tecnico = $1;
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_tecnicos_con_horario(mes integer, anyo integer)
+    RETURNS TABLE(id_persona integer, nombres character varying) 
+AS $$
+	select distinct VT.id_persona, VT.nombres from 
+	v_tecnicos VT right join horario_atencion H 
+	on VT.id_persona = H.id_tecnico 
+	where EXTRACT(MONTH FROM H.fecha_atencion) = mes and EXTRACT(YEAR FROM h.fecha_atencion) = anyo
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.f_consultar_pieza(id_pieza integer)
 RETURNS TABLE
 (	id integer,	nombre_pieza character varying, id_categoria integer, nom_categoria character varying,
@@ -440,7 +760,7 @@ $$
 LANGUAGE SQL;
 ----------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.f_resumen_atencion(id_aten integer)
-RETURNS table (id_atencion integer, nombre_cliente text, telefono character varying, distrito character varying,
+RETURNS table (id_atencion integer, nombre_cliente text, email character varying, telefono character varying, distrito character varying,
 			   direccion text,
 			   fecha_atencion date, id_servicio integer, nombre_serv character varying, nro_serie character varying,
 			   tipo_electro character varying, modelo character varying, marca character varying, 
@@ -457,6 +777,7 @@ select s.id_servicio into id_diag from public.servicio s where s.nombre_serv lik
 RETURN query 
 	SELECT ci.id_atencion,
     cli.nombres,
+	cli.email,
     cli.telefono,
     cli.nombre_distrito,
     cli.direccion,
@@ -531,31 +852,88 @@ and monto_total between monto_1 and monto_2
 $$
 LANGUAGE SQL;
 ----------------------------------------------------------
+--	HOJA DE SERVICIO
+----------------------------------------------------------
+-- CABECERA
+CREATE OR REPLACE FUNCTION public.f_cabecera_reporte(id_aten integer)
+RETURNS TABLE (id_atencion integer, fecha_atencion date, hora_inicio time, fecha_reserva date,
+			  tecnico text, cliente text, electrodomestico character varying,
+			  marca character varying, total numeric)
+AS 
+$$
+BEGIN
+RETURN query 
+select A.id_atencion, H.fecha_atencion, H.hora_inicio, A.fecha_reserva_cita,
+Rtrim(replace(concat(T.nombre_1,' ',T.nombre_2,' ',T.apellido_1,' ',T.apellido_2),'  ',' ')) as tecnico,
+Rtrim(replace(concat(C.nombre_1,' ',C.nombre_2,' ',C.apellido_1,' ',C.apellido_2),'  ',' ')) as cliente,
+TE.nom_tipo_electro, M.nombre_marca, A.monto_total
+from atencion A
+inner join horario_atencion H on A.id_horario = H.id_horario 
+inner join electrodomestico E on A.id_electro = E.id_electrodomestico
+left join persona T on T.id_persona = H.id_tecnico
+left join persona C on C.id_persona = E.id_propietario 
+left join tipo_electrodomestico TE on TE.id_tipo_electro = E.id_tipo_electro
+left join marca M on M.id_marca = E.id_marca
+where estado_atencion = 'Finalizado' and A.estado_activ
+and A.id_atencion = $1
+group by A.id_atencion, H.fecha_atencion, H.hora_inicio, A.fecha_reserva_cita, tecnico, cliente, TE.nom_tipo_electro, M.nombre_marca, A.monto_total;
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
+-- CUERPO
+CREATE OR REPLACE FUNCTION public.f_cuerpo_reporte(id_aten integer)
+RETURNS TABLE (id_atencion integer, servicio character varying, "actividad/pieza" character varying, precio numeric)
+AS 
+$$
+DECLARE
+	id_diag integer;
+	id_visit integer;
+	id_venta integer;
+BEGIN
+select s.id_servicio into id_visit from public.servicio s where s.nombre_serv like 'Visita%';
+select s.id_servicio into id_diag from public.servicio s where s.nombre_serv like 'Diagn_stico%';
+select s.id_servicio into id_venta from public.servicio s where s.nombre_serv like 'Venta%';
+
+RETURN query 
+select DAT.id_atencion,S.nombre_serv, AC.nombre_actividad as col, 
+CASE
+WHEN DAT.id_servicio =  id_diag or  DAT.id_servicio =  id_visit THEN DAT.monto_servicio
+ELSE AC.precio
+END
+
+FROM detalle_atencion DAT
+inner join servicio S on DAT.id_servicio = S.id_servicio
+left join detalle_actividades DAC on DAC.id_atencion = DAT.id_atencion and DAC.id_servicio = DAT.id_servicio
+left join actividades_servicio AC on DAC.id_actividad = AC.id_actividad 
+where DAT.id_atencion = $1 and DAT.id_servicio <> id_venta
+UNION
+select DAT.id_atencion,S.nombre_serv, P.nombre_pieza, P.precio_pieza
+FROM detalle_atencion DAT
+inner join servicio S on DAT.id_servicio = S.id_servicio
+inner join detalle_piezas_usadas DPU on DPU.id_atencion = DAT.id_atencion and DPU.id_servicio = DAT.id_servicio
+left join pieza P on DPU.id_pieza = P.id_pieza 
+where DAT.id_atencion = $1
+order by col desc;
+END
+$$
+LANGUAGE plpgsql;
+----------------------------------------------------------
 /*********************************************************
   SCRIPT : PROCEDIMIENTOS: taller_utp (POSTGRESQL)
 *********************************************************/
 ----------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.f_tecnicos_con_horario(mes integer,anyo integer)
-    RETURNS TABLE(id_persona integer, nombres character varying) 
-    LANGUAGE 'sql'
-AS $BODY$	  
-select distinct VT.id_persona, VT.nombres from 
-v_tecnicos VT right join horario_atencion H 
-on VT.id_persona = H.id_tecnico 
-where EXTRACT(MONTH FROM H.fecha_atencion) = mes and EXTRACT(YEAR FROM h.fecha_atencion) = anyo
-$BODY$;
-----------------------------------------------------------
-CREATE OR REPLACE PROCEDURE public.sp_nuevo_horario(
-	IN id_tecnico integer,
+CREATE OR REPLACE PROCEDURE public.sp_nuevo_horario
+(	IN id_tecnico integer,
 	IN fecha date,
 	IN hora time without time zone)
-LANGUAGE 'sql'
-AS $BODY$
-INSERT INTO public.horario_atencion
-(id_tecnico, fecha_atencion, hora_inicio, estado)
-VALUES
-($1, $2, $3, 'Disponible');
-$BODY$;
+AS $$
+	INSERT INTO public.horario_atencion
+	(id_tecnico, fecha_atencion, hora_inicio, estado)
+		VALUES
+	($1, $2, $3, 'Disponible');
+$$
+LANGUAGE SQL;
 ----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_nuevo_cliente
 (	nom_1 character varying default null,
@@ -638,7 +1016,7 @@ CREATE OR REPLACE PROCEDURE public.sp_nuevo_tecnico
 	direccion text default null,
 	correo character varying default null,
 	contrasena text default null,
- 	id_esp integer default null,
+ 	id_serv_esp integer default null,
  	a_exp integer default null,
  	fec_ingreso date default CURRENT_DATE,
  	foto character varying default null)
@@ -650,10 +1028,11 @@ DECLARE
 BEGIN
 	INSERT INTO public.persona
 	(	nombre_1, nombre_2, apellido_1, apellido_2, 
-		id_tipo_doc, nro_doc, telefono, id_distrito, direccion, id_especialidad, anios_experiencia, fecha_ingreso, foto)
+		id_tipo_doc, nro_doc, telefono, id_distrito, direccion, anios_experiencia, fecha_ingreso, foto)
 	VALUES
-		($1, $2, $3, $4, $5, $6, $7, $8, $9, $12, $13, $14, $15);
+		($1, $2, $3, $4, $5, $6, $7, $8, $9, $13, $14, $15);
 	SELECT max(id_persona) into id_per_tec from public.persona;
+	INSERT INTO tecnico_especialidad (id_tecnico, id_servicio) VALUES (id_per_tec, $12);
 	SELECT f_generar_id_usuario(3) into id_user_tec;
 	INSERT INTO public.usuario
 		(id_user, id_rol, id_persona, email, contra)
@@ -749,14 +1128,19 @@ END
 $$
 LANGUAGE plpgsql;
 ----------------------------------------------------------
-CREATE OR REPLACE PROCEDURE public.sp_uso_pieza(id_aten integer, id_serv integer, id_pza integer, cant bigint)
+CREATE OR REPLACE PROCEDURE public.sp_uso_pieza(id_aten integer, id_pza integer, cant bigint)
 AS 
 $$
-INSERT INTO public.detalle_piezas_usadas(id_atencion, id_servicio, id_pieza)
-	VALUES (id_aten, id_serv, id_pza);
+DECLARE
+	id_venta integer;
+BEGIN
+select s.id_servicio into id_venta from public.servicio s where s.nombre_serv like 'Venta%';
+INSERT INTO public.detalle_piezas_usadas(id_atencion, id_servicio, id_pieza, cantidad)
+	VALUES (id_aten, id_venta, id_pza, cant);
 UPDATE public.pieza set stock = stock-cant;
+END
 $$
-LANGUAGE SQL;
+LANGUAGE plpgsql;
 ----------------------------------------------------------
 CREATE OR REPLACE PROCEDURE public.sp_agregar_actividad(id_aten integer, id_serv integer, id_activi integer)
 AS 
@@ -902,7 +1286,7 @@ BEGIN
 	UPDATE public.persona
 	set nombre_1=nom_1, nombre_2=nom_2, apellido_1=ape_1, apellido_2=ape_2, 
 	id_tipo_doc=id_tdoc, nro_doc=doc, telefono=tel, id_distrito=id_distr, direccion=direcc,
-	id_especialidad=id_esp, anios_experiencia=a_exp, fecha_ingreso=fec_ingreso, fecha_baja=fec_baja,
+	anios_experiencia=a_exp, fecha_ingreso=fec_ingreso, fecha_baja=fec_baja,
 	foto=new_foto, estado_activ=estado
 	where id_persona = id_tecnico;
 
@@ -922,9 +1306,9 @@ CREATE OR REPLACE PROCEDURE public.sp_actualizar_pieza
  	estado boolean default true)
 AS 
 $$
-UPDATE public.pieza
-set nombre_pieza=$2, id_categoria=$3, precio_pieza=$4, stock=$5, estado_activ=$6
-where id_pieza=$1;
+	UPDATE public.pieza
+	set nombre_pieza=$2, id_categoria=$3, precio_pieza=$4, stock=$5, estado_activ=$6
+	where id_pieza=$1;
 $$
 LANGUAGE SQL;
 
@@ -971,285 +1355,9 @@ LANGUAGE plpgsql;
 CREATE OR REPLACE PROCEDURE public.sp_desactivar_horarios_pasados()
 AS 
 $$
-UPDATE horario_atencion 
-set estado = 'Desactivado'
-where (fecha_atencion + hora_inicio + interval '30 minutes') <= LOCALTIMESTAMP and estado = 'Disponible';
+	UPDATE horario_atencion 
+	set estado = 'Desactivado'
+	where (fecha_atencion + hora_inicio + interval '30 minutes') <= LOCALTIMESTAMP and estado = 'Disponible';
 $$
 LANGUAGE SQL;
 ----------------------------------------------------------
-/*********************************************************
-  SCRIPT : INSERCIÓN DE DATOS: taller_utp (POSTGRESQL)
-*********************************************************/
-----------------------------------------------------------
-INSERT INTO public.servicio(nombre_serv, descripcion, estado_activ, foto_serv)
-	VALUES
-	('Instalaciones', 'Deja la instalación de tus artefactos en manos de los expertos.', true, 'img/servicios/instalacion.png'),
-	('Reparaciones', 'Soluciona las averías de tus artefactos con repuestos originales.', true, 'img/servicios/reparacion.png'),
-	('Conversiones', 'Realiza la conversión de tu cocina a gas natural.', true, 'img/servicios/conversiones.png'),
-	('Mantenimiento', 'Prolonga la vida útil de tus artefactos con cuidados preventivos.', true, 'img/servicios/mantenimiento.png'),
-	('Diagnóstico técnico', 'Si tu artefacto presenta averías, solicita evaluación técnica del equipo.', false, 'img/servicios/diagnostico.png'),
-	('Asesoría técnica', 'Recibe asesoría sobre la configuración y uso de tus artefactos.', true, 'img/servicios/asesoria.png'),
-	('Venta de accesorios', 'Encuentra los accesorios originales que necesitas para tus artefactos.', false, NULL),
-	('Estudio de factibilidad', 'Verifica si el espacio donde se instalará el artefacto cuenta con las condiciones técnicas, eléctricas y de gasfitería necesarias, para el óptimo funcionamiento del producto.', true, 'img/servicios/factibilidad.png'),
-	('Visitas técnicas', 'Solicita la visita técnica de nuestros expertos para realizar el diagnóstico o reparación del artefacto en tu hogar.', false, NULL);
----------------------------------------------------------
-DO $$
-declare
-	rec record;
-	nombre_actividad character varying;
-	query text;
-begin
-	query := 'select * from servicio limit 4';
-   for rec in execute query loop
-		for cnt in 1..6 loop
-			INSERT INTO public.actividades_servicio(id_servicio, nombre_actividad, precio)
-			VALUES (rec.id_servicio, concat(substring(rec.nombre_serv,0,4), '_00',cnt), floor(random() * 20 + 5)::numeric);
-		 end loop;
-	end loop;
-END $$;
----------------------------------------------------------
-INSERT INTO public.tipo_documento(nom_tipo_doc)
-	VALUES
-	('DNI'),
-	('Carnet de Extranjería'),
-	('Otros');
----------------------------------------------------------
-INSERT INTO public.distrito(nombre_distrito)
-	VALUES
-	('Alto Selva Alegre'),
-	('Arequipa'),
-	('Cayma'),
-	('Cerro Colorado'),
-	('Characato'),
-	('Chiguata'),
-	('Jacobo Hunter'),
-	('Jose Luis Bustamante y Ribero'),
-	('La Joya'),
-	('Mariano Melgar'),
-	('Miraflores'),
-	('Mollebaya'),
-	('Paucarpata'),
-	('Sabandia'),
-	('Sachaca'),
-	('Socabaya'),
-	('Tiabaya'),
-	('Uchumayo'),
-	('Yanahuana'),
-	('Yarabamba'),
-	('Yura');
----------------------------------------------------------
-INSERT INTO public.roles(nombre_rol)
-	VALUES
-	('Cliente'),
-	('Encargado'),
-	('Técnico');
----------------------------------------------------------
-INSERT INTO public.especialidad(nombre_esp)
-	VALUES
-	('Especialista en termas eléctricas'),
-	('Reparación de aire acondicionado');
----------------------------------------------------------
---ENCARGADO
-INSERT INTO public.persona(nombre_1, nombre_2, apellido_1, apellido_2, id_tipo_doc, nro_doc, telefono, id_distrito, direccion, fecha_ingreso, fecha_baja, foto)
-	VALUES
-	('Alexandre', 'Vidal', 'Rodriguez', 'Coronado', 1, '65486516', '950036349', 4, 'Calle San Sebastián, 79', '2012-10-01', '2020-12-31', 'img/personas/m1.jpg'),
-	('John', NULL, 'Doe', NULL, 2, '007629205', '941069548', 3, 'Av. Parra, 65', '2021-01-01', NULL, 'img/personas/m2.jpg');
-
-INSERT INTO public.usuario(id_user, id_rol, id_persona, email, contra, estado_activ)
-	VALUES
-	('ENC-000001', 2, 1, 'admin01.utp@gmail.com', 'encargado123', false),
-	('ENC-000002', 2, 2, 'admin02.utp@gmail.com', 'encargado123', true);
-
---TÉCNICOS
-INSERT INTO public.persona(nombre_1, nombre_2, apellido_1, apellido_2, id_tipo_doc, nro_doc, telefono, id_distrito, direccion, id_especialidad, anios_experiencia, fecha_ingreso, foto)
-	VALUES
-	('Guillermo', NULL, 'Smith', 'Coppola', 1, '61614803', '997555176', 4, 'Av. Los Ángeles, 542', 1, 5, '2012-12-13', 'img/personas/m3.jpg'),
-	('Eduardo', NULL, 'Vallejo', 'Pereira', 1, '28423490', '974673951', 4, 'Av. Las Vegas, 123', 1, 2, '2013-12-16', 'img/personas/m4.jpg'),
-	('Adriana', NULL, 'Jordan', 'Rodriguez', 1, '40476142', '963306299', 4,  'Av. Las Malvinas, 213', 2, 1, '2014-8-12', 'img/personas/f1.jpg'),
-	('Andrea', NULL, 'Valdivia', 'Segales', 1, '48804278', '985130731', 4, 'Calle Amauta, 138', 1, 4, '2015-10-02', 'img/personas/f2.jpg'),
-	('Mario', NULL, 'Diaz', 'Torres', 1, '39840290', '938781368', 5, 'Av. Los Acres, 64', 1, 1, '2016-05-10', 'img/personas/m5.jpg'),
-	('Melman', NULL, 'Schwimmer', NULL, 2, '001925687', '974594323', 4, 'Urb. Los cipreses, A9', 1, 2, '2017-02-23', 'img/personas/m6.jpg'),
-	('Jennifer', NULL, 'Anco', 'Mamani', 1, '65246344', '938995970', 5, 'Av. Independecia, 71', 2, 4, '2018-11-09', 'img/personas/f3.jpg'),
-	('Alex', NULL, 'Cruz', 'Leon', 1, '44402460', '968696753', 4, 'Urb. Los cipreses, B1', 1, 3, '2019-05-10', 'img/personas/m7.jpg'),
-	('Jose', NULL, 'Perez', 'Rodriguez', 1, '50502291', '963725720', 5, 'Av. Argentina, 256', 2, 10, '2020-10-23', 'img/personas/m8.jpg'),
-	('Juan', 'Jose', 'Molina', 'Quispe', 1, '62289072', '994832406', 4, 'Calle Tahuaycani, 312', 1, 8, '2021-03-01', 'img/personas/m9.jpg');
-	
-INSERT INTO public.usuario(id_user, id_rol, id_persona, email, contra)
-	VALUES
-	('TEC-000001', 3, 3, 'smithgil@gmail.com', 'tecnico123'),
-	('TEC-000002', 3, 4, 'perava@gmai.com', 'tecnico123'),
-	('TEC-000003', 3, 5, 'adr.jordan@gmail.com', 'tecnico123'),
-	('TEC-000004', 3, 6, 'andrea.valdivia@gmail.com', 'tecnico123'),
-	('TEC-000005', 3, 7, 'mario.diaz@gmail.com', 'tecnico123'),
-	('TEC-000006', 3, 8, 'melman.schwimmer@gmail.com', 'tecnico123'),
-	('TEC-000007', 3, 9, 'jennifer.anco@gmail.com', 'tecnico123'),
-	('TEC-000008', 3, 10, 'alex.cruz@gmail.com', 'tecnico123'),
-	('TEC-000009', 3, 11, 'jose.perez@gmail.com', 'tecnico123'),
-	('TEC-000010', 3, 12, 'juan.molina@gmail.com', 'tecnico123');
-
---CLIENTES
-INSERT INTO public.persona(nombre_1, nombre_2, apellido_1, apellido_2, id_tipo_doc, nro_doc, telefono, id_distrito, direccion, foto)
-	VALUES
-	('Luis', NULL, 'Gamarra', 'Alcantara', 1, '68968558', '942256809', 4, 'Av. Parra, 313', 'img/personas/m9.jpg'),
-	('Paul', NULL, 'Gutierrez', 'Manrique', 1, '79734822', '962122495', 4,'Av. Perú, 232', 'img/personas/m8.jpg'),
-	('Juan', 'Pablo', 'Martinez', 'Lopez', 1, '51476446','943182888', 4,'Av. Argentina, 221', 'img/personas/m7.jpg'),
-	('Leticia', NULL, 'Perez', 'Carpdevila', 1, '41005783','973308244', 4, 'Urb. Casa Blanca, B8', 'img/personas/f5.jpg'),
-	('Edmundo', NULL, 'Quintana', 'Morante', 1, '29648571', '935067763', 4, 'Av. Paisajista, 407', 'img/personas/m6.jpg'),
-	('Nicolas', NULL, 'Morales', 'Guillen', 1, '25918192', '998050058', 4, 'Urb. Zafiro, B11', 'img/personas/m5.jpg'),
-	('Adrian', NULL, 'Ruiz', 'Villanueva', 1, '48722307','991349745', 4, 'Av. Porongoche, 606', 'img/personas/m4.jpg'),
-	('William', NULL, 'Hammond', NULL, 2, '10459734080','953574916', 4, 'Calle César Vallejo, 89', 'img/personas/m3.jpg'),
-	('Tookha', NULL, 'Garcia', 'Ghoul', 1, '56703261','984503612', 4, 'Jr. 28 de julo, 503', 'img/personas/f4.jpg'),
-	('Gloria', NULL, 'Smith', NULL, 2, '00129073500', '935122495', 4, 'Av. Manuela Casárez, A7', 'img/personas/f3.jpg'); 
-
-INSERT INTO public.usuario(id_user, id_rol, id_persona, email, contra)
-	 VALUES
-	 ('CLI-000001', 1, 1, 'alexandre.rodriguez@gmail.com', 'cliente123'),
-	 ('CLI-000002', 1, 13, 'alcangama@gmail.com', 'cliente123'),
-	 ('CLI-000003', 1, 14, 'gutman@gmail.com', 'cliente123'),
-	 ('CLI-000004', 1, 15, 'martilop@gmail.com', 'cliente123'),
-	 ('CLI-000005', 1, 16, 'leticia.perez@gmail.com', 'cliente123'),
-	 ('CLI-000006', 1, 17, 'ed.quintana@gmail.com', 'cliente123'),
-	 ('CLI-000007', 1, 18, 'nicola.morales@gmail.com', 'cliente123'),
-	 ('CLI-000008', 1, 19, 'adrian.ruiz@gmail.com', 'cliente123'),
-	 ('CLI-000009', 1, 20, 'william.hammond@gmail.com', 'cliente123'),
-	 ('CLI-000010', 1, 21, 'tookha.garcia@gmail.com', 'cliente123'),
-	 ('CLI-000011', 1, 22, 'gloria.smith@gmail.com', 'cliente123');
----------------------------------------------------------
-DO $$
-begin
-   for cnt in 3..12 loop
-    IF cnt%2 = 0 THEN
-INSERT INTO public.horario_atencion(id_tecnico, fecha_atencion, hora_inicio, estado)
-	VALUES
-	(cnt, CURRENT_DATE, '07:00', 'Disponible'),
-	(cnt, CURRENT_DATE, '10:00', 'Reservado'),
-	(cnt, CURRENT_DATE, '13:00', 'Disponible'),
-	(cnt, CURRENT_DATE, '16:00', 'Disponible'),
-	(cnt, CURRENT_DATE, '19:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '1 day', '07:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '1 day', '10:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '1 day', '13:00', 'Reservado'),
-	(cnt, CURRENT_DATE + INTERVAL '1 day', '16:00', 'Reservado'),
-	(cnt, CURRENT_DATE + INTERVAL '2 day', '07:00', 'Reservado'),
-	(cnt, CURRENT_DATE + INTERVAL '2 day', '10:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '2 day', '13:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '2 day', '16:00', 'Reservado'),
-	(cnt, CURRENT_DATE + INTERVAL '2 day', '19:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '3 day', '07:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '3 day', '10:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '4 day', '07:00', 'Reservado'),
-	(cnt, CURRENT_DATE + INTERVAL '4 day', '07:00', 'Reservado'),
-	(cnt, CURRENT_DATE + INTERVAL '5 day', '10:00', 'Disponible');
-	else
-	INSERT INTO public.horario_atencion(id_tecnico, fecha_atencion, hora_inicio, estado)
-	VALUES
-	(cnt, CURRENT_DATE, '08:00', 'Disponible'),
-	(cnt, CURRENT_DATE, '11:00', 'Reservado'),
-	(cnt, CURRENT_DATE, '14:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '1 day', '08:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '1 day', '11:00', 'Reservado'),
-	(cnt, CURRENT_DATE + INTERVAL '1 day', '14:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '1 day', '17:00', 'Reservado'),
-	(cnt, CURRENT_DATE + INTERVAL '2 day', '08:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '2 day', '11:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '2 day', '14:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '2 day', '17:00', 'Reservado'),
-	(cnt, CURRENT_DATE + INTERVAL '3 day', '08:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '3 day', '11:00', 'Reservado'),
-	(cnt, CURRENT_DATE + INTERVAL '3 day', '14:00', 'Disponible'),
-	(cnt, CURRENT_DATE + INTERVAL '4 day', '08:00', 'Reservado'),
-	(cnt, CURRENT_DATE + INTERVAL '4 day', '11:00', 'Reservado'),
-	(cnt, CURRENT_DATE + INTERVAL '5 day', '08:00', 'Disponible');
-	END IF;
-   end loop;
-END $$;
----------------------------------------------------------
-INSERT INTO public.tipo_electrodomestico(nom_tipo_electro)
-	VALUES
-	('Licuadora'),
-	('Extractor/Emprimidor'),
-	('Batidora'),
-	('Horno eléctrico'),
-	('Olla arrocera'),
-	('Dispensador de agua'),
-	('Balanza de repostería'),
-	('Refrigeradora'),
-	('Frigobar'),
-	('Cocina a gas'),
-	('Cocina eléctrica'),
-	('Horno microondas'),
-	('Lavaplatos'),
-	('Lavadora'),
-	('Secadora'),
-	('Aspiradora'),
-	('Aire acondicionado'),
-	('Ventilador'),
-	('Plancha a vapor'),
-	('Máquina de coser');
----------------------------------------------------------
-INSERT INTO public.marca(nombre_marca)
-	VALUES
-	('Indurama'),
-	('Coldex'),
-	('General Electric'),
-	('Mabe'),
-	('Bosch'),
-	('Samsung'),
-	('Daewoo'),
-	('LG'),
-	('Westinghouse'),
-	('Frigidaire'),
-	('Sole'),
-	('Brasec'),
-	('Bryant'),
-	('Alfano'),
-	('Junkers'),
-	('Rheem'),
-	('Whirlpool'),
-	('Electrolux'),
-	('Kenmore'),
-	('Klimatic'),
-	('KitchenAid'),
-	('Midea'),
-	('Carrier'),
-	('Lennox'),
-	('York'),
-	('Sanyo'),
-	('Electra'),
-	('Coldpoint'),
-	('Hitachi'),
-	('Surrey'),
-	('Miray'),
-	('Otro');
----------------------------------------------------------
-INSERT INTO public.electrodomestico(nro_serie, id_tipo_electro, modelo, id_marca, id_propietario)
-	VALUES
-	('3913511', 14, 'WA17T6260BW', 6, 20),
-	('3958671', 10, 'Monet', 1, 21);
----------------------------------------------------------
-INSERT INTO public.categoria_pieza(nombre_cat)
-	VALUES
-	('Lavadoras'),
-	('Licuadoras'),
-	('Refrigeradores'),
-	('Cocinas'),
-	('Aire acondicionado'),
-	('Aspiradoras'),
-	('Lavaplatos'),
-	('Microondas');
----------------------------------------------------------
-INSERT INTO public.pieza(nombre_pieza, stock, precio_pieza, id_categoria)
-	VALUES 
-	('Manguera de entrada de lavadora de goma negra, 3/4 pulgadas x 5 pies', 300, 27.00, 1),
-	('Tapa De Vaso Para Licuadora Oster Flexible Nacional', 500, 10.00, 2),
-	('Timer Para Refrigerador Sankyo 220v 8 Horas Ge Mabe Wr9x553', 1000, 27.50, 3),
-	('Valvula De Carga De Servicio Para Refrigeración 10 cm importado 887702', 220, 5.00, 3),
-	('Bomba electromagnética de desagüe de lavadora Askoll 35W 220V 60HZ', 144, 169.90, 1),
-	('Cuchilla para Sistema de Nutrición Oster Xpert Series BLSTXPN7002/7003', 2000, 108.00, 2),
-	('Chisperos Para Cocina', 750, 77.00, 4),
-	('Filtro De Carbón Campana Indurama', 80, 70.00, 4),
-	('Juego de Limpieza Profeisional NT DN 40', 1000, 280.50, 6),
-	('Kit Instalacion Lavaplatos', 500, 58.90, 7),
-	('Condensador para horno microondas Sharp', 120, 146.00, 8),
-	('Botón plateado para horno microondas Bosch', 280, 24.00, 8);
----------------------------------------------------------------------------------

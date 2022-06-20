@@ -15,6 +15,7 @@ import utp.taller.dao.DaoActividad;
 import utp.taller.dao.DaoAtencion;
 import utp.taller.dao.DaoPieza;
 import utp.taller.dto.DtoAtencion;
+import utp.taller.dto.DtoPresupuesto;
 import utp.taller.entidades.Actividad;
 import utp.taller.entidades.Pieza;
 
@@ -24,7 +25,9 @@ import utp.taller.entidades.Pieza;
 @WebServlet("/ServletPresupuesto")
 public class ServletPresupuesto extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-      
+    
+	private List<DtoPresupuesto> lstPresupues = new ArrayList<DtoPresupuesto>();
+	
 	private DaoActividad dao = new DaoActividad();
 	private static List<Actividad> actividadesOfrecidas = new ArrayList<Actividad>();
 	private static List<Actividad> actividadesSeleccionadas = new ArrayList<Actividad>();
@@ -121,8 +124,9 @@ public class ServletPresupuesto extends HttpServlet {
 			request.setAttribute("lstPiezasSeleccionadas", piezasSeleccionadas);
 			break;
 			
-		case "confirmar": 
+		case "confirmar":
 			DtoAtencion dtoAtencion = (DtoAtencion) request.getSession().getAttribute("dtoAtencion");
+			
 			int idServ =(int) request.getSession().getAttribute("id_servicio");
 			
 			DaoAtencion daoAte = new DaoAtencion();
@@ -132,7 +136,7 @@ public class ServletPresupuesto extends HttpServlet {
 			
 			double presupuestoServ = (double) request.getSession().getAttribute("presupuesto");
 			double costoPiezas = (double) request.getSession().getAttribute("presupuesto2");
-			
+			double montoTotal = presupuestoServ + costoPiezas;
 			System.out.println("ID SERVICIO: "+idServ);
 			System.out.println("Total de actividades: "+actividadesSeleccionadas.size());
 			System.out.println("Total de piezas diferentes: "+piezasSeleccionadas.size());
@@ -142,21 +146,19 @@ public class ServletPresupuesto extends HttpServlet {
 			if(piezasSeleccionadas!=null) {
 				if(piezasSeleccionadas.size()>0)
 					daoAte.agregarVenta(dtoAtencion.getIdAtencion(), costoPiezas);
-					daoPi.uso_pieza(dtoAtencion.getIdAtencion(), idServ, piezasSeleccionadas);
+					daoPi.uso_pieza(dtoAtencion.getIdAtencion(), piezasSeleccionadas);
 			}
 			
 			daoAte.finalizarAtencionDomicilio(dtoAtencion.getIdAtencion(), idServ, presupuestoServ);
+			//OBTENIENDO ISTA PRESUPUESTO
+			lstPresupues=daoAte.listarPresupuesto(dtoAtencion.getIdAtencion());
 			
 			limpiarListas();
 			
-			PrintWriter writer = response.getWriter();
-			String htmlRespone = "<html>";
-			htmlRespone += "<script type=\"text/javascript\">"
-					+ "		        window.parent.location.href =vista/tecnico/menuTecnico.jsp"
-					+ "		    </script>";
-			htmlRespone += "</html>";
-			 
-			writer.println(htmlRespone);
+			request.getSession().setAttribute("lstPresupuesto", lstPresupues);
+			request.getSession().setAttribute("montoTotal", montoTotal);
+			request.getSession().setAttribute("dtoAtencion", dtoAtencion);
+			request.getRequestDispatcher("/ServletGenerarPDF?generarPDF=hojaServicio").forward(request, response);
 			return;
 
 		}		

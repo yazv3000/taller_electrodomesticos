@@ -20,9 +20,11 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
+import utp.taller.dao.DaoAtencion;
 import utp.taller.dto.DtoAtencion;
 import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoNuevaCita;
+import utp.taller.dto.DtoPresupuesto;
 import utp.taller.dto.DtoReporteConsulta;
 import utp.taller.dto.DtoTecnicoConsulta;
 import utp.taller.dto.DtoUsuario;
@@ -140,7 +142,7 @@ public class ServletGenerarPDF extends HttpServlet {
              response.addHeader("Content-disposition", "inline; filename=ReporteCliente.pdf"); // Nombre con el que se descarga el archivo pdf
              JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, ds);
              JasperExportManager.exportReportToPdfStream(jasperPrint, out);
-             //JasperExportManager.exportReportToPdfFile( jasperPrint, "E:/temporal/reporte.pdf"); // guardar el pdf (hoja de servicio)
+
              out.flush();
              out.close();
              
@@ -153,6 +155,47 @@ public class ServletGenerarPDF extends HttpServlet {
 
 	private void reporteHojaServicio(HttpServletRequest request, HttpServletResponse response) {
 		
+		DtoAtencion dtoAte = (DtoAtencion) request.getSession().getAttribute("dtoAtencion");
+		System.out.println(dtoAte);
+		DtoUsuario dtoTecnico = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");
+		double montoTotal = (double) request.getSession().getAttribute("montoTotal");
+		List<DtoPresupuesto> lstPresupuesto = (List<DtoPresupuesto>) request.getSession().getAttribute("lstPresupuesto");
+		JRBeanArrayDataSource ds = new JRBeanArrayDataSource(lstPresupuesto.toArray());
+		try {
+			ServletOutputStream out = response.getOutputStream();
+			InputStream reporte = this.getServletConfig()
+                            .getServletContext()
+                            .getResourceAsStream("reportesJasper/HojaServicio.jasper"); // ruta y nombre del archivo Jasper
+			System.out.println(reporte);
+			 JasperReport report = (JasperReport) JRLoader.loadObject(reporte);
+			 System.out.println("ENTRE AL DRIVER");
+			 Map<String, Object> parameters = new HashMap();
+			 parameters.put("ds", ds);
+             parameters.put("nombresTecnico", dtoTecnico.getUsername());
+             parameters.put("nombresCli",dtoAte.getCliente().getNombreCompleto());
+             parameters.put("telefonoCli",dtoAte.getCliente().getTelefono());
+             parameters.put("direccionCli",dtoAte.getCliente().getDireccion());
+             parameters.put("tipo",dtoAte.getElectrodomesticoTipo().getNombre());
+             parameters.put("numeroSerie",dtoAte.getElectrodomestico().getNroSerie());
+             parameters.put("marca", dtoAte.getElectrodomesticoMarca().getNombre());
+             parameters.put("modelo",dtoAte.getElectrodomestico().getModelo());
+             parameters.put("falla", dtoAte.getFallaDescrita());
+             parameters.put("fechaReserva", dtoAte.getFechaReservaCita().toString());
+             parameters.put("fechaCita", dtoAte.getFechaCita().toString());
+             parameters.put("hora", dtoAte.getHoraCita());
+             parameters.put("servicio",dtoAte.getServicio().getNomServicio());
+             parameters.put("precioTotal", "S/."+montoTotal);
+             response.setContentType("application/pdf");
+             response.addHeader("Content-disposition", "inline; filename=hojaServicio2.pdf"); // Nombre con el que se descarga el archivo pdf
+             JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, ds);
+             JasperExportManager.exportReportToPdfStream(jasperPrint, out);
+             JasperExportManager.exportReportToPdfFile( jasperPrint, "reporte.pdf"); // guardar el pdf (hoja de servicio)
+             out.flush();
+             out.close();
+		} catch (Exception e) {	
+			throw new RuntimeException(e);
+		}
+		correo.enviarCorreo(dtoAte.getCliente().getEmail());
 	}
 	
 	private void reporteCitaTecnica(HttpServletRequest request, HttpServletResponse response) {
@@ -190,14 +233,13 @@ public class ServletGenerarPDF extends HttpServlet {
              JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, ds);
              JasperExportManager.exportReportToPdfStream(jasperPrint, out);
              JasperExportManager.exportReportToPdfFile( jasperPrint, "reporte.pdf"); // guardar el pdf (hoja de servicio)
-             correo.enviarCorreo(dtoCliente.getEmail());
              out.flush();
              out.close();
              
 		} catch (Exception e) {
-			
 			throw new RuntimeException(e);
 		}
+		correo.enviarCorreo(dtoCliente.getEmail());
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
