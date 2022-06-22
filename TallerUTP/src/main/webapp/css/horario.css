@@ -149,7 +149,6 @@ body {
  .carrusel__contenido {
     width: 100%;   
     list-style: none;
-    
  }
  
  .carrusel__espacio {
@@ -157,7 +156,17 @@ body {
  	height: 200px;
  	overflow: hidden;
  	width: 800px;
+ 	overflow-y: auto; 
  }
+ 
+.carrusel__espacio::-webkit-scrollbar {
+	width: 10px;
+	background: var(--primario);
+}
+.carrusel__espacio::-webkit-scrollbar-thumb {
+	background: var(--grad-boton);
+	border-radius: 5px;
+}
  
 .carrusel__espacio--altura {
 	height: 380px;
@@ -299,9 +308,3 @@ body {
     }
     
 }
-
-
-
-
-
-

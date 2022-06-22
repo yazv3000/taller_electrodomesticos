@@ -28,7 +28,127 @@ body {
 * {
     box-sizing: border-box;
 }
+.tabla__tools {
+    display: flex;
+    justify-content: space-between;
+}  
 
+.tabla__tools ul {
+    display: flex;
+    list-style:none;
+    gap: 20px;
+    align-items: center;
+}
+
+.tabla__tools ul li .icono {
+    color: white;
+    font-size: 20px;
+    padding:10px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    transition: 0.3s
+}
+
+.tabla__tools ul li .icono:hover {
+	transform: scale(1.1);
+    cursor: pointer;
+}
+.tabla {
+    background-color: var(--primario);
+    border-radius: 10px;
+    width: 100%;
+}
+.titulo-col {
+    color: white;
+    font-family: "Audiowide";
+    font-size: 0.8rem;
+}
+.icono2 {
+	outline: 1px solid white;
+	color: white;
+    font-size: 20px;
+    padding:5px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    transition: 0.3s
+}
+.icono3{
+	outline: 1px solid white;
+	color: white;
+    font-size: 20px;
+    padding:5px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    transition: 0.3s;
+    position: absolute;
+    top: 20px;
+    left: 25px;
+    border: none;
+}
+
+.tabla__letra {
+	font-family: "Poppins";
+}
+
+#tabla__fila {
+    background: var(--grad-fondo);
+    text-align-last: center;
+}
+#tabla_wrapper {
+	padding: 0 20px 20px 20px;
+}
+#tabla_length {
+    margin: 20px 0;
+}
+#tabla_length label{
+    color: white;
+    font-family: "Audiowide";
+}
+#tabla_length label select{
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_length label select option{ 
+    color: white;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color:var(--fondo);
+}
+#tabla_filter {
+    margin: 20px 0;
+}
+#tabla_filter label {
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_filter label select {
+    color: white;
+}
+
+#tabla_filter label select option{
+    color: white;
+}
+
+#tabla_filter label input{
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_info {
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_previous {
+    color: white !important;
+    font-family: "Audiowide";
+}
+
+#tabla_next {
+    color: white !important;
+    font-family: "Audiowide";
+}
 .titulo-cita {
     color: white;
     text-align: center;
@@ -133,6 +253,12 @@ i {
 
 /* ELECTRODOMESTICO */
 
+.titulo {
+  background: var(--grad-form) !important;
+  outline: 2px solid var(--secundario);
+  border-radius: 5px;
+}
+
 .electrodomestico {
     margin: 40px 0;
     display: grid;
@@ -140,15 +266,23 @@ i {
     background: var(--grad-fondo);
     border-radius: 20px;
     box-shadow: inset 4px 2px 10px rgb(122, 122, 122), 4px 2px 10px black;
-
+}
+.tablaElectro {
+    margin: 40px 0;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    background: var(--grad-fondo);
+    border-radius: 20px;
+    box-shadow: inset 4px 2px 10px rgb(122, 122, 122), 4px 2px 10px black;
+    position: relative;
 }
 
 .electro__titulo {
-    color: white;
+    color: var(--secundario);
     font-family: "Audiowide";
     grid-column: 1/3;
     text-align: center;
-    margin: 20px 0;
+    margin-top: 20px;
     font-size: 1.4rem;
 }
 

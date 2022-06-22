@@ -134,7 +134,7 @@ public class DaoServicio extends Conexion implements CRUD<Servicio> {
 		Servicio serv = new Servicio();
 		try {
 			serv.setIdServicio(rs.getInt("id_servicio"));
-			serv.setNomServicio(rs.getString("nombre_serv"));
+			serv.setNomServicio(rs.getString("nombre_pl"));
 			serv.setDescripcion(rs.getString("descripcion"));
 			serv.setEstadoActivo(rs.getBoolean("estado_activ"));
 			serv.setRutaImgServicio(rs.getString("foto_serv"));

@@ -12,6 +12,7 @@
     <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
     <link rel="icon" href="${context}/img/Logoa.png" type="image/png" >
     <link rel="stylesheet" href="${context}/css/menu-tecnico.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 </head>
 <body>
     <nav class="navegador">
@@ -25,7 +26,7 @@
 
                 <ul class="nav__lista nav__lista--ocultar">
                     <li class="nav__item">
-                        <a href="${context}/ServletActualizarAtencion" class="nav__link" target="marco">Citas</a>
+                        <a href="${context}/ServletActualizarAtencion" class="nav__link" target="marco">Atenciones</a>
                         <div class="nav__linea"></div>
                     </li>
                     <li class="nav__item">
@@ -64,5 +65,20 @@
 
     <iframe src="${context}/ServletActualizarAtencion" class="marco" name="marco" frameborder="0"></iframe>
     <script src="${context}/js/menu-tec.js"></script>
+	<!-- LIBRERIA DATATABLE -->
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+	<script>
+	$(document).ready(function () {
+        $('#tabla__Cliente').DataTable({
+            "language": {
+            	"sSearch":"Buscar",
+            	"oPaginate":{
+            		"sPrevious": "Anterior",
+                	"sNext": "Siguiente"
+            	}	
+            }
+        });
+    });  
+    </script>
 </body>
 </html>

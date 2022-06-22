@@ -21,9 +21,16 @@
 * {
     box-sizing: border-box;
     padding: 0px;
-    margin:0
+    
 }
-
+body::-webkit-scrollbar {
+	width: 10px;
+	background: var(--primario);
+}
+body::-webkit-scrollbar-thumb {
+	background: var(--grad-boton);
+	border-radius: 5px;
+}
 
 .contenedor {
     margin: 20px 5%;
@@ -43,11 +50,13 @@
 .grid__seccion {
     display: grid;
     grid-template-columns: repeat(4,1fr);
-    margin: 10px 0 40px 0 ;
+    margin: 0 15px;
     border-bottom: 1px solid var(--secundario);
     padding-bottom: 20px;
 }
-
+h3{
+	margin: 0 15px;
+}
 .grid__items {
     display: grid;
     grid-template-columns: 10px max-content;
@@ -86,7 +95,7 @@
 	border: none;
 	padding: 5px;
 	border-radius: 5px;
-	margin-bottom: 10px;
+	margin: 15px;
 }
 
 .bordes {
@@ -107,15 +116,22 @@
     background-color: var(--primario);
     border-radius: 10px;
     width: 100%;
-    padding:20px;
 }
-
 .titulo-col {
     color: white;
     font-family: "Audiowide";
     font-size: 0.8rem;
 }
+.titulo-1 {
+    color: white;
+    font-family: "Audiowide";
+    text-align: center;
+    margin: 40px 0;
+}
 
+.titulo-1 span {
+    color: var(--secundario);
+}
 .etiqueta {
 	display: block;
     color: white;
@@ -148,4 +164,118 @@
     font-family: "Audiowide";
     text-align: center;
     margin: 5px;
+}
+#tabla__fila {
+    background-color: var(--primario);
+}
+#tabla_Servicios_wrapper {
+	padding: 0 20px 20px 20px;
+}
+#tabla_Servicios_length {
+    margin: 20px 0;
+}
+#tabla_Servicios_length label{
+    color: white;
+    font-family: "Audiowide";
+}
+#tabla_Servicios_length label select{
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_Servicios_length label select option{ 
+    color: white;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color:var(--fondo);
+}
+#tabla_Servicios_filter {
+    margin: 20px 0;
+}
+#tabla_Servicios_filter label {
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_Servicios_filter label select {
+    color: white;
+}
+
+#tabla_Servicios_filter label select option{
+    color: white;
+}
+
+#tabla_Servicios_filter label input{
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_Servicios_info {
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_Servicios_previous {
+    color: white !important;
+    font-family: "Audiowide";
+}
+
+#tabla_Servicios_next {
+    color: white !important;
+    font-family: "Audiowide";
+}
+
+#tabla_Piezas_wrapper {
+	padding: 0 20px 20px 20px;
+}
+#tabla_Piezas_length {
+    margin: 20px 0;
+}
+#tabla_Piezas_length label{
+    color: white;
+    font-family: "Audiowide";
+}
+#tabla_Piezas_length label select{
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_Piezas_length label select option{ 
+    color: white;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color:var(--fondo);
+}
+#tabla_Piezas_filter {
+    margin: 20px 0;
+}
+#tabla_Piezas_filter label {
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_Piezas_filter label select {
+    color: white;
+}
+
+#tabla_Piezas_filter label select option{
+    color: white;
+}
+
+#tabla_Piezas_filter label input{
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_Piezas_info {
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_Piezas_previous {
+    color: white !important;
+    font-family: "Audiowide";
+}
+
+#tabla_Piezas_next {
+    color: white !important;
+    font-family: "Audiowide";
 }

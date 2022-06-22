@@ -67,17 +67,15 @@
                         	</table>
                         </td>
                         <td  class="tabla__columna">
-                        	<a class="informacion" href="${context}/ServletResumenAtencion?id=${ci.getIdAtencion()}" target="marco-atencion"><i class="fa-solid fa-file-pen icon"></i></a></td>
+                        	<a class="informacion" href="${context}/ServletResumenAtencion?id=${ci.getIdAtencion()}" ><i class="fa-solid fa-file-pen icon"></i></a></td>
                     </tr>
                     </c:forEach>
                 </tbody>
             </table>
         </div>
     </div>
-    <h2 class="titulo-1">Detalles de la <span>Cita Seleccionada</span></h2>
-    <div class="contenedor-iframe">
-        <iframe src="" class="marco-atencion" name="marco-atencion" src="" frameborder="0"></iframe>
-    </div>
+    
+    
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript" charset="utf8"
         src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>

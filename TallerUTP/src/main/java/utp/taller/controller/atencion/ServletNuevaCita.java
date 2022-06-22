@@ -15,6 +15,7 @@ import utp.taller.dao.DaoElectrodomestico;
 import utp.taller.dao.DaoHorario;
 import utp.taller.dao.DaoServicio;
 import utp.taller.dto.DtoAtencion;
+import utp.taller.dto.DtoElectrodomesticoConsulta;
 import utp.taller.dto.DtoHoraConsulta;
 import utp.taller.dto.DtoNuevaCita;
 import utp.taller.dto.DtoUsuario;
@@ -31,7 +32,10 @@ public class ServletNuevaCita extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     private DtoNuevaCita dtoCita = new DtoNuevaCita();
-    private DaoAtencion daoaTE = new DaoAtencion();
+    private DaoAtencion daoAte = new DaoAtencion();
+    private DaoElectrodomestico daoElect = new DaoElectrodomestico();
+    private Electrodomestico electro = new Electrodomestico();
+    
     public ServletNuevaCita() {
         super();   
     }
@@ -50,8 +54,9 @@ public class ServletNuevaCita extends HttpServlet {
     		
     		listarMarcas(request);
     		listarTipos(request);
+    		listarElectrodomesticos(request);
     		
-    		request.setAttribute("dtoCita", dtoCita);
+    		request.getSession().setAttribute("dtoCita", dtoCita);
     		request.getRequestDispatcher("/vista/cliente/reservaCita.jsp").forward(request, response);
     		break;
     		
@@ -67,7 +72,7 @@ public class ServletNuevaCita extends HttpServlet {
     			daoAte.insertarCita(dtoCita);
     			
     			int idMaximo = daoAte.idMaxAtencion();
-    			DtoAtencion dtoAte = daoaTE.obtenerAtencion(idMaximo);
+    			DtoAtencion dtoAte = daoAte.obtenerAtencion(idMaximo);
     			request.setAttribute("generarPDF", generarPDF);
     			request.getSession().setAttribute("dtoAtencion", dtoAte);
     			request.getSession().setAttribute("dtoCita", dtoCita);
@@ -78,11 +83,37 @@ public class ServletNuevaCita extends HttpServlet {
 //    			request.getRequestDispatcher("/vista/cliente/reservaCita.jsp").forward(request, response);
 //    		}
     		break;
+    	case "agregarElectro":
+    		request.setAttribute("contenido", "nuevo");
+    		request.getRequestDispatcher("/vista/cliente/reservaCita.jsp").forward(request, response);
+    		break;
+    		
+    	case "seleccionarElectro":
+    		int id = Integer.parseInt(request.getParameter("id"));
+    		DtoElectrodomesticoConsulta dtoElectro = daoElect.consultarElectrodomesticoId(id);
+    		request.setAttribute("dtoElectro", dtoElectro);
+    		request.setAttribute("entrada", "bloquear");
+    		request.getRequestDispatcher("/vista/cliente/reservaCita.jsp").forward(request, response);
+    		break;
+    		
+    	case "cancelar":
+    		request.getRequestDispatcher("/vista/cliente/reservaCita.jsp").forward(request, response);
+    		break;
+    	case "obtenerDatos":
+    		int idElectrodomestico = Integer.parseInt(request.getParameter("id"));
+    		electro = daoElect.consultarId(idElectrodomestico);
+    		request.setAttribute("el", electro);
+    		break;
     	}
+    	
     	
 	}
     
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request, response);
+	}
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		processRequest(request, response);
 	}
 	
@@ -109,15 +140,20 @@ public class ServletNuevaCita extends HttpServlet {
 	private void listarMarcas(HttpServletRequest request) {
 		DaoElectrodomestico daoElectro = new DaoElectrodomestico();
 		List<ElectrodomesticoMarca> lst = daoElectro.listarMarcas();
-		request.setAttribute("lstMarcas", lst);
+		request.getSession().setAttribute("lstMarcas", lst);
 	}
 	
 	private void listarTipos(HttpServletRequest request) {
 		DaoElectrodomestico daoElectro = new DaoElectrodomestico();
 		List<ElectrodomesticoTipo> lst = daoElectro.listarTiposE();
-		request.setAttribute("lstTipos", lst);
+		request.getSession().setAttribute("lstTipos", lst);
 	}
-	
+	private void listarElectrodomesticos(HttpServletRequest request) {
+		DtoUsuario dtoUsuario = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");
+		DaoElectrodomestico daoElectro = new DaoElectrodomestico();
+		List<DtoElectrodomesticoConsulta> lst = daoElectro.listarDtoElectrodomesticosporCliente(dtoUsuario.getIdPersona());
+		request.getSession().setAttribute("lstElectro", lst);
+	}
 	private int registrarElectrodomestico(HttpServletRequest request) {
 		Electrodomestico electro = new Electrodomestico();
 		DtoUsuario propietario = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");

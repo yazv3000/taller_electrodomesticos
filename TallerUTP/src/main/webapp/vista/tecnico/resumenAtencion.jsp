@@ -9,9 +9,10 @@
 <meta charset="ISO-8859-1">
 <script src="https://kit.fontawesome.com/c2a0f18374.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" type="text/css" href="${context}/css/resumenAtencion.css">
-
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 </head>
 <body>
+	<h2 class="titulo-1">Detalles de la <span>Hoja de Servicio</span></h2>
 	<h3 class="cliente" style="text-align:left;">Cliente</h3>
         <div class="grid__seccion">
             <div class="grid__items"><i class="fa-solid fa-user icono"></i><span>Cliente: <c:out value="${ate.getCliente().getNombreCompleto()}"></c:out></span></div>
@@ -36,21 +37,18 @@
             <div class="grid__items"><i class="fa-solid fa-check-to-slot"></i><span>Modelo: <c:out value="${ate.getElectrodomestico().getModelo()}"></c:out></span></div>
             <div class="grid__items largo"><i class="fa-solid fa-triangle-exclamation"></i><span>Falla: <c:out value="${ate.getFallaDescrita()}"></c:out></span></div>
         </div>
-        
-        Cambiar estado a ...
-        <button type="button"  class="actualizar" onclick="location.href='ServletPresupuesto?accion=listar&id_servicio=${ate.getServicio().getIdServicio()}'">En progreso</button>
-
        
-	
+        <button type="button"  class="actualizar" onclick="location.href='ServletPresupuesto?accion=listar&id_servicio=${ate.getServicio().getIdServicio()}'">En progreso</button>
+    
 	<form action="${context}/ServletPresupuesto" method="get">
 	<h3 class="cliente" style="text-align:left;">Actividades</h3>
 	<c:if test="${lstActividadesOfrecidas!=null}">
 	<div class="contenedor-act">
 		<div class="bordes">
 			<h2 class="sub-titulo">Actividades ofrecidas</h2>
-			<table class="tabla">
+			<table class="tabla" id="tabla_Servicios">
 				<thead>
-					<tr class="titulo-col">
+					<tr class="titulo-col" id="tabla__fila">
 						<th>ACTIVAD</th>
 						<th>PRECIO</th>
 						<th>ACCION</th>
@@ -58,7 +56,7 @@
 				</thead>
 				<tbody>
 					<c:forEach items="${lstActividadesOfrecidas}" var="ac1">
-						<tr>
+						<tr id="tabla__fila">
 							<td><label class="etiqueta"><c:out value="${ac1.getNombre()}"></c:out></label></td>
 							<td><label class="etiqueta"><c:out value="${ac1.getPrecio()}"></c:out></label></td>
 							<td><a class="etiqueta" href="${context}/ServletPresupuesto?accion=agregar&idActividad=${ac1.getIdActividad()}"><i
@@ -108,9 +106,9 @@
     <div class="contenedor-act">
     	<div class="bordes">
 			<h2 class="sub-titulo">Piezas ofrecidas</h2>
-			<table class="tabla">
+			<table class="tabla" id="tabla_Piezas">
 				<thead>
-					<tr class="titulo-col">
+					<tr class="titulo-col" id="tabla__fila">
 						<th> PIEZA </th>
 						<th> PRECIO</th>
 						<th> STOCK </th>
@@ -119,7 +117,7 @@
 				</thead>
 			<tbody>
 				    <c:forEach items="${lstPiezasOfrecidas}" var="pi1">
-				    <tr> 
+				    <tr id="tabla__fila"> 
 				            <td><label class="etiqueta"><c:out value="${pi1.getNomPieza()}"></c:out></label></td>
 				            <td><label class="etiqueta"><c:out value="${pi1.getPrecio()}"></c:out></label></td>
 				            <td><label class="etiqueta"><c:out value="${pi1.getStock()}"></c:out></label></td>
@@ -165,5 +163,33 @@
 	<input type="hidden" name="generarPDF" value="hojaServicio">
 	<button class="actualizar" type="submit" name="accion" value="confirmar" style="margin: 0 calc(45% - 0px);">Confirmar</button>
 	</form>
+	<!-- LIBRERIA DATATABLE -->
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+	<script>
+	
+		$(document).ready(function () {
+	        $('#tabla_Servicios').DataTable({
+	            "language": {
+	            	"sSearch":"Buscar",
+	            	"oPaginate":{
+	            		"sPrevious": "Anterior",
+	                	"sNext": "Siguiente"
+	            	}	
+	            }
+	        });
+	    }); 
+		$(document).ready(function () {
+	        $('#tabla_Piezas').DataTable({
+	            "language": {
+	            	"sSearch":"Buscar",
+	            	"oPaginate":{
+	            		"sPrevious": "Anterior",
+	                	"sNext": "Siguiente"
+	            	}	
+	            }
+	        });
+	    }); 
+    </script>
 </body>
 </html>

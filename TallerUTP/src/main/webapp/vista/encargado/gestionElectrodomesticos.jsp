@@ -168,7 +168,7 @@
 			            </div>
 						<select class="form__seleccion" name="cbx_marcas">
 						<c:forEach items="${lstMarcas}" var="m">
-			                <option class="form__opcion" value="${m.getId()}">${m.getNombre()}</option>
+			                <option class="form__opcion" value="${m.getId()}" ${m.getId()==el.getIdmarca() ? 'selected' : '' } >${m.getNombre()}</option>
 						</c:forEach>
 						</select>
 						<select class="form__seleccion" name="cbx_propietario" style="height: 40px;">

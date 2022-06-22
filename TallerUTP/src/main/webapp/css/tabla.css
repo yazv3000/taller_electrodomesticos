@@ -20,7 +20,15 @@
 *,::before,::after{
   box-sizing: border-box;
 }
+body::-webkit-scrollbar {
+	width: 10px;
+	background: var(--fondo);
+}
 
+body::-webkit-scrollbar-thumb {
+	background: var(--secundario);
+	border-radius: 10px;
+}
 body{
   position: relative;
   overflow: hidden;
@@ -28,6 +36,9 @@ body{
   padding: 0;
   background-color: var(--fondo) !important;
 }
+
+
+
 .titulo {
 	color: white;
 	font-family: "Audiowide";

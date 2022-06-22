@@ -47,7 +47,7 @@
 	                        <li class="carrusel__contenido">
 	                            <div class="carrusel__espacio">
 	                                <table class="tabla-1">
-	                                    <tr class="tabla-dia">
+	                                    <tr class="tabla-dia" >
 	                                    <c:forEach var="dia" items="${horario}"> 
 	                                        <td class="tabla1__columna">
 	                                            <table class="tabla-2">
@@ -82,7 +82,7 @@
 	                    </c:forEach>
 	                    </ul>
                     </div>
-                    <button class="mostrar__horas">Mostrar más Horas</button>
+<!--                     <button class="mostrar__horas">Mostrar más Horas</button> -->
                 </div>       
             </div>
             </c:forEach>
