@@ -20,15 +20,6 @@
 *,::before,::after{
   box-sizing: border-box;
 }
-
-body{
-  position: relative;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  background-color: var(--fondo) !important;
-  overflow-y: auto; 
-}
 body::-webkit-scrollbar {
 	width: 10px;
 	background: var(--fondo);
@@ -38,6 +29,14 @@ body::-webkit-scrollbar-thumb {
 	background: var(--secundario);
 	border-radius: 10px;
 }
+body{
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background-color: var(--fondo) !important;
+}
+
 
 
 .titulo {
@@ -146,11 +145,6 @@ label {
 
 
 .contenido {
-	height: 100vh;
-	overflow-y: auto;
-}
-
-.contenido2 {
 	height: 100vh;
 	overflow-y: auto;
 }

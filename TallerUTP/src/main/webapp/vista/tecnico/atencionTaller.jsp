@@ -21,154 +21,166 @@
 </head>
 
 <body>
-	<div class="resumen1">
-		<button class="fa-solid fa-plus-square icono3" data-bs-toggle="modal" data-bs-target="#staticBackdrop" ></button>
-			<h2 class="titulo-01">Selecciona un<span> Cliente</span></h2>
-			<table class="tabla" id="tabla" >
-	                <thead class="tabla__titulo">
-	                    <tr class="titulo-col" id="tabla__fila">
-	                        <th>ID</th>
-							<th>NOMBRES Y APELLIDOS</th>
-							<th>TELEFONO</th>
-							<th>DISTRITO</th>
-							<th>DIRECCION</th>
-							<th>EMAIL</th>
-							<th>ACCION</th>
-	                    </tr>
-	                </thead>
-	                <tbody class="tabla__info">
-	                	<c:forEach items="${lstClientes}" var="c">
-	                    <tr class="titulo-col" id="tabla__fila">
-	                        <td> <c:out value="${c.getIdUsuarioCliente()}"></c:out> </td>
-							<td> <c:out value="${c.getNombreCompleto()}"></c:out> </td>
-							<td> <c:out value="${c.getTelefono()}"></c:out> </td>
-							<td> <c:out value="${c.getDistrito()}"></c:out> </td>
-							<td> <c:out value="${c.getDireccion()}"></c:out> </td>
-							<td> <c:out value="${c.getEmail()}"></c:out> </td>		
-							<td><a href="${context}/ServletAtencionTaller?accion=obtenerDatos&id=${c.getIdPersona()}"><i class="fa-solid fa-square-check icono2" ></i></a></td>
-						</tr>
-	                    </c:forEach>
-	                </tbody>
-            </table>
-	</div>
-	<div class="resumen2">
-		<h2 class="titulo-02">ATENCION EN <span>EL TALLER</span></h2>
-	        	<!-- ===== DATOS DEL NUEVO CLIENTE===== -->
-				<form class="col-11 formulario needs-validation" action="<%=request.getContextPath()%>/ServletAtencionTaller" method="post" novalidate>
-
-			        <div class="form__contenedor pt-3">
-			        	
-			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" "  value="${cli.getNombrePrin()}" name="txt_nom1" required>
-			                <label for="name" class="form__label" >Primer nombre:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            
-			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control"  placeholder=" " value="${cli.getNombreSec()}" name="txt_nom2">
-			                <label for="name" class="form__label">Segundo nombre:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" " value="${cli.getApePrin()}" name="txt_ape1" required>
-			                <label for="name" class="form__label">Primer apellido:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" " value="${cli.getApeSec()}" name="txt_ape2">
-			                <label for="" class="form__label">Segundo Apellido:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <select class="form__seleccion" name="cbx_tipodoc">
-			                <option class="form__opcion" value=1  ${cli.getTipoDocumento() == 1 ? 'selected' : ''}>DNI</option>
-			                <option class="form__opcion" value=2  ${cli.getTipoDocumento() == 2 ? 'selected' : ''}>Carne de Extranjería</option>
-			                <option class="form__opcion" value=3  ${cli.getTipoDocumento() == 3 ? 'selected' : ''}>Otros</option>
-			            </select>
-			            <div class="form__grupo">
-			                <input type="number" id="num-doc2" class="form__input form-control" placeholder=" " value="${cli.getNroDocumento()}" name="num_doc" required>
-			                <label for="name" class="form__label">Número de Documento:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo">
-			                <input type="number" id="tel-2" class="form__input form-control" placeholder=" " value="${cli.getTelefono()}" name="num_telef" required>
-			                <label for="name" class="form__label">Teléfono:</label>
-			                <span class="form__line"></span>
-			            </div>
-						<select class="form__seleccion" name="cbx_distritos">
-						<c:forEach items="${lstDistritos}" var="d">
-			                <option class="form__opcion" value="${d.getIdDistrito()}"  ${cli.getIdDistrito()==d.getIdDistrito() ? 'selected' : ''}>${d.getNombreDistrito()}</option>
-						</c:forEach>
-						</select>
-			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" " value="${cli.getDireccion()}" name="txt_direcc" required>
-			                <label for="" class="form__label">Direccion:</label>
-			                <span class="form__line"></span>
-			            </div>
-
-			            <select class="form__seleccion" name="estado">
-			                <option class="form__opcion" value=true  ${cli.isEstadoActivo() ? 'selected' : ''}>Activo</option>
-			                <option class="form__opcion" value=false  ${!cli.isEstadoActivo() ? 'selected' : ''}>Inactivo</option>
-			            </select>
-			            
-			            <div class="form__grupo" align="center">
-			                <input type="email" class="form__input form-control" placeholder=" " value="${cli.getEmail()}" name="txt_correo" required>
-			                <label for="" class="form__label">Correo Electronico:</label>
-			                <span class="form__line"></span>
-			            </div>
-			            <div class="form__grupo" align="center">
-			                <div class="input-group">
-						      <input id="txtPassword" type="password" class="form__input form-control" placeholder="Contraseña" name="txt_pass" required>
-						      <div class="input-group-append">
-				              <button style="color: white;" id="show_password" class="btn btn__cerrar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
-				          	  </div>
-			    			</div>
-			            </div>
-			            </div>
-			            <div class="form__grupo col-12">
-				      		<div class="form__titulo">
-				                <p>INFORMACION DEL ELECTRODOMESTICO</p>
-				            </div>
-			            </div>
-			             <div class="form__contenedor pt-3">
-				            <div class="form__grupo">
-				                <input type="text" class="form__input form-control" placeholder=" " name="txt_numSer" required>
-				                <label for="name" class="form__label">Número de Serie:</label>
-				                <span class="form__line"></span>
-				            </div>
-				           	<select class="form__seleccion" name="cbx_tipos">
-							<c:forEach items="${lstTipos}" var="t">
-				                <option class="form__opcion" value="${t.getId()}">${t.getNombre()}</option>
-							</c:forEach>
-							</select>
-							<div class="form__grupo">
-				                <input type="text" class="form__input form-control" placeholder=" " name="txt_modelo" required>
-				                <label for="name" class="form__label">Modelo:</label>
-				                <span class="form__line"></span>
-				            </div>
-							<select class="form__seleccion" name="cbx_marcas">
-							<c:forEach items="${lstMarcas}" var="m">
-				                <option class="form__opcion" value="${m.getId()}">${m.getNombre()}</option>
-							</c:forEach>
-							</select>
-							<select class="form__seleccion" name="cbx_tipos_Serv" style="height: 40px;">
-								<c:forEach items="${lstServicios}" var="s">
-					                <option class="form__opcion" value="${s.getIdServicio()}">${s.getNomServicio()}</option>
-								</c:forEach>
-							</select>
-							<div class="form__grupo">
-								<textarea class="form__input form-control" name="txt_falla" id="" cols="30" rows="5"
-									placeholder=" "></textarea>
-								<label for="name" class="form__label" >Descripcion de la falla</label>
-							</div>
-				        </div>
-				        <div class="row align-items-center pt-4">
-					      	<div class="form__grupo col-12">
-				                <input name="accion" value="insertar"  class="btn__insertar" type="submit" >INSERTAR      
-				            </div>
-				        </div>
-			   	 </form>
-				<!-- =====  FIN DATOS ===== -->
-		</div>    
+	<!-- CHOOSE -->
+		<c:choose>
+			<c:when test="${cli == null}">
+			<div class="resumen1">
+				<button class="fa-solid fa-plus-square icono3" data-bs-toggle="modal" data-bs-target="#staticBackdrop" ></button>
+					<h2 class="titulo-01">Selecciona un<span> Cliente</span></h2>
+					<table class="tabla" id="tabla" >
+			                <thead class="tabla__titulo">
+			                    <tr class="titulo-col tituloTabla01" id="tabla__fila">
+			                        <th>ID</th>
+									<th>NOMBRES Y APELLIDOS</th>
+									<th>TELEFONO</th>
+									<th>DISTRITO</th>
+									<th>DIRECCION</th>
+									<th>EMAIL</th>
+									<th>ACCION</th>
+			                    </tr>
+			                </thead>
+			                <tbody class="tabla__info">
+			                	<c:forEach items="${lstClientes}" var="c">
+			                    <tr class="titulo-col" id="tabla__fila">
+			                        <td> <c:out value="${c.getIdUsuarioCliente()}"></c:out> </td>
+									<td> <c:out value="${c.getNombreCompleto()}"></c:out> </td>
+									<td> <c:out value="${c.getTelefono()}"></c:out> </td>
+									<td> <c:out value="${c.getDistrito()}"></c:out> </td>
+									<td> <c:out value="${c.getDireccion()}"></c:out> </td>
+									<td> <c:out value="${c.getEmail()}"></c:out> </td>		
+									<td><a href="${context}/ServletAtencionTaller?accion=obtenerDatos&id=${c.getIdPersona()}"><i class="fa-solid fa-square-check icono2" ></i></a></td>
+								</tr>
+			                    </c:forEach>
+			                </tbody>
+		            </table>
+			</div>
+			</c:when>
+			<c:when test="${cli != null}">
+				<div class="resumen2">
+					<h2 class="titulo-02">ATENCION EN <span>EL TALLER</span></h2>
+				        	<!-- ===== DATOS DEL NUEVO CLIENTE===== -->
+							<form class="col-11 formulario needs-validation" action="<%=request.getContextPath()%>/ServletAtencionTaller" method="post" novalidate>
+			
+						        <div class="form__contenedor pt-3">
+						        	
+						            <div class="form__grupo">
+						                <input type="text" class="form__input form-control" placeholder=" "  value="${cli.getNombrePrin()}" name="txt_nom1" required>
+						                <label for="name" class="form__label" >Primer nombre:</label>
+						                <span class="form__line"></span>
+						            </div>
+						            
+						            <div class="form__grupo">
+						                <input type="text" class="form__input form-control"  placeholder=" " value="${cli.getNombreSec()}" name="txt_nom2">
+						                <label for="name" class="form__label">Segundo nombre:</label>
+						                <span class="form__line"></span>
+						            </div>
+						            <div class="form__grupo">
+						                <input type="text" class="form__input form-control" placeholder=" " value="${cli.getApePrin()}" name="txt_ape1" required>
+						                <label for="name" class="form__label">Primer apellido:</label>
+						                <span class="form__line"></span>
+						            </div>
+						            <div class="form__grupo">
+						                <input type="text" class="form__input form-control" placeholder=" " value="${cli.getApeSec()}" name="txt_ape2">
+						                <label for="" class="form__label">Segundo Apellido:</label>
+						                <span class="form__line"></span>
+						            </div>
+						            <select class="form__seleccion" name="cbx_tipodoc">
+						                <option class="form__opcion" value=1  ${cli.getTipoDocumento() == 1 ? 'selected' : ''}>DNI</option>
+						                <option class="form__opcion" value=2  ${cli.getTipoDocumento() == 2 ? 'selected' : ''}>Carne de Extranjerï¿½a</option>
+						                <option class="form__opcion" value=3  ${cli.getTipoDocumento() == 3 ? 'selected' : ''}>Otros</option>
+						            </select>
+						            <div class="form__grupo">
+						                <input type="number" id="num-doc2" class="form__input form-control" placeholder=" " value="${cli.getNroDocumento()}" name="num_doc" required>
+						                <label for="name" class="form__label">Numero de Documento:</label>
+						                <span class="form__line"></span>
+						            </div>
+						            <div class="form__grupo">
+						                <input type="number" id="tel-2" class="form__input form-control" placeholder=" " value="${cli.getTelefono()}" name="num_telef" required>
+						                <label for="name" class="form__label">Telefono:</label>
+						                <span class="form__line"></span>
+						            </div>
+									<select class="form__seleccion" name="cbx_distritos">
+									<c:forEach items="${lstDistritos}" var="d">
+						                <option class="form__opcion" value="${d.getIdDistrito()}"  ${cli.getIdDistrito()==d.getIdDistrito() ? 'selected' : ''}>${d.getNombreDistrito()}</option>
+									</c:forEach>
+									</select>
+						            <div class="form__grupo">
+						                <input type="text" class="form__input form-control" placeholder=" " value="${cli.getDireccion()}" name="txt_direcc" required>
+						                <label for="" class="form__label">Direccion:</label>
+						                <span class="form__line"></span>
+						            </div>
+			
+						            <select class="form__seleccion" name="estado">
+						                <option class="form__opcion" value=true  ${cli.isEstadoActivo() ? 'selected' : ''}>Activo</option>
+						                <option class="form__opcion" value=false  ${!cli.isEstadoActivo() ? 'selected' : ''}>Inactivo</option>
+						            </select>
+						            
+						            <div class="form__grupo" align="center">
+						                <input type="email" class="form__input form-control" placeholder=" " value="${cli.getEmail()}" name="txt_correo" required>
+						                <label for="" class="form__label">Correo Electronico:</label>
+						                <span class="form__line"></span>
+						            </div>
+						            <div class="form__grupo" align="center">
+						                <div class="input-group">
+									      <input id="txtPassword" type="password" class="form__input form-control" placeholder="Contrasena" name="txt_pass" required>
+									      <div class="input-group-append">
+							              <button style="color: white;" id="show_password" class="btn btn__cerrar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
+							          	  </div>
+						    			</div>
+						            </div>
+						            </div>
+						            <div class="form__grupo col-12">
+							      		<div class="form__titulo">
+							                <p>INFORMACION DEL ELECTRODOMESTICO</p>
+							            </div>
+						            </div>
+						             <div class="form__contenedor pt-3">
+							            <div class="form__grupo">
+							                <input type="text" class="form__input form-control" placeholder=" " name="txt_numSer" required>
+							                <label for="name" class="form__label">Numero de Serie:</label>
+							                <span class="form__line"></span>
+							            </div>
+							           	<select class="form__seleccion" name="cbx_tipos">
+										<c:forEach items="${lstTipos}" var="t">
+							                <option class="form__opcion" value="${t.getId()}">${t.getNombre()}</option>
+										</c:forEach>
+										</select>
+										<div class="form__grupo">
+							                <input type="text" class="form__input form-control" placeholder=" " name="txt_modelo" required>
+							                <label for="name" class="form__label">Modelo:</label>
+							                <span class="form__line"></span>
+							            </div>
+										<select class="form__seleccion" name="cbx_marcas">
+										<c:forEach items="${lstMarcas}" var="m">
+							                <option class="form__opcion" value="${m.getId()}">${m.getNombre()}</option>
+										</c:forEach>
+										</select>
+										<select class="form__seleccion" name="cbx_tipos_Serv" style="height: 40px;">
+											<c:forEach items="${lstServicios}" var="s">
+								                <option class="form__opcion" value="${s.getIdServicio()}">${s.getNomServicio()}</option>
+											</c:forEach>
+										</select>
+										<div class="form__grupo">
+											<textarea class="form__input form-control" name="txt_falla" id="" cols="30" rows="5"
+												placeholder=" "></textarea>
+											<label for="name" class="form__label" >Descripcion de la falla</label>
+										</div>
+							        </div>
+							        <div class="pt-4 form__grupo__boton">
+								      	<div class="form__grupo">
+							                <button onclick="location.href='ServletAtencionTaller?accion=cancelar'" class="btn__insertar1">CANCELAR</button> 
+							            </div>
+							            <div class="form__grupo">
+							                <input name="accion" value="confirmar"  class="btn__insertar" type="submit">  
+							            </div>
+							        </div>
+						   	 </form>
+							<!-- =====  FIN DATOS ===== -->
+					</div>
+			</c:when>
+		</c:choose>
+	
+	    
 		<!-- ===== MODAL INSERTAR ===== -->
 	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right: 350px;">
 	  <div class="modal-dialog" >
@@ -212,17 +224,17 @@
 			            </div>
 			            <select class="form__seleccion"  name="cbx_tipodoc">
 			                <option class="form__opcion" value="1">DNI</option>
-			                <option class="form__opcion" value="2">Carne de Extranjería</option>
+			                <option class="form__opcion" value="2">Carne de Extranjeria</option>
 			                <option class="form__opcion" value="3">Otros</option>
 			            </select>
 			            <div class="form__grupo">
 			                <input type="number" id="num-doc1" class="form__input form-control" placeholder=" " name="num_doc" required>
-			                <label for="name" class="form__label">Número de Documento:</label>
+			                <label for="name" class="form__label">Numero de Documento:</label>
 			                <span class="form__line"></span>
 			            </div>
 			            <div class="form__grupo">
 			                <input type="number" id="tel-1" class="form__input form-control" placeholder=" " name="num_telef" required>
-			                <label for="name" class="form__label">Teléfono:</label>
+			                <label for="name" class="form__label">Telefono:</label>
 			                <span class="form__line"></span>
 			            </div>
 						<select class="form__seleccion" name="cbx_distritos">
@@ -242,7 +254,7 @@
 			            </div>
 			            <div class="form__grupo" align="center">
 			                <div class="input-group">
-						      <input id="txtPassword" type="password" class="form__input form-control" placeholder="Contraseña" name="txt_pass" required>
+						      <input id="txtPassword" type="password" class="form__input form-control" placeholder="Contrasena" name="txt_pass" required>
 						      <div class="input-group-append">
 				              <button style="color: white;" id="show_password" class="btn btn__cerrar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
 				          	  </div>
@@ -256,7 +268,7 @@
 			            </div>        
 				        <div class="row align-items-center pt-4">
 					      	<div class="form__grupo col-12">
-				                <input name="accion" value="insertarCliente"  class="btn__insertar" type="submit" >INSERTAR      
+				                <input name="accion" value="insertar"  class="btn__insertar" type="submit" >      
 				            </div>
 				        </div>
 			   	 </form>

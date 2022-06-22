@@ -236,7 +236,7 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 		}
 		return lst;
 	}
-	
+
 	// MÉTODOS PRIVADOS
 	private DtoClienteConsulta recuperarDatosDto(ResultSet rs ) {
 		DtoClienteConsulta cli = new DtoClienteConsulta();

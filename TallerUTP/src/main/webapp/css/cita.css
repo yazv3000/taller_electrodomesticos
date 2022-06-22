@@ -85,6 +85,11 @@ body {
     left: 25px;
     border: none;
 }
+
+.tabla__letra {
+	font-family: "Poppins";
+}
+
 #tabla__fila {
     background: var(--grad-fondo);
     text-align-last: center;
@@ -247,6 +252,12 @@ i {
 }
 
 /* ELECTRODOMESTICO */
+
+.titulo {
+  background: var(--grad-form) !important;
+  outline: 2px solid var(--secundario);
+  border-radius: 5px;
+}
 
 .electrodomestico {
     margin: 40px 0;

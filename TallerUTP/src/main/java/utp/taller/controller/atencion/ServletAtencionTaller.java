@@ -56,7 +56,7 @@ public class ServletAtencionTaller extends HttpServlet {
     	String accion = request.getParameter("accion");
     	
     	switch (accion) {
-		case "insertar":
+		case "confirmar":
 			recuperarDatosCliente(request);
 			recuperarDatos(request);
 			//INSERTAR CLIENTE
@@ -86,10 +86,10 @@ public class ServletAtencionTaller extends HttpServlet {
 		case "obtenerDatos":
 				int idCliente = Integer.parseInt(request.getParameter("id"));
 				cliente = daoCli.consultarId(idCliente);
-				request.getSession().setAttribute("cli", cliente);
+				request.setAttribute("cli", cliente);
 				request.getRequestDispatcher("vista/tecnico/atencionTaller.jsp").forward(request, response);
 			break;
-		case "insertarCliente":
+		case "insertar":
 			recuperarDatosCliente(request);
 			cliente.setContrasena(request.getParameter("txt_pass"));
 			daoCli.insertar(cliente);
@@ -97,6 +97,9 @@ public class ServletAtencionTaller extends HttpServlet {
 			request.getRequestDispatcher("vista/tecnico/atencionTaller.jsp").forward(request, response);
 			break;
 		
+		case "cancelar":
+			request.getRequestDispatcher("vista/tecnico/atencionTaller.jsp").forward(request, response);
+			break;
     	}
     	
     	
