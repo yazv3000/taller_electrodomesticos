@@ -10,13 +10,7 @@ import java.util.List;
 import utp.config.Conexion;
 import utp.taller.entidades.Especialidad;
 
-public class DaoEspecialidad extends Conexion implements CRUD<Especialidad> {
-
-	/*
-	 * TABLA ESPECIALIDAD
-	 * 
-	 * id_servicio | nom_serv | desc_serv
-	 */
+public class DaoEspecialidad extends Conexion {
 
 	Connection cnx = null;
 	PreparedStatement stm = null;
@@ -26,7 +20,7 @@ public class DaoEspecialidad extends Conexion implements CRUD<Especialidad> {
 		List<Especialidad> lst = new ArrayList<Especialidad>();
 		Especialidad esp = null;
 
-		String sql = "select * from especialidad";
+		String sql = "select * from v_especialidades";
 
 		cnx = getConnection();
 		ResultSet rs = null;
@@ -52,20 +46,4 @@ public class DaoEspecialidad extends Conexion implements CRUD<Especialidad> {
 		return lst;
 
 	}
-
-	@Override
-	public Especialidad consultarId(int id) {
-		return null;
-	}
-	
-	@Override
-	public int insertar(Especialidad esp) {		return 0;	}
-
-	@Override
-	public int modificar(Especialidad esp) {		return 0;	}
-
-	@Override
-	public int cambiarEstado(int id, boolean estado) {		return 0;	}
-	
-	
 }

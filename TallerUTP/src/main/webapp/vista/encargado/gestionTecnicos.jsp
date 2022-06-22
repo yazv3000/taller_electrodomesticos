@@ -122,7 +122,7 @@
 			                <option class="form__opcion" value=3  ${tec.getTipoDocumento() == 3 ? 'selected' : ''}>Otros</option>
 			            </select>
 			            <div class="form__grupo">
-			                <input type="text"  pattern="[0-9]{15}" id="num-doc2" class="form__input form-control" placeholder=" " name="num_doc" required>
+			                <input type="text" id="num-doc2" class="form__input form-control" placeholder=" " name="num_doc" required>
 			                <label for="name" class="form__label">Número de Documento:</label>
 			                <span class="form__line"></span>
 			            </div>

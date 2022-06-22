@@ -1,5 +1,6 @@
 package utp.taller.dao;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -72,7 +73,8 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 				tec.setApeSec(rs.getString(6));
 				tec.setTipoDocumento(rs.getInt(7));
 				tec.setNroDocumento(rs.getString(8));
-				tec.setIdEspecialidad(rs.getInt(9));
+				System.out.println(rs.getArray(9));
+				//tec.setIdEspecialidad();
 				tec.setAniosExperiencia(rs.getInt(10));
 				tec.setTelefono(rs.getString(11));
 				tec.setIdDistrito(rs.getInt(12));
@@ -210,6 +212,32 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 		try {
 			stm = cnx.prepareStatement(sql);
 			stm.setBoolean(1, estado);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				tec = recuperarDatosDto(rs);
+				lst.add(tec);
+			}	
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return lst;
+	}
+	
+	public List<DtoTecnicoConsulta> listarDtoTecnicos(String especialidad) {
+		
+		List<DtoTecnicoConsulta> lst = new ArrayList<DtoTecnicoConsulta>();
+		DtoTecnicoConsulta tec = null;
+		String sql = "select * from v_tecnicos where estado_activ and especialidad like ?";
+		
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setString(1, "%"+especialidad+"%");
 			rs = stm.executeQuery();
 
 			while (rs.next()) {

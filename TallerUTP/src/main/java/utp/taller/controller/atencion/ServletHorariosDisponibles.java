@@ -45,7 +45,6 @@ public class ServletHorariosDisponibles extends HttpServlet {
 		}else {
 			String idServicio = request.getParameter("id_servicio");
 			request.getSession().setAttribute("id_servicio", idServicio);	
-			System.out.println("El cliente ha seleccionado el servicio: "+idServicio);
 			listarHorarios(request, response);
 		}	
 	}
@@ -56,10 +55,10 @@ public class ServletHorariosDisponibles extends HttpServlet {
 	protected void listarHorarios(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String accion = request.getParameter("accion");
-		
+	
 		switch (accion) {
 			case "listar":
-				Map<DtoTecnicoConsulta,List<Map<String, List<Horario>>>> lstHorarios = todosLosHorarios();
+				Map<DtoTecnicoConsulta,List<Map<String, List<Horario>>>> lstHorarios = todosLosHorarios(request);
 				
 				request.setAttribute("lsthorario", lstHorarios);
 				request.getRequestDispatcher("/vista/cliente/horarios.jsp").forward(request, response);
@@ -81,20 +80,18 @@ public class ServletHorariosDisponibles extends HttpServlet {
 	}
 	
 	
-	private Map<DtoTecnicoConsulta,List<Map<String, List<Horario>>>> todosLosHorarios() {
+	private Map<DtoTecnicoConsulta,List<Map<String, List<Horario>>>> todosLosHorarios(HttpServletRequest request) {
 
 		DaoTecnico dao = new DaoTecnico();
-		
+		String nombreServicio = request.getParameter("nom_servicio");
+
 		// Lista de técnicos
-		List<DtoTecnicoConsulta> lstTecnicos = dao.listarDtoTecnicos();
+		List<DtoTecnicoConsulta> lstTecnicos = dao.listarDtoTecnicos(nombreServicio);
 		
 		Map<DtoTecnicoConsulta, List<Map<String, List<Horario>>>> lstHorarios = new LinkedHashMap<>();
 		
-		// Recorre la lista de técnicos para obtener su lista de horarios
-		// Map: 	key: DtoTecnicoConsulta
-		// 				value: lstHorarios
 		for (int i = 0; i < lstTecnicos.size(); i++) {
-			lstHorarios.put(lstTecnicos.get(i), obtenerHorario(lstTecnicos.get(i).getIdPersona(), 4));
+			lstHorarios.put(lstTecnicos.get(i), obtenerHorario(lstTecnicos.get(i).getIdPersona(), 7));
 		}
 		
 		return lstHorarios;
@@ -104,7 +101,7 @@ public class ServletHorariosDisponibles extends HttpServlet {
 	private List<Map<String, List<Horario>>> obtenerHorario(int idTecnico, int dias) {
 		
 		DaoHorario dao = new DaoHorario();
-		List<Horario> listahorarios = dao.listar();
+		List<Horario> listahorarios = dao.listar(idTecnico);
 
 		// Fecha de actual
 		Calendar c = Calendar.getInstance();
@@ -113,7 +110,7 @@ public class ServletHorariosDisponibles extends HttpServlet {
 		c.set(Calendar.SECOND, 0);
 		c.set(Calendar.MILLISECOND, 0);
 		Date fecha = c.getTime();
-		
+		c.add(Calendar.DATE, 1);
 		// Lista de horarios (de cada técnico) agrupados en weeks
 		List<Map<String, List<Horario>>> lstHorarioSemana = new ArrayList<>();
 		Map<String, List<Horario>> listaFechaHoras; 
@@ -131,12 +128,11 @@ public class ServletHorariosDisponibles extends HttpServlet {
 				final Date fecha2 = fecha;
 				diaMes = fecha.toInstant().atZone(timeZone).toLocalDate();
 
-				// Filtrar horarios según idTecnico, fecha y ordenarlos
-				listaHoras = listahorarios.stream().filter(h -> h.getIdTecnico() == idTecnico)
+				// Filtrar horarios según fecha y ordenarlos
+				listaHoras = listahorarios.stream()
 						.filter(h -> h.getFechaAtencion().equals(fecha2))
 						.sorted((x, y) -> x.getHoraInicio().compareTo(y.getHoraInicio())).collect(Collectors.toList());
 	
-				
 				// Map: 	key: dd mes
 				// 				value: lstHoras
 				listaFechaHoras.put(diaMes.getDayOfMonth()+" " + diaMes.getMonth(), listaHoras);
