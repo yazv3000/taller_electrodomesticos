@@ -1,15 +1,16 @@
-package utp.taller.entidades;
+package utp.taller.dto;
 
-public class Especialidad {
+public class DtoEspecialidad {
 
 	// ATRIBUTOS
 	private int idEspecialidad;
 	private String nomEsp;
+	private boolean seleccionado;
 
 	// CONSTRUCTORES
-	public Especialidad() {}
+	public DtoEspecialidad() {}
 	
-	public Especialidad(int idEspecialidad, String nomEsp) {
+	public DtoEspecialidad(int idEspecialidad, String nomEsp) {
 		this.idEspecialidad = idEspecialidad;
 		this.nomEsp = nomEsp;
 	}
@@ -20,6 +21,8 @@ public class Especialidad {
 	
 	public String getNomEsp() {		return nomEsp;	}
 	public void setNomEsp(String nomEsp) {		this.nomEsp = nomEsp;	}
-	
+
+	public boolean isSeleccionado() {		return seleccionado;	}
+	public void setSeleccionado(boolean seleccionado) {		this.seleccionado = seleccionado;	}
 	
 }

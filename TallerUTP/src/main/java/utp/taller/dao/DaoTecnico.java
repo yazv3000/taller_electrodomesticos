@@ -1,12 +1,12 @@
 package utp.taller.dao;
 
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import utp.config.Conexion;
@@ -73,8 +73,13 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 				tec.setApeSec(rs.getString(6));
 				tec.setTipoDocumento(rs.getInt(7));
 				tec.setNroDocumento(rs.getString(8));
-				System.out.println(rs.getArray(9));
-				//tec.setIdEspecialidad();
+				String strArrayIds = rs.getString(9);
+				if (strArrayIds.contains("NULL") || strArrayIds.contains("null") || strArrayIds==null) {
+					tec.setIdsEspecialidad(null);
+				}else {
+					String[] strIdsEsp = strArrayIds.substring(strArrayIds.indexOf("{")+1, strArrayIds.indexOf("}")).split(",");
+					tec.setIdsEspecialidad(Arrays.stream(strIdsEsp).mapToInt(Integer::parseInt).toArray());
+				}
 				tec.setAniosExperiencia(rs.getInt(10));
 				tec.setTelefono(rs.getString(11));
 				tec.setIdDistrito(rs.getInt(12));
@@ -95,7 +100,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 
 	@Override
 	public int insertar(Tecnico tec) {
-		String sql = "call sp_nuevo_tecnico(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "call sp_nuevo_tecnico(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
 		try {
 			stm = cnx.prepareStatement(sql);
@@ -110,10 +115,9 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 			stm.setString(9, tec.getDireccion());
 			stm.setString(10, tec.getEmail());
 			stm.setString(11, tec.getContrasena());
-			stm.setInt(12, tec.getIdEspecialidad());
-			stm.setInt(13, tec.getAniosExperiencia());
-			stm.setObject(14, LocalDate.now());
-			stm.setString(15, tec.getRutaFoto());
+			stm.setInt(12, tec.getAniosExperiencia());
+			stm.setObject(13, LocalDate.now());
+			stm.setString(14, tec.getRutaFoto());
 			
 			stm.execute();
 			cnx.close();
@@ -125,7 +129,7 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 
 	@Override
 	public int modificar(Tecnico tec) {
-		String sql = "call sp_actualizar_tecnico(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "call sp_actualizar_tecnico(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		cnx = getConnection();
 		try {
 			stm = cnx.prepareCall(sql);
@@ -142,12 +146,11 @@ public class DaoTecnico extends Conexion implements CRUD<Tecnico> {
 			stm.setString(11, tec.getDireccion());
 			stm.setString(12, tec.getEmail());
 			stm.setString(13, tec.getContrasena());
-			stm.setInt(14, tec.getIdEspecialidad());
-			stm.setInt(15, tec.getAniosExperiencia());
-			stm.setObject(16, LocalDate.now());
-			stm.setObject(17, null);
-			stm.setBoolean(18, tec.isEstadoActivo());
-			stm.setString(19, tec.getRutaFoto());
+			stm.setInt(14, tec.getAniosExperiencia());
+			stm.setObject(15, LocalDate.now());
+			stm.setObject(16, null);
+			stm.setBoolean(17, tec.isEstadoActivo());
+			stm.setString(18, tec.getRutaFoto());
 
 			stm.execute();
 			cnx.close();

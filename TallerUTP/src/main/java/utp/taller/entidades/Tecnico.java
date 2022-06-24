@@ -1,12 +1,9 @@
 package utp.taller.entidades;
 
-import java.util.List;
-
 public class Tecnico extends Persona{
 
 		// ATRIBUTOS
-		private int idEspecialidad;
-		private List<Horario> horariosDisponibles;
+		private int[] idsEspecialidad;
 		private int anios_experiencia;
 		
 		// CONSTRUCTORES
@@ -22,9 +19,7 @@ public class Tecnico extends Persona{
 		public int getAniosExperiencia() {			return anios_experiencia;		}
 		public void setAniosExperiencia(int anios_experiencia) {			this.anios_experiencia = anios_experiencia;		}
 		
-		public int getIdEspecialidad() {return idEspecialidad;	}
-		public void setIdEspecialidad(int especialidad) {	this.idEspecialidad = especialidad;	}
-
-		public List<Horario> getHorariosDisponibles() {			return horariosDisponibles;		}
+		public int[] getIdsEspecialidad() {			return idsEspecialidad;		}
+		public void setIdsEspecialidad(int[] idsEspecialidad) {			this.idsEspecialidad = idsEspecialidad;		}
 
 }

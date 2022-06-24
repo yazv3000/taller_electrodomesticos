@@ -729,6 +729,15 @@ where H.id_horario = id_hora;
 $$
 LANGUAGE SQL;
 ----------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.f_especialidades_x_tecnico(id_tec integer)
+RETURNS TABLE(id_especialidad integer, especialidad character varying, has boolean)
+AS $$
+	select E.id_especialidad, E.especialidad, coalesce(TE.bool,false) from v_especialidades E
+	left join (select id_servicio, true from tecnico_especialidad where id_tecnico = $1) as TE
+	on E.id_especialidad = TE.id_servicio
+$$
+LANGUAGE SQL;
+----------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.f_horarios_x_tecnico(id_tec integer)
     RETURNS TABLE(id_horario integer, id_tecnico integer, fecha_atencion date, hora_inicio time, estado character varying) 
 AS $$
@@ -1016,7 +1025,6 @@ CREATE OR REPLACE PROCEDURE public.sp_nuevo_tecnico
 	direccion text default null,
 	correo character varying default null,
 	contrasena text default null,
- 	id_serv_esp integer default null,
  	a_exp integer default null,
  	fec_ingreso date default CURRENT_DATE,
  	foto character varying default null)
@@ -1030,9 +1038,8 @@ BEGIN
 	(	nombre_1, nombre_2, apellido_1, apellido_2, 
 		id_tipo_doc, nro_doc, telefono, id_distrito, direccion, anios_experiencia, fecha_ingreso, foto)
 	VALUES
-		($1, $2, $3, $4, $5, $6, $7, $8, $9, $13, $14, $15);
+		($1, $2, $3, $4, $5, $6, $7, $8, $9, $12, $13, $14);
 	SELECT max(id_persona) into id_per_tec from public.persona;
-	INSERT INTO tecnico_especialidad (id_tecnico, id_servicio) VALUES (id_per_tec, $12);
 	SELECT f_generar_id_usuario(3) into id_user_tec;
 	INSERT INTO public.usuario
 		(id_user, id_rol, id_persona, email, contra)
@@ -1274,7 +1281,6 @@ CREATE OR REPLACE PROCEDURE public.sp_actualizar_tecnico
 	direcc text default null,
  	correo character varying default null,
  	contrasena text default null,
-	id_esp integer default null,
  	a_exp integer default null,	 
  	fec_ingreso date default null,	
  	fec_baja date default null,	

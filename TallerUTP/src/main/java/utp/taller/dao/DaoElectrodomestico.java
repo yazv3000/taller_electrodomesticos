@@ -40,7 +40,6 @@ public class DaoElectrodomestico extends Conexion implements CRUD<Electrodomesti
 				elec.setIdtipoElectrod(rs.getInt("id_tipo_electro"));
 				elec.setModelo(rs.getString("modelo"));
 				elec.setIdmarca(rs.getInt("id_marca"));
-				System.out.println(elec.getIdmarca());
 				elec.setIdpropietario(rs.getInt("id_propietario"));
 				elec.setEstadoActivo(rs.getBoolean("estado_activ"));
 			}	
@@ -139,6 +138,33 @@ public class DaoElectrodomestico extends Conexion implements CRUD<Electrodomesti
 		
 		return lst;
 	}
+	
+	public DtoElectrodomesticoConsulta  consultarElectrodomesticoId(int id) {
+		
+		DtoElectrodomesticoConsulta elec = new DtoElectrodomesticoConsulta();
+
+		String sql = "select * from v_electrodomesticos where id_electrodomestico = ?";
+		
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, id);
+			rs = stm.executeQuery();
+
+			if (rs.next()) {
+				elec = recuperarDatosDto(rs);
+			}
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return elec;
+	}
+	
 	
 	public List<DtoElectrodomesticoConsulta> listarDtoElectrodomesticos(boolean estado) {
 

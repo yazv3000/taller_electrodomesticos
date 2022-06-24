@@ -1,6 +1,7 @@
 package utp.taller.controller.mantenimiento;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -12,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import utp.taller.dao.DaoDistrito;
 import utp.taller.dao.DaoEspecialidad;
 import utp.taller.dao.DaoTecnico;
+import utp.taller.dto.DtoEspecialidad;
 import utp.taller.dto.DtoTecnicoConsulta;
 import utp.taller.entidades.Distrito;
-import utp.taller.entidades.Especialidad;
 import utp.taller.entidades.Tecnico;
 
 /**
@@ -24,7 +25,8 @@ import utp.taller.entidades.Tecnico;
 public class ServletGestionarTecnico extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	private DaoTecnico dao = new DaoTecnico();
+	private DaoTecnico daoTec = new DaoTecnico();
+	private DaoEspecialidad daoEsp = new DaoEspecialidad();
 	private Tecnico tecnico = new Tecnico();
 	private int idTecnico;
 	private static String tipoLista;
@@ -54,38 +56,47 @@ public class ServletGestionarTecnico extends HttpServlet {
 					recuperarDatos(request);
 					// solo cuando inserta puede darle una contraseña
 					tecnico.setContrasena(request.getParameter("txt_pass"));
-					dao.insertar(tecnico);
+					daoTec.insertar(tecnico);
+					int maxId = daoEsp.maxId();
+					if(tecnico.getIdsEspecialidad()!=null) {
+						daoEsp.actualizar(maxId, tecnico.getIdsEspecialidad());
+					}
     				listar(request, tipoLista);
 				break;
 				 	
 			case "editar":
 				    idTecnico = Integer.parseInt(request.getParameter("id"));
-					tecnico = dao.consultarId(idTecnico);
+					tecnico = daoTec.consultarId(idTecnico);
 					request.setAttribute("tec", tecnico);
 					request.getSession().setAttribute("fila", idTecnico);
     				listar(request, tipoLista);
+    				listarEspecialidadesTecnico(request, idTecnico);
 					break;
 			
 			case "actualizar":
 					recuperarDatos(request);
-					dao.modificar(tecnico);	
+					daoTec.modificar(tecnico);
+					if(tecnico.getIdsEspecialidad()!=null) {
+						daoEsp.actualizar(idTecnico, tecnico.getIdsEspecialidad());
+					}
+					request.getSession().removeAttribute("fila");
 					listar(request, tipoLista);
 					break;
 					
 			case "activar":
 					idTecnico = Integer.parseInt(request.getParameter("id"));
-					dao.cambiarEstado(idTecnico, true);
+					daoTec.cambiarEstado(idTecnico, true);
 					listar(request, tipoLista);
 					break;
 			
 			case "desactivar":
 					idTecnico = Integer.parseInt(request.getParameter("id"));
-					dao.cambiarEstado(idTecnico, false);
+					daoTec.cambiarEstado(idTecnico, false);
 					listar(request, tipoLista);
 					break;
 		}
-    	
-    	listarEpescialidades(request);
+
+    	listarEspecialidades(request);
 		listarDistritos(request);
     	request.getRequestDispatcher("vista/encargado/gestionTecnicos.jsp").forward(request, response);
     }
@@ -98,16 +109,25 @@ public class ServletGestionarTecnico extends HttpServlet {
 		processRequest(request, response);
 	}
 
-	private void listarEpescialidades(HttpServletRequest request) {
-		DaoEspecialidad daoDistr = new DaoEspecialidad();
-		List<Especialidad> lstEspecialidades = daoDistr.listar();
-		request.getSession().getServletContext().setAttribute("lstEspecialidades", lstEspecialidades);
+	private void listarEspecialidades(HttpServletRequest request) {
+		if(request.getSession().getAttribute("lstEspecialidades")==null) {
+			
+			List<DtoEspecialidad> lstEspecialidades = daoEsp.listar();
+			request.getSession().setAttribute("lstEspecialidades", lstEspecialidades);
+		}
+	}
+	
+	private void listarEspecialidadesTecnico(HttpServletRequest request, int idTecnico) {
+		List<DtoEspecialidad> lstEspecialidades = daoEsp.listar(idTecnico);
+		request.setAttribute("lstEspecialidadesTecnico", lstEspecialidades);
 	}
 	
 	private void listarDistritos(HttpServletRequest request) {
-		DaoDistrito daoDistr = new DaoDistrito();
-		List<Distrito> lst = daoDistr.listar();
-		request.getSession().setAttribute("lstDistritos", lst);
+		if(request.getSession().getAttribute("lstDistritos")==null) {
+			DaoDistrito daoDistr = new DaoDistrito();
+			List<Distrito> lst = daoDistr.listar();
+			request.getSession().setAttribute("lstDistritos", lst);
+		}
 	}
 	
 	private void recuperarDatos(HttpServletRequest request) {
@@ -121,11 +141,19 @@ public class ServletGestionarTecnico extends HttpServlet {
 		tecnico.setNroDocumento(request.getParameter("num_doc"));
 		tecnico.setTelefono(request.getParameter("num_telef"));
 		tecnico.setIdDistrito(Integer.parseInt(request.getParameter("cbx_distritos")));
-		tecnico.setIdEspecialidad(Integer.parseInt(request.getParameter("cbx_especialidad")));
 		tecnico.setAniosExperiencia(Integer.parseInt(request.getParameter("experiencia")));
 		tecnico.setDireccion(request.getParameter("txt_direcc"));
 		tecnico.setEmail(request.getParameter("txt_correo"));
 		tecnico.setEstadoActivo(Boolean.parseBoolean(request.getParameter("estado")));
+		
+		String[] idEspStrings = request.getParameterValues("ids_especialidad");
+		if(idEspStrings!=null) {
+			tecnico.setIdsEspecialidad(Arrays.stream(idEspStrings).mapToInt(Integer::parseInt).toArray()); 
+			System.out.println("IDs seleccionados:"+Arrays.toString(idEspStrings));
+		}else{
+			tecnico.setIdsEspecialidad(null);
+			System.out.println("array de ids nulo");
+		}
 	}
 	
 	private void listar(HttpServletRequest request, String tipoLista) {
@@ -134,13 +162,13 @@ public class ServletGestionarTecnico extends HttpServlet {
 
 	 	switch (tipoLista) {
 		case "activos":
-			lst = dao.listarDtoTecnicos(true);
+			lst = daoTec.listarDtoTecnicos(true);
 			break;
 		case "inactivos":
-			lst = dao.listarDtoTecnicos(false);
+			lst = daoTec.listarDtoTecnicos(false);
 			break;	
 		default:
-			lst = dao.listarDtoTecnicos();
+			lst = daoTec.listarDtoTecnicos();
 			break;
 		}
 	 	request.setAttribute("lstConsultaTecnicos", lst);
