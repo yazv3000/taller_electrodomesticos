@@ -1,6 +1,7 @@
 package utp.taller.controller.atencion;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -15,6 +16,7 @@ import utp.taller.dao.DaoDistrito;
 import utp.taller.dao.DaoElectrodomestico;
 import utp.taller.dao.DaoHorario;
 import utp.taller.dao.DaoServicio;
+import utp.taller.dto.DtoClienteConsulta;
 import utp.taller.dto.DtoHoraConsulta;
 import utp.taller.dto.DtoNuevoAtencionTaller;
 import utp.taller.entidades.Cliente;
@@ -44,6 +46,7 @@ public class ServletAtencionTaller extends HttpServlet {
 	private Servicio servicio = new Servicio();
 	private DtoNuevoAtencionTaller atencion = new DtoNuevoAtencionTaller();
 	private DtoHoraConsulta dtoHorario = new DtoHoraConsulta();
+	
     public ServletAtencionTaller() {
         super();
     }
@@ -53,7 +56,8 @@ public class ServletAtencionTaller extends HttpServlet {
     	String accion = request.getParameter("accion");
     	
     	switch (accion) {
-		case "insertar":
+		case "confirmar":
+			recuperarDatosCliente(request);
 			recuperarDatos(request);
 			//INSERTAR CLIENTE
 			daoCli.insertar(cliente);
@@ -64,6 +68,7 @@ public class ServletAtencionTaller extends HttpServlet {
 			atencion.getElectrodomestico().setIdElectrod(dao.getidElectrodomestico());
 			
 			dao.insertaratencionTaller(atencion);
+			request.getRequestDispatcher("vista/tecnico/atencionTaller.jsp").forward(request, response);
 			break;
 			
 		case "tan":
@@ -75,13 +80,28 @@ public class ServletAtencionTaller extends HttpServlet {
 				listarMarcas(request);
 				listarDistritos(request);
 				listarServicios(request);
+				listarClientes(request);
 				request.getRequestDispatcher("vista/tecnico/atencionTaller.jsp").forward(request, response);
 			break;
-			
-			default:
+		case "obtenerDatos":
+				int idCliente = Integer.parseInt(request.getParameter("id"));
+				cliente = daoCli.consultarId(idCliente);
+				request.setAttribute("cli", cliente);
 				request.getRequestDispatcher("vista/tecnico/atencionTaller.jsp").forward(request, response);
+			break;
+		case "insertar":
+			recuperarDatosCliente(request);
+			cliente.setContrasena(request.getParameter("txt_pass"));
+			daoCli.insertar(cliente);
+			listarClientes(request);
+			request.getRequestDispatcher("vista/tecnico/atencionTaller.jsp").forward(request, response);
+			break;
+		
+		case "cancelar":
+			request.getRequestDispatcher("vista/tecnico/atencionTaller.jsp").forward(request, response);
 			break;
     	}
+    	
     	
     }
     
@@ -109,20 +129,11 @@ public class ServletAtencionTaller extends HttpServlet {
 		List<Servicio> lst = daoServi.listar();
 		request.getSession().setAttribute("lstServicios", lst);
 	}
+	private void listarClientes(HttpServletRequest request) {
+		List<DtoClienteConsulta> lst = daoCli.listarDtoClientes();
+		request.getSession().setAttribute("lstClientes", lst);
+	}
 	private void recuperarDatos(HttpServletRequest request) {
-		//RECUPARANDO DATOS DEL CLIENTE
-		
-		cliente.setNombrePrin(request.getParameter("txt_nom1"));
-		cliente.setNombreSec(request.getParameter("txt_nom2"));
-		cliente.setApePrin(request.getParameter("txt_ape1"));
-		cliente.setApeSec(request.getParameter("txt_ape2"));
-		cliente.setTipoDocumento(Integer.parseInt(request.getParameter("cbx_tipodoc")));
-		cliente.setNroDocumento(request.getParameter("num_doc"));
-		cliente.setTelefono(request.getParameter("num_telef"));
-		cliente.setIdDistrito(Integer.parseInt(request.getParameter("cbx_distritos")));
-		cliente.setDireccion(request.getParameter("txt_direcc"));
-		cliente.setEmail(request.getParameter("txt_correo"));
-		cliente.setContrasena(request.getParameter("txt_pass"));
 		//RECUPERANDO DATOS DEL ELECTRODOMESTICO
 		electrodomestico.setNroSerie(request.getParameter("txt_numSer"));
 		
@@ -136,5 +147,18 @@ public class ServletAtencionTaller extends HttpServlet {
 		atencion.setTipoAtencion("En el taller");
 		atencion.setDiagnostico(request.getParameter("txt_falla"));
 		
+	}
+	public void recuperarDatosCliente(HttpServletRequest request) {
+		cliente.setNombrePrin(request.getParameter("txt_nom1"));
+		cliente.setNombreSec(request.getParameter("txt_nom2"));
+		cliente.setApePrin(request.getParameter("txt_ape1"));
+		cliente.setApeSec(request.getParameter("txt_ape2"));
+		cliente.setTipoDocumento(Integer.parseInt(request.getParameter("cbx_tipodoc")));
+		cliente.setNroDocumento(request.getParameter("num_doc"));
+		cliente.setTelefono(request.getParameter("num_telef"));
+		cliente.setIdDistrito(Integer.parseInt(request.getParameter("cbx_distritos")));
+		cliente.setDireccion(request.getParameter("txt_direcc"));
+		cliente.setEmail(request.getParameter("txt_correo"));
+		cliente.setContrasena(request.getParameter("txt_pass"));
 	}
 }

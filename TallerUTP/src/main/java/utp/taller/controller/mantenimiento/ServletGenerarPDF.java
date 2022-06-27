@@ -123,7 +123,10 @@ public class ServletGenerarPDF extends HttpServlet {
 		
 		try {
 			ServletOutputStream out = response.getOutputStream();
-			InputStream reporte = this.getServletConfig()
+			InputStream ReporteCliente = this.getServletConfig()
+                    .getServletContext()
+                    .getResourceAsStream("img/ReporteCliente.PNG"), 
+                    reporte = this.getServletConfig()
                             .getServletContext()
                             .getResourceAsStream("reportesJasper/ReporteCliente.jasper"); // ruta y nombre del archivo Jasper
 			 JasperReport report = (JasperReport) JRLoader.loadObject(reporte);
@@ -163,8 +166,11 @@ public class ServletGenerarPDF extends HttpServlet {
 		JRBeanArrayDataSource ds = new JRBeanArrayDataSource(lstPresupuesto.toArray());
 		try {
 			ServletOutputStream out = response.getOutputStream();
-			InputStream reporte = this.getServletConfig()
-                            .getServletContext()
+			InputStream HojaServicio = this.getServletConfig()
+							.getServletContext()
+							.getResourceAsStream("img/hojaServicio.PNG"),
+							reporte = this.getServletConfig()
+							.getServletContext()
                             .getResourceAsStream("reportesJasper/HojaServicio.jasper"); // ruta y nombre del archivo Jasper
 			System.out.println(reporte);
 			 JasperReport report = (JasperReport) JRLoader.loadObject(reporte);
@@ -185,6 +191,7 @@ public class ServletGenerarPDF extends HttpServlet {
              parameters.put("hora", dtoAte.getHoraCita());
              parameters.put("servicio",dtoAte.getServicio().getNomServicio());
              parameters.put("precioTotal", "S/."+montoTotal);
+             parameters.put("HojaServicio", HojaServicio);
              response.setContentType("application/pdf");
              response.addHeader("Content-disposition", "inline; filename=hojaServicio2.pdf"); // Nombre con el que se descarga el archivo pdf
              JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, ds);
@@ -206,7 +213,10 @@ public class ServletGenerarPDF extends HttpServlet {
 		JRBeanArrayDataSource ds = new JRBeanArrayDataSource(numeros);
 		try {
 			ServletOutputStream out = response.getOutputStream();
-			InputStream reporte = this.getServletConfig()
+			InputStream CitaCabecera = this.getServletConfig()
+                    .getServletContext()
+                    .getResourceAsStream("img/cita.PNG"),
+                    reporte = this.getServletConfig()
                             .getServletContext()
                             .getResourceAsStream("reportesJasper/CitaTecnica.jasper"); // ruta y nombre del archivo Jasper
 			 JasperReport report = (JasperReport) JRLoader.loadObject(reporte);
@@ -227,6 +237,7 @@ public class ServletGenerarPDF extends HttpServlet {
              parameters.put("fechaCita", dtoAte.getFechaCita().toString());
              parameters.put("hora", dtoAte.getHoraCita());
              parameters.put("servicio",dtoAte.getServicio().getNomServicio());
+             parameters.put("CitaCabecera", CitaCabecera);
              
              response.setContentType("application/pdf");
              response.addHeader("Content-disposition", "inline; filename=ReporteCitaTecnica.pdf"); // Nombre con el que se descarga el archivo pdf

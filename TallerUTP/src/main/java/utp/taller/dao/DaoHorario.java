@@ -25,18 +25,19 @@ public class DaoHorario extends Conexion {
 	PreparedStatement stm = null;
 
 	
-	public List<Horario> listar() {
+	public List<Horario> listar(int idTecnico) {
 
 		List<Horario> lst = new ArrayList<Horario>();
 		Horario h = null;
 
-		String sql = "select * from v_horarios";
+		String sql = "select * from f_horarios_x_tecnico(?)";
 
 		cnx = getConnection();
 		ResultSet rs = null;
 
 		try {
 			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, idTecnico);
 			rs = stm.executeQuery();
 
 			while (rs.next()) {
@@ -152,6 +153,7 @@ public class DaoHorario extends Conexion {
 		}
 		return idHorario;
 	}
+	
 	public List<Horario> listarporIdTecnico(int idTec) {
 
 		List<Horario> lst = new ArrayList<Horario>();

@@ -182,6 +182,30 @@ public class DaoAtencion extends Conexion {
 		}
 		return lst;
 	}
+	public List<DtoCitaConsulta> listarAtencionesCliente(int idCliente){
+		List<DtoCitaConsulta> lst = new ArrayList<DtoCitaConsulta>();
+		String sql = "select * from v_citas_domicilio where id_cliente=? ";
+		DtoCitaConsulta cita = null;
+		cnx = getConnection();
+		ResultSet rs = null;
+
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, idCliente);
+			rs = stm.executeQuery();
+
+			while (rs.next()) {
+				cita = recuperarDatosCita(rs);
+				cita.setServicios(recuperarServiciosAtencion(cita.getIdAtencion()));
+				lst.add(cita);
+			}	
+			cnx.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return lst;
+	}
 	
 	
 	public DtoCitaConsulta recuperarDatosCita(ResultSet rs) {

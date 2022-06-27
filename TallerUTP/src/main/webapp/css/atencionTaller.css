@@ -1,0 +1,353 @@
+/*===== GOOGLE FONTS =====*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap");
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Roboto:wght@100;300;500&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Tangerine&display=swap');
+/*===== VARIABLES CSS =====*/
+
+:root {
+    --primario: rgb(33, 33, 33);
+    --fondo: rgb(25, 23, 21);
+    --secundario: #2473cd ;
+    --grad-form: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    --grad-fondo: linear-gradient(270deg, rgba(23,30,41,1) 0%, rgba(38,45,62,1) 100%);
+    --grad-img: linear-gradient(180deg, rgba(61,154,234,1) 0%, rgba(73,84,238,1) 100%);
+    --grad-boton: linear-gradient(90deg, rgba(96,195,241,1) 0%, rgba(73,58,251,1) 100%);
+    --gradiente: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0px;
+    margin:0
+}
+body{
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background-color: var(--fondo) !important;
+  overflow-y: auto; 
+}
+body::-webkit-scrollbar {
+	width: 10px;
+	background: var(--fondo);
+}
+body::-webkit-scrollbar-thumb {
+	background: var(--secundario);
+	border-radius: 10px;
+}
+p {
+    /* margin-top: 0; */
+    margin-bottom: 0rem !important;
+}
+.modal-content {
+	background-color: var(--primario) !important;
+}
+.formulario {
+    margin: auto;
+    width: 100%;
+/*     max-width: 900px; */
+    padding:10px;
+    text-align: center;
+    background-color: var(--primario);
+    border-radius: 10px;
+}
+
+.form__contenedor {
+    display:grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 23px;
+    padding: 10px
+}
+
+.form__titulo {
+    grid-column: 1/3; 
+    grid-row: 1/2; 
+    color:white;
+    background: var(--gradiente);
+    padding: 10px 0;
+    margin: 0 !important;
+    font-family: "Audiowide";
+    border-radius: 5px;    
+}
+.form__titulo p {
+	margin: 0;
+}
+.form__grupo{
+    position: relative;
+}
+.form__grupo__boton{
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    text-align: -webkit-center;
+}
+.form__input {
+    width: 80%;
+    background-color: var(--fondo) !important;
+    border: 1px solid var(--fondo) !important ;
+    border-radius: 5px;
+    color: white !important;
+    font-size: 16px;
+    font-family: Poppins;
+}
+
+.form__input:focus + .form__label,
+.form__input:not(:placeholder-shown) + .form__label {
+    transform: translateY(-20px) scale(.9);
+    transform-origin: left top;
+    color: var(--secundario);
+}
+
+.form__label {
+    font-family: "Noto sans";
+    font-size: 0.9em;
+    color: gray;
+    position: absolute;
+    top: 0;
+    left: 5px;
+    transform: translateY(10px);
+    transition: .5s, color .3s;
+}
+
+.form__line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width:100%;
+    height: 1px;
+    background-color: rgb(60, 140, 194);
+    transform:scale(0);
+    transform: left bottom;
+    transition: transform .4s;
+}
+
+.form__seleccion {
+    background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    outline: none;
+    border:none;
+    font-family: "Audiowide";
+    color:white;
+    border-radius: 5px;
+    padding-left: 10px; 
+}
+
+.form__opcion {
+    background: var(--primario);
+    font-family:"arial", "Audiowide" !important;
+}
+
+.form__input:focus ~ .form__line,
+.form__input:not(:placeholder-shown) ~ .form__line {
+    transform: scale(1);
+}
+
+.btn__insertar,.btn__insertar1,.btn__modificar{
+    font-size: 1em;
+    font-family: 'Audiowide';
+    text-transform: uppercase;
+    background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    border: 1px solid rgb(61, 61, 192);
+    border-radius: 5px;
+    color: white;
+    transition: 0.6s;
+    font-weight: 400;
+    padding: 10px;
+    width: 130px;
+}
+
+.btn__insertar:hover,.btn__insertar1:hover,.btn__modificar:hover{
+    background: var(--primario);
+    border: 1px solid var(--secundario);
+    color: var(--secundario);
+    cursor: pointer;
+}
+
+@media (max-width: 530px) {
+    .form__titulo {
+        grid-column: 1/2; 
+        grid-row: 1/2; 
+    }
+
+    .form__contenedor {
+        grid-template-columns: repeat(1,1fr);
+        grid-template-rows: repeat(2,1fr);
+    }
+    
+    .form__seleccion {
+        padding: 5px 5px;
+    }
+}
+.titulo-01 {
+    color: white;
+    font-family: "Audiowide";
+    text-align: center;
+    margin-top: 30px;
+}
+
+.titulo-01 span {
+    color: var(--secundario);
+}
+.titulo-02 {
+    color: white;
+    font-family: "Audiowide";
+    text-align: center;
+    margin-top: 30px;
+}
+
+.titulo-02 span {
+    color: var(--secundario);
+}
+.titulo-col {
+    color: white;
+    font-family: "Audiowide";
+    font-size: 0.8rem;
+}
+#tabla__fila {
+    background: var(--primario);
+    text-align-last: center;
+}
+#tabla_wrapper {
+	padding: 0 20px 20px 20px;
+}
+#tabla_length {
+    margin: 20px 0;
+}
+#tabla_length label{
+    color: white;
+    font-family: "Audiowide";
+}
+#tabla_length label select{
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_length label select option{ 
+    color: white;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color:var(--fondo);
+}
+#tabla_filter {
+    margin: 20px 0;
+}
+#tabla_filter label {
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_filter label select {
+    color: white;
+}
+
+#tabla_filter label select option{
+    color: white;
+}
+
+#tabla_filter label input{
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_info {
+    color: white;
+    font-family: "Audiowide";
+}
+
+#tabla_previous {
+    color: white !important;
+    font-family: "Audiowide";
+}
+
+#tabla_next {
+    color: white !important;
+    font-family: "Audiowide";
+}
+.tituloTabla01{
+	background: var(--grad-form) !important;
+    outline: 2px solid var(--secundario);
+    border-radius: 5px;
+}
+.titulo-cita {
+    color: white;
+    text-align: center;
+    font-family: "Audiowide";
+    margin: 20px 0;
+    font-size: 2rem ;
+}
+
+.titulo-cita span {
+    color: var(--secundario);
+}
+.form__titulo2{
+	grid-column: 1/3;
+    grid-row: 1/2;
+    color: white;
+    background: var(--gradiente);
+    padding: 10px 0;
+    margin: 0 !important;
+    font-family: "Audiowide";
+    border-radius: 5px;
+}
+.btn__cerrar{
+	color: white;
+    font-size: 20px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    transition: 0.3s;
+    height: 48px;
+    width: 48px;
+}
+.btn__cerrar:hover {
+	transform: scale(1.1);
+    cursor: pointer;
+}
+.resumen1 {
+	margin: 30px;
+	max-width: 90%;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    background: var(--primario);
+    border-radius: 20px;
+    box-shadow: inset 4px 2px 10px rgb(122 122 122), 4px 2px 10px black;
+    position: relative;
+}
+.resumen2 {
+	margin: 30px 30px 10px 30px;
+	max-width: 90%;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    background: var(--primario);
+    border-radius: 20px;
+    box-shadow: inset 4px 2px 10px rgb(122 122 122), 4px 2px 10px black;
+}
+.icono2 {
+	outline: 1px solid white;
+    color: white;
+    font-size: 20px;
+    padding: 5px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    transition: 0.3s;
+    border: none;
+}
+.icono3 {
+	outline: 1px solid white;
+    color: white;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    transition: 0.3s;
+    position: absolute;
+    top: 30px;
+    left: 34px;
+    border: none;
+}
+.icono3:hover {
+	transform: scale(1.1);
+    cursor: pointer;
+}
