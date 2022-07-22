@@ -161,9 +161,12 @@
 	</div>
 	</c:if>
 	<input type="hidden" name="generarPDF" value="hojaServicio">
-	<button class="actualizar" type="submit" name="accion" value="Presupuesto" style="margin: 0 calc(45% - 0px);">Presupuesto</button><br>
-	<button class="actualizar" type="submit" name="accion" value="Cancelar" style="margin: 0 calc(45% - 0px);">Cancelar</button><br>
-	<button class="actualizar" type="submit" name="accion" value="confirmar" style="margin: 0 calc(45% - 0px);">Confirmar</button>
+	<div class="contendedorBotones" align="center">
+		<button class="botonabajito" type="submit" name="accion" value="Presupuesto" style="margin: 0 calc(45% - 0px);">Presupuesto</button>
+		<button class="botonabajito" type="submit" name="accion" value="Cancelar" style="margin: 0 calc(45% - 0px);">Cancelar</button>
+		<button class="botonabajito" type="submit" name="accion" value="confirmar" style="margin: 0 calc(45% - 0px);">Confirmar</button>
+	</div>
+	
 	
 	</form>
 	<!-- LIBRERIA DATATABLE -->

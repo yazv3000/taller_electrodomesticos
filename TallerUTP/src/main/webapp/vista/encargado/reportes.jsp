@@ -105,7 +105,7 @@
 							<td> <c:out value="${r.getMarca()}"></c:out> </td>
 							<td> <c:out value="${r.getServicio()}"></c:out> </td>	
 							<td>S/. <c:out value="${r.getMonto()}"></c:out> </td>	
-							<td><button class="fa-solid fa-file icono"></button></td>		
+							<td align="center"><a href="${context}/ServletGenerarPDF?generarPDF=hojaServicioReporte&&id=${r.getIdAtencion()}&&nombre=${r.getNombreTecnico()}"><i class="btn__insertar fa-solid fa-file icono"></i></a></td>		
 	                    </tr>
 	                    </c:forEach>
 	                </tbody>

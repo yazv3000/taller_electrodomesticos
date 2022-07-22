@@ -31,14 +31,36 @@ body::-webkit-scrollbar-thumb {
 	background: var(--grad-boton);
 	border-radius: 5px;
 }
-
+.botonabajito{
+	width: 50%;
+    font-size: 20px;
+    font-family: 'Audiowide';
+    text-transform: uppercase;
+    background: linear-gradient(90deg, rgba(50,59,171,1) 0%, rgba(13,129,205,1) 100%);
+    border: 1px solid rgb(61, 61, 192);
+    border-radius: 5px;
+    color: white;
+    transition: 0.6s;
+    font-weight: 400;
+    padding: 10px;
+}
+.botonabajito:hover {
+    background: var(--primario);
+    border: 1px solid var(--secundario);
+    color: var(--secundario);
+    cursor: pointer;
+}
 .contenedor {
     margin: 20px 5%;
     background-color:green;
     padding: 20px;
     border-radius: 20px;
 }
-
+.contendedorBotones{
+	display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 10px;
+}
 .cliente {
     font-family: "Audiowide";
     color: white;
