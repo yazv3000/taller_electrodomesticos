@@ -289,7 +289,7 @@ WITH (
      JOIN electrodomestico e ON e.id_electrodomestico = a.id_electro
      LEFT JOIN persona t ON t.id_persona = h.id_tecnico
      LEFT JOIN persona c ON c.id_persona = e.id_propietario
-  WHERE a.estado_atencion::text = 'Pendiente'::text AND a.estado_activ;
+  WHERE a.estado_atencion::text = 'Pendiente'::text OR a.estado_atencion::text = 'Presupuesto en espera'::text AND a.estado_activ;
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_citas_domicilio
 WITH (
@@ -307,7 +307,7 @@ from atencion A inner join horario_atencion H on A.id_horario = H.id_horario
 inner join v_electrodomesticos E on E.id_electrodomestico = A.id_electro
 left join v_tecnicos T on T.id_persona = H.id_tecnico
 left join v_clientes C on C.id_persona = E.id_propietario  
-where estado_atencion = 'Pendiente'
+where estado_atencion = 'Pendiente' OR a.estado_atencion::text = 'Presupuesto en espera'::text
 and A.estado_activ;
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_atenciones_finalizadas
@@ -534,6 +534,46 @@ LANGUAGE SQL;
 /*********************************************************
   SCRIPT : PROCEDIMIENTOS: taller_utp (POSTGRESQL)
 *********************************************************/
+----------------------------------------------------------
+---nuevo procedimiento
+CREATE OR REPLACE PROCEDURE public.sp_presupuesto_espera(
+	IN id_aten integer,
+	IN id_serv integer,
+	IN pres_aceptado boolean,
+	IN c_visita numeric,
+	IN c_diag numeric,
+	IN c_serv numeric)
+LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+	id_diag integer;
+	id_visit integer;
+	monto numeric;
+	total numeric=0;
+BEGIN
+
+select id_servicio into id_visit from public.servicio where nombre_serv like 'Visita%';
+select id_servicio into id_diag from public.servicio where nombre_serv like 'Diagn_stico%';
+
+update detalle_atencion set monto_servicio = c_visita, estado_completo = true where id_atencion = id_aten and id_servicio = id_visit;
+update detalle_atencion set monto_servicio = c_diag, estado_completo = true where id_atencion = id_aten and id_servicio = id_diag;
+update detalle_atencion set monto_servicio = c_serv where id_atencion = id_aten and id_servicio = id_serv;
+
+IF pres_aceptado THEN
+	update detalle_atencion set estado_completo = true where id_atencion = id_aten and id_servicio = id_serv;
+ELSE
+	update detalle_atencion set observacio_tec = 'Presupuesto no aceptado' where id_atencion = id_aten and id_servicio = id_serv;
+END IF;
+
+FOR monto IN select monto_servicio from detalle_atencion where id_atencion = id_aten
+	loop
+	total = total+COALESCE(monto, 0);
+end loop;
+
+update atencion set monto_total = total, estado_atencion='Presupuesto en espera' where id_atencion = id_aten;
+
+END
+$BODY$;
 ----------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.f_tecnicos_con_horario(mes integer,anyo integer)
     RETURNS TABLE(id_persona integer, nombres character varying) 

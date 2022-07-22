@@ -76,6 +76,7 @@ public class DaoAtencion extends Conexion {
 	}
 	//LISTAR ATENCION
 	public DtoAtencion obtenerAtencion(int idAtencion){
+		System.out.println("Estoy ingresando al daodoo");
 		DtoAtencion ate = null;
 		String sql = "select * from f_resumen_atencion(?)";
 		cnx = getConnection();
@@ -86,6 +87,7 @@ public class DaoAtencion extends Conexion {
 			stm.setInt(1, idAtencion);
 			rs = stm.executeQuery();
 			if (rs.next()) {
+				System.out.println("Buscando registros");
 				ate = new DtoAtencion();
 				ate.setIdAtencion(idAtencion);
 				DtoClienteConsulta cliente = new DtoClienteConsulta();
@@ -124,6 +126,9 @@ public class DaoAtencion extends Conexion {
 				ate.setFechaReservaCita(rs.getDate("fecha_reserva_cita"));
 				ate.setEstado(rs.getString("estado_atencion"));
 			}
+			else {
+				System.out.println("No lo encuentra");
+			}
 			cnx.close();
 		}	catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -131,6 +136,7 @@ public class DaoAtencion extends Conexion {
 		return ate;
 	}
 	
+
 	// LISTAR CITAS
 	public List<DtoCitaConsulta> listarCitasDomicilio(int idTecnico){
 		List<DtoCitaConsulta> lst = new ArrayList<DtoCitaConsulta>();
@@ -156,7 +162,25 @@ public class DaoAtencion extends Conexion {
 		}
 		return lst;
 	}
-
+	
+	public double obtenerMontoTotal(int idAtencion) {
+		double montoTotal = 0;
+		String sql = "select atencion.monto_total from atencion where id_atencion=? ";
+		cnx = getConnection();
+		ResultSet rs = null;
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, idAtencion);
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				montoTotal = rs.getDouble("monto_total");
+			}
+			cnx.close();
+		}	catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return montoTotal;
+	}
 	
 	public List<DtoCitaConsulta> listarCitasCliente(int idCliente){
 		List<DtoCitaConsulta> lst = new ArrayList<DtoCitaConsulta>();
@@ -350,7 +374,53 @@ public class DaoAtencion extends Conexion {
 		}
 		
 	}
-	
+	public void presupuestoEnEspera(int idAtencion, int idServ, double presupuestoServ) {
+		
+		String sql = "call sp_presupuesto_espera(?, ?, ?, ?, ?, ?)";
+		
+		cnx = getConnection();
+		
+		try {
+			stm = cnx.prepareCall(sql);
+			stm.setInt(1, idAtencion);
+			stm.setInt(2, idServ);
+			// TODO
+			stm.setBoolean(3, true);	// presupuesto aceptado
+			stm.setBigDecimal(4, new BigDecimal(10));	// visita
+			stm.setBigDecimal(5, new BigDecimal(25));	// diagnostico
+			stm.setBigDecimal(6, new BigDecimal(presupuestoServ));
+			stm.execute(); 
+			cnx.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+	public void confirmar(int codAtencion) {
+		String sql = "UPDATE public.atencion SET  estado_atencion='Finalizado' WHERE atencion.id_atencion=?;";
+		cnx = getConnection();
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, codAtencion);
+			stm.execute();
+			cnx.close();
+		}	catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	public void cancelarPresupuesto(int codAtencion) {
+		String sql = "UPDATE public.atencion SET  estado_atencion='Cancelado' WHERE atencion.id_atencion=?;";
+		cnx = getConnection();
+		try {
+			stm = cnx.prepareStatement(sql);
+			stm.setInt(1, codAtencion);
+			stm.execute();
+			cnx.close();
+		}	catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	// REPORTES
 		public List<DtoReporteConsulta> listarReportes(){
 			List<DtoReporteConsulta> lst = new ArrayList<DtoReporteConsulta>();

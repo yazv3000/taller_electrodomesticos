@@ -21,7 +21,7 @@
     <div class="tabla__contenido">
         <h3>Tabla de Atenciones</h3>
         <div class="tabla__overflow">
-            <table id="tabla-citas"">
+            <table id="tabla-citas">
                 <thead class="tabla__titulo">
                     <tr>
                         <th>ID</th>

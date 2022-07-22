@@ -36,7 +36,7 @@ import utp.tools.EnvioCorreo;
 @WebServlet("/ServletGenerarPDF")
 public class ServletGenerarPDF extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+	private DaoAtencion daoAte = new DaoAtencion();
 	private EnvioCorreo correo = new EnvioCorreo();
 	public ServletGenerarPDF() {
 		super();
@@ -62,6 +62,9 @@ public class ServletGenerarPDF extends HttpServlet {
 			case "hojaServicio":
 				this.reporteHojaServicio(request,response);
 				break;
+			case "hojaPresupuesto":
+				this.hojaPresupuesto(request, response);
+					break;
 		}
 	}
 
@@ -157,12 +160,53 @@ public class ServletGenerarPDF extends HttpServlet {
 	private void reporteHojaServicio(HttpServletRequest request, HttpServletResponse response) {
 		DtoAtencion dtoAte = (DtoAtencion) request.getSession().getAttribute("dtoAtencion");
 		DtoUsuario dtoTecnico = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");
-		double montoTotal = (double) request.getSession().getAttribute("montoTotal");
+		double montoTotal = daoAte.obtenerMontoTotal(dtoAte.getIdAtencion());
 		List<DtoPresupuesto> lstPresupuesto = (List<DtoPresupuesto>) request.getSession().getAttribute("lstPresupuesto");
 		JRBeanArrayDataSource ds = new JRBeanArrayDataSource(lstPresupuesto.toArray());
 		try {
 			ServletOutputStream out = response.getOutputStream();
 			InputStream HojaServicio = this.getServletConfig().getServletContext().getResourceAsStream("img/hojaServicio.PNG"),
+							reporte = this.getServletConfig().getServletContext().getResourceAsStream("reportesJasper/HojaServicio.jasper"); // ruta y nombre del archivo Jasper
+			 JasperReport report = (JasperReport) JRLoader.loadObject(reporte);
+			 Map<String, Object> parameters = new HashMap();
+			 parameters.put("ds", ds);
+             parameters.put("nombresTecnico", dtoTecnico.getUsername());
+             parameters.put("nombresCli",dtoAte.getCliente().getNombreCompleto());
+             parameters.put("telefonoCli",dtoAte.getCliente().getTelefono());
+             parameters.put("direccionCli",dtoAte.getCliente().getDireccion());
+             parameters.put("tipo",dtoAte.getElectrodomesticoTipo().getNombre());
+             parameters.put("numeroSerie",dtoAte.getElectrodomestico().getNroSerie());
+             parameters.put("marca", dtoAte.getElectrodomesticoMarca().getNombre());
+             parameters.put("modelo",dtoAte.getElectrodomestico().getModelo());
+             parameters.put("falla", dtoAte.getFallaDescrita());
+             parameters.put("fechaReserva", dtoAte.getFechaReservaCita().toString());
+             parameters.put("fechaCita", dtoAte.getFechaCita().toString());
+             parameters.put("hora", dtoAte.getHoraCita());
+             parameters.put("servicio",dtoAte.getServicio().getNomServicio());
+             parameters.put("precioTotal", "S/."+montoTotal);
+             parameters.put("HojaServicio", HojaServicio);
+             response.setContentType("application/pdf");
+             response.addHeader("Content-disposition", "inline; filename=hojaServicio2.pdf"); // Nombre con el que se descarga el archivo pdf
+             JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, ds);
+             JasperExportManager.exportReportToPdfStream(jasperPrint, out);
+             JasperExportManager.exportReportToPdfFile( jasperPrint, "reporte.pdf"); // guardar el pdf (hoja de servicio)
+             out.flush();
+             out.close();
+		} catch (Exception e) {	
+			throw new RuntimeException(e);
+		}
+		correo.enviarCorreo(dtoAte.getCliente().getEmail());
+	}
+	
+	private void hojaPresupuesto(HttpServletRequest request, HttpServletResponse response) {
+		DtoAtencion dtoAte = (DtoAtencion) request.getSession().getAttribute("dtoAtencion");
+		DtoUsuario dtoTecnico = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");
+		double montoTotal = (double) request.getSession().getAttribute("montoTotal");
+		List<DtoPresupuesto> lstPresupuesto = (List<DtoPresupuesto>) request.getSession().getAttribute("lstPresupuesto");
+		JRBeanArrayDataSource ds = new JRBeanArrayDataSource(lstPresupuesto.toArray());
+		try {
+			ServletOutputStream out = response.getOutputStream();
+			InputStream HojaServicio = this.getServletConfig().getServletContext().getResourceAsStream("img/Presupuesto.PNG"),//NO TE OLVIDES DE CREAR UN NUEVO JASPER CON TITULO INFORMACION DLE PRESUPUESTO
 							reporte = this.getServletConfig().getServletContext().getResourceAsStream("reportesJasper/HojaServicio.jasper"); // ruta y nombre del archivo Jasper
 			 JasperReport report = (JasperReport) JRLoader.loadObject(reporte);
 			 Map<String, Object> parameters = new HashMap();

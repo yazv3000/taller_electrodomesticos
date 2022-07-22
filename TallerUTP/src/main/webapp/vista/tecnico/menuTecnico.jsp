@@ -30,6 +30,10 @@
                         <div class="nav__linea"></div>
                     </li>
                     <li class="nav__item">
+                        <a href="${context}/ActualizarPresupuesto" class="nav__link" target="marco">Presupuestos</a>
+                        <div class="nav__linea"></div>
+                    </li>
+                    <li class="nav__item">
                         <a href="${context}/ServletHorariosDisponibles?accion=listarTecnico" class="nav__link" target="marco">Horarios</a>
                         <div class="nav__linea"></div>
                     </li>  

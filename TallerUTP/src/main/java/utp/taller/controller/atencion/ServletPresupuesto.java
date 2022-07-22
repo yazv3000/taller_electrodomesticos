@@ -39,7 +39,6 @@ public class ServletPresupuesto extends HttpServlet {
 	private double acumuladoActi=0;
 	private double acumuladoPiezi=0;
 	
-	
     public ServletPresupuesto() {
         super();
     }
@@ -126,42 +125,61 @@ public class ServletPresupuesto extends HttpServlet {
 			
 		case "confirmar":
 			DtoAtencion dtoAtencion = (DtoAtencion) request.getSession().getAttribute("dtoAtencion");
-			
-			int idServ =(int) request.getSession().getAttribute("id_servicio");
-			
 			DaoAtencion daoAte = new DaoAtencion();
-			DaoActividad daoAct = new DaoActividad();
-			DaoPieza daoPi = new DaoPieza();
-			
-			
-			double presupuestoServ = (double) request.getSession().getAttribute("presupuesto");
-			double costoPiezas = (double) request.getSession().getAttribute("presupuesto2");
-			double montoTotal = presupuestoServ + costoPiezas;
-			System.out.println("ID SERVICIO: "+idServ);
-			System.out.println("Total de actividades: "+actividadesSeleccionadas.size());
-			System.out.println("Total de piezas diferentes: "+piezasSeleccionadas.size());
-			System.out.println("Servicio + venta: "+presupuestoServ+"+"+costoPiezas);
-			
-			daoAct.agregar_actividad_servicio(dtoAtencion.getIdAtencion(), idServ, actividadesSeleccionadas);
-			if(piezasSeleccionadas!=null) {
-				if(piezasSeleccionadas.size()>0)
-					daoAte.agregarVenta(dtoAtencion.getIdAtencion(), costoPiezas);
-					daoPi.uso_pieza(dtoAtencion.getIdAtencion(), piezasSeleccionadas);
-			}
-			
-			daoAte.finalizarAtencionDomicilio(dtoAtencion.getIdAtencion(), idServ, presupuestoServ);
+			request.getSession().setAttribute("dtoAtencion", dtoAtencion);
 			//OBTENIENDO ISTA PRESUPUESTO
 			lstPresupues=daoAte.listarPresupuesto(dtoAtencion.getIdAtencion());
 			
 			limpiarListas();
 			
 			request.getSession().setAttribute("lstPresupuesto", lstPresupues);
-			request.getSession().setAttribute("montoTotal", montoTotal);
-			request.getSession().setAttribute("dtoAtencion", dtoAtencion);
 			request.getRequestDispatcher("/ServletGenerarPDF?generarPDF=hojaServicio").forward(request, response);
+			daoAte.confirmar(dtoAtencion.getIdAtencion());
 			return;
-
-		}		
+		case "Presupuesto":
+			DtoAtencion dtoAtencion2 = (DtoAtencion) request.getSession().getAttribute("dtoAtencion");
+			
+			int idServ2 =(int) request.getSession().getAttribute("id_servicio");
+			
+			DaoAtencion daoAte2 = new DaoAtencion();
+			DaoActividad daoAct2 = new DaoActividad();
+			DaoPieza daoPi2 = new DaoPieza();
+			
+			
+			double presupuestoServ2 = (double) request.getSession().getAttribute("presupuesto");
+			double costoPiezas2 = (double) request.getSession().getAttribute("presupuesto2");
+			double montoTotal2 = presupuestoServ2 + costoPiezas2;
+			System.out.println("ID SERVICIO: "+idServ2);
+			System.out.println("Total de actividades: "+actividadesSeleccionadas.size());
+			System.out.println("Total de piezas diferentes: "+piezasSeleccionadas.size());
+			System.out.println("Servicio + venta: "+presupuestoServ2+"+"+costoPiezas2);
+			
+			daoAct2.agregar_actividad_servicio(dtoAtencion2.getIdAtencion(), idServ2, actividadesSeleccionadas);
+			if(piezasSeleccionadas!=null) {
+				if(piezasSeleccionadas.size()>0)
+					daoAte2.agregarVenta(dtoAtencion2.getIdAtencion(), costoPiezas2);
+					daoPi2.uso_pieza(dtoAtencion2.getIdAtencion(), piezasSeleccionadas);
+			}
+			
+			daoAte2.presupuestoEnEspera(dtoAtencion2.getIdAtencion(), idServ2, presupuestoServ2);
+			//OBTENIENDO ISTA PRESUPUESTO
+			lstPresupues=daoAte2.listarPresupuesto(dtoAtencion2.getIdAtencion());
+			
+			limpiarListas();
+			
+			request.getSession().setAttribute("lstPresupuesto", lstPresupues);
+			request.getSession().setAttribute("montoTotal", montoTotal2);
+			request.getSession().setAttribute("dtoAtencion", dtoAtencion2);
+			request.getRequestDispatcher("/ServletGenerarPDF?generarPDF=hojaPresupuesto").forward(request, response);
+			break;
+		case "Cancelar":
+			DtoAtencion dtoAtencion3 = (DtoAtencion) request.getSession().getAttribute("dtoAtencion");
+			DaoAtencion daoAte3 = new DaoAtencion();
+			request.getSession().setAttribute("dtoAtencion", dtoAtencion3);
+			request.getRequestDispatcher("/ServletGenerarPDF?generarPDF=hojaCancelada").forward(request, response);
+			daoAte3.cancelarPresupuesto(dtoAtencion3.getIdAtencion());
+			break;
+		}
 		request.getRequestDispatcher("vista/tecnico/resumenAtencion.jsp").forward(request, response);
 		
 	}
