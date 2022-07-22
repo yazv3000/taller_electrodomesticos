@@ -24,7 +24,7 @@
                     <c:set var="foto_tecnico" value="${horarios.key.getRutaFoto()}" />
                      <c:choose>
                        <c:when test="${foto_tecnico==null}">
-                       <img class="nav__img" src="${context}/default.jpg" alt="">
+                       <img class="nav__img" src="${context}/img/personas/default2.jpeg" alt="">
                        </c:when>
                        <c:otherwise>
 				        <img class="nav__img" src="${context}/${foto_tecnico}" alt="">

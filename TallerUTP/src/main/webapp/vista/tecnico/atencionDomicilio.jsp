@@ -17,34 +17,28 @@
 </head>
 
 <body>
-    <h2 class="titulo-1">Citas <span>Actuales</span></h2>
+    <h2 class="titulo-1">Atenciones <span>Actuales</span></h2>
     <div class="tabla__contenido">
-        <h3>Tabla de Citas</h3>
+        <h3>Tabla de Atenciones</h3>
         <div class="tabla__overflow">
             <table id="tabla-citas"">
                 <thead class="tabla__titulo">
                     <tr>
                         <th>ID</th>
-                        <th>Cliente</th>
-                        <th>Electrodomestico</th>
-                        <th>Direccion</th>
+                        <th>Servicio</th>
                         <th>Fecha</th>
                         <th>Hora</th>
                         <th>Tipo Atencion</th>
-                        <th>Servicio</th>
-                        <th>Detalle</th>
+                        <th>Cliente</th>
+                        <th>Direccion</th>
+                        <th>Electrodomestico</th>
+                        <th>Hoja Servicio</th>
                     </tr>
                 </thead>
                 <tbody class="tabla__info">
                      <c:forEach items="${lstConsultaCitas}" var="ci">      
                     <tr id="tabla__fila">
                         <td class="tabla__columna"><c:out value="${ci.getIdAtencion()}"></c:out></td>
-                        <td  class="tabla__columna"><c:out value="${ci.getNombreCliente()}"></c:out></td>
-                        <td class="tabla__columna"><c:out value="${ci.getTipoElectrodomestico()}"></c:out></td>
-                        <td class="tabla__columna"><c:out value="${ci.getDistritoYdireccion()}"></c:out></td>
-                        <td class="tabla__columna"><c:out value="${ci.getFechaAtencion()}"></c:out></td>
-                        <td class="tabla__columna"><c:out value="${ci.getHoraAtencion()}"></c:out></td>
-                        <td class="tabla__columna"><c:out value="${ci.getLugar()}"></c:out></td>
                         <td>
                         	<table>
                         	<tbody class="tabla__info">
@@ -66,6 +60,13 @@
                         	</tbody>
                         	</table>
                         </td>
+                        <td class="tabla__columna"><c:out value="${ci.getFechaAtencion()}"></c:out></td>
+                        <td class="tabla__columna"><c:out value="${ci.getHoraAtencion()}"></c:out></td>
+                        <td class="tabla__columna"><c:out value="${ci.getLugar()}"></c:out></td>
+                        <td  class="tabla__columna"><c:out value="${ci.getNombreCliente()}"></c:out></td>
+                        <td class="tabla__columna"><c:out value="${ci.getDistritoYdireccion()}"></c:out></td>
+                        <td class="tabla__columna"><c:out value="${ci.getTipoElectrodomestico()}"></c:out></td>
+                        
                         <td  class="tabla__columna">
                         	<a class="informacion" href="${context}/ServletResumenAtencion?id=${ci.getIdAtencion()}" ><i class="fa-solid fa-file-pen icon"></i></a></td>
                     </tr>

@@ -13,17 +13,14 @@ import utp.taller.dto.DtoUsuario;
 import utp.taller.entidades.Cliente;
 
 public class DaoCliente extends Conexion implements CRUD<Cliente>{
-
 	Connection cnx = null;
 	PreparedStatement stm = null;
-	
 	// AUTENTICACIÓN CLIENTE
 	public DtoUsuario validar(String email, String contra) {
 		DtoUsuario dtoClie = new DtoUsuario();
 		String sql = "select * from f_validar_acceso(1,?,?)";
 		cnx = getConnection();
 		ResultSet rs = null;
-
 		try {
 			stm = cnx.prepareStatement(sql);
 			stm.setString(1, email);
@@ -38,14 +35,11 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 				dtoClie.setProfilePic(rs.getString(6));
 			}
 			cnx.close();
-			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
 		return dtoClie;
 	}
-	
 	// OPERACIONES CRUD
 	@Override
 	public Cliente consultarId(int idCliente) {
@@ -80,16 +74,12 @@ public class DaoCliente extends Conexion implements CRUD<Cliente>{
 				cli.setRutaFoto(rs.getString(14));
 				cli.setEstadoActivo(rs.getBoolean(15));
 			}
-			
 			cnx.close();
-			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 		return cli;
-
 	}
-	
 	@Override
 	public int insertar(Cliente cli) {
 		String sql = "call sp_nuevo_cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

@@ -65,8 +65,6 @@ public class ServletGenerarPDF extends HttpServlet {
 		}
 	}
 
-	
-
 	private void reporteTecnico(HttpServletRequest request, HttpServletResponse response) {
 		
 		String filtros[] = (String[]) request.getSession().getAttribute("filtros");
@@ -157,21 +155,16 @@ public class ServletGenerarPDF extends HttpServlet {
 	}
 
 	private void reporteHojaServicio(HttpServletRequest request, HttpServletResponse response) {
-		
 		DtoAtencion dtoAte = (DtoAtencion) request.getSession().getAttribute("dtoAtencion");
-		System.out.println(dtoAte);
 		DtoUsuario dtoTecnico = (DtoUsuario) request.getSession().getAttribute("dtoUsuario");
 		double montoTotal = (double) request.getSession().getAttribute("montoTotal");
 		List<DtoPresupuesto> lstPresupuesto = (List<DtoPresupuesto>) request.getSession().getAttribute("lstPresupuesto");
 		JRBeanArrayDataSource ds = new JRBeanArrayDataSource(lstPresupuesto.toArray());
 		try {
 			ServletOutputStream out = response.getOutputStream();
-			InputStream reporte = this.getServletConfig()
-                            .getServletContext()
-                            .getResourceAsStream("reportesJasper/HojaServicio.jasper"); // ruta y nombre del archivo Jasper
-			System.out.println(reporte);
+			InputStream HojaServicio = this.getServletConfig().getServletContext().getResourceAsStream("img/hojaServicio.PNG"),
+							reporte = this.getServletConfig().getServletContext().getResourceAsStream("reportesJasper/HojaServicio.jasper"); // ruta y nombre del archivo Jasper
 			 JasperReport report = (JasperReport) JRLoader.loadObject(reporte);
-			 System.out.println("ENTRE AL DRIVER");
 			 Map<String, Object> parameters = new HashMap();
 			 parameters.put("ds", ds);
              parameters.put("nombresTecnico", dtoTecnico.getUsername());
@@ -188,6 +181,7 @@ public class ServletGenerarPDF extends HttpServlet {
              parameters.put("hora", dtoAte.getHoraCita());
              parameters.put("servicio",dtoAte.getServicio().getNomServicio());
              parameters.put("precioTotal", "S/."+montoTotal);
+             parameters.put("HojaServicio", HojaServicio);
              response.setContentType("application/pdf");
              response.addHeader("Content-disposition", "inline; filename=hojaServicio2.pdf"); // Nombre con el que se descarga el archivo pdf
              JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, ds);

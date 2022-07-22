@@ -122,21 +122,11 @@
 			                <option class="form__opcion" value=3  ${tec.getTipoDocumento() == 3 ? 'selected' : ''}>Otros</option>
 			            </select>
 			            <div class="form__grupo">
-			                <input type="text"  pattern="[0-9]{15}" id="num-doc2" class="form__input form-control" placeholder=" " name="num_doc" required>
+			                <input type="number" id="num-doc1" class="form__input form-control" placeholder=" " name="num_doc" required>
 			                <label for="name" class="form__label">Número de Documento:</label>
 			                <span class="form__line"></span>
 			            </div>
-			            <select class="form__seleccion" name="cbx_especialidad">
-							<c:forEach items="${lstEspecialidades}" var="e">
-				                <option class="form__opcion" value="${e.getIdEspecialidad()}">${e.getNomEsp()}</option>
-							</c:forEach>
-			            </select>
-			            <div class="form__grupo">
-			                <input type="number" id="tel-2" class="form__input form-control" placeholder=" " name="num_telef" required>
-			                <label for="name" class="form__label">Teléfono:</label>
-			                <span class="form__line"></span>
-						</div>
-						<select class="form__seleccion" name="cbx_distritos">
+			            <select class="form__seleccion" name="cbx_distritos">
 							<c:forEach items="${lstDistritos}" var="d">
 								<option class="form__opcion" value="${d.getIdDistrito()}">${d.getNombreDistrito()}</option>
 							</c:forEach>
@@ -146,6 +136,23 @@
 			                <label for="" class="form__label">Direccion:</label>
 			                <span class="form__line"></span>
 			            </div>
+			           	<div class="form__grupo seleccion__especialidades">
+							<label for="" class="label__especialidades">Especialidades:</label>
+							<table style="width: 100%">
+			                        <c:forEach items="${lstEspecialidades}" var="e">
+			                            <tr class="tabla__fila">
+			                           		<td><input name="ids_especialidad" value="${e.getIdEspecialidad()}" type="checkbox"></td>
+			                                <td><c:out value="${e.getNomEsp()}"></c:out></td>
+			                            </tr>
+			                        </c:forEach>
+							 </table>
+						</div>
+			            <div class="form__grupo">
+			                <input type="number" id="tel-2" class="form__input form-control" placeholder=" " name="num_telef" required>
+			                <label for="name" class="form__label">Teléfono:</label>
+			                <span class="form__line"></span>
+						</div>
+						
 			            <div class="form__grupo" align="center">
 			                <input type="number" id="an-exp2" class="form__input form-control" placeholder=" " name="experiencia" required>
 			                <label for="" class="form__label">Años de Experiencia:</label>
@@ -178,7 +185,8 @@
 	</div><!-- /.modal-fade -->
 	
 	<!-- ===== FINAL MODAL INSERTAR ===== -->   
-	    
+	  
+	 <c:if test="${sessionScope.fila != null}">
 	<!-- ===== MODAL MODIFICAR ===== -->
 	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right: 350px; !important">
 	  <div class="modal-dialog" >
@@ -216,7 +224,7 @@
 			                <span class="form__line"></span>
 			            </div>
 			            <div class="form__grupo">
-			                <input type="text" class="form__input form-control" placeholder=" " value="${tec.getApeSec()}" name="txt_ape2" required>
+			                <input type="text" class="form__input form-control" placeholder=" " value="${tec.getApeSec()}" name="txt_ape2">
 			                <label for="" class="form__label">Segundo Apellido:</label>
 			                <span class="form__line"></span>
 			            </div>
@@ -230,17 +238,7 @@
 			                <label for="name" class="form__label">Número de Documento:</label>
 			                <span class="form__line"></span>
 			            </div>
-			            <select class="form__seleccion" name="cbx_especialidad">
-				            <c:forEach items="${lstEspecialidades}" var="e">
-				                <option class="form__opcion" value="${e.getIdEspecialidad()}"  ${tec.getIdEspecialidad()==e.getIdEspecialidad() ? 'selected' : ''}>${e.getNomEsp()}</option>
-							</c:forEach>
-			            </select>
-			            <div class="form__grupo">
-			                <input type="number" id="tel-1" class="form__input form-control" placeholder=" " value="${tec.getTelefono()}" name="num_telef" required>
-			                <label for="name" class="form__label">Teléfono:</label>
-			                <span class="form__line"></span>
-			            </div>
-			           <select class="form__seleccion" name="cbx_distritos">
+			            <select class="form__seleccion" name="cbx_distritos">
 			                <c:forEach items="${lstDistritos}" var="d">
 			               	 <option class="form__opcion" value="${d.getIdDistrito()}"  ${cli.getIdDistrito()==d.getIdDistrito() ? 'selected' : ''}>${d.getNombreDistrito()}</option>
 							</c:forEach>
@@ -250,6 +248,30 @@
 			                <label for="" class="form__label">Direccion:</label>
 			                <span class="form__line"></span>
 			            </div>
+						<div class="form__grupo seleccion__especialidades">
+							<label for="" class="label__especialidades">Especialidades:</label>
+							<table style="width: 100%">
+			                        <c:forEach items="${lstEspecialidadesTecnico}" var="e">
+			                            <tr class="tabla__fila">
+			                           		<td><input name="ids_especialidad" value="${e.getIdEspecialidad()}" type="checkbox" ${e.isSeleccionado()? "checked" : ""}></td>
+			                                <td><c:out value="${e.getNomEsp()}"></c:out></td>
+			                            </tr>
+			                        </c:forEach>
+							 </table>
+						</div>
+						
+			            <div class="form__grupo">
+			                <input type="number" id="tel-1" class="form__input form-control" placeholder=" " value="${tec.getTelefono()}" name="num_telef" required>
+			                <label for="name" class="form__label">Teléfono:</label>
+			                <span class="form__line"></span>
+			            </div>
+			           
+			           <div class="form__grupo" align="center">
+			                <input type="email" class="form__input form-control" placeholder=" " value="${tec.getEmail()}" name="txt_correo" required>
+			                <label for="" class="form__label">Correo Electronico:</label>
+			                <span class="form__line"></span>
+			            </div>
+			           
 			            <div class="form__grupo" align="center">
 			                <input type="number" id="an-exp1" class="form__input form-control" placeholder=" " value="${tec.getAniosExperiencia()}" name="experiencia" required>
 			                <label for="" class="form__label">Años de Experiencia:</label>
@@ -259,11 +281,7 @@
 			                <option class="form__opcion" value=true  ${tec.isEstadoActivo() ? 'selected' : ''}>Activo</option>
 			                <option class="form__opcion" value=false  ${!tec.isEstadoActivo() ? 'selected' : ''}>Inactivo</option>
 			            </select>
-			            <div class="form__grupo" align="center">
-			                <input type="email" class="form__input form-control" placeholder=" " value="${tec.getEmail()}" name="txt_correo" required>
-			                <label for="" class="form__label">Correo Electronico:</label>
-			                <span class="form__line"></span>
-			            </div>
+
 			        </div>
 			        <div class="row align-items-center pt-4">
 			            <div class="form__grupo col-12">
@@ -278,6 +296,7 @@
 	</div><!-- /.modal-fade -->
 	
 	<!-- ===== FINAL MODAL MODIFICAR ===== -->    
+	</c:if>
 	
 	</div><!-- /.contenido -->
 	

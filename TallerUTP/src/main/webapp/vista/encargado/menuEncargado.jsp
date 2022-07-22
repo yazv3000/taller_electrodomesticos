@@ -91,7 +91,7 @@
             </div>
 			
 			<div class="ventana">
-            <iframe src="${context}/ServletGestionarHorario?accion=show" id="ventana__contenido" name="marco"></iframe>
+            <iframe src="${context}/ServletGestionarCliente?accion=listar" id="ventana__contenido" name="marco"></iframe>
 			</div>
         </div>
 

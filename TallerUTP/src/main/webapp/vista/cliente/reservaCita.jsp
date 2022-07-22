@@ -33,7 +33,7 @@
 					<c:set var="foto_tecnico" value="${dtoCita.getDtoHora().getFotoTecnico()}" />
 					<c:choose>
 						<c:when test="${foto_tecnico==null}">
-							<img class="nav__img" src="${context}/default.jpg" alt="">
+							<img class="nav__img" src="${context}/img/personas/default2.jpeg" alt="">
 						</c:when>
 						<c:otherwise>
 							<img class="nav__img" src="${context}/${foto_tecnico}" alt="">
@@ -91,38 +91,39 @@
 							</c:forEach>
 							
 							<!-- PRUEBA ENTRADA EN LINEA -->
-							<c:choose>
-								<c:when test="${contenido ne 'nuevo'}">
-								<tr class="titulo-col" id="tabla__fila">
-									<td style="opacity: 0">a</td>
-									<td>
-										<input class="electro__serie electro__setup" type="number" name="serie">
-									</td>
-									<td>
-										<select class="electro__tipo electro__setup" name="tipo" id="" ${entrada eq 'bloquear'? 'disabled':''}>
-											<c:forEach items="${lstTipos}" var="tipo">
-												<option value="${tipo.getId()}"><c:out value="${tipo.getNombre()}"></c:out></option>
-											</c:forEach>
-										</select>
-									</td>
-									<td>
-										<input class="electro__modelo electro__setup" type="text" name="modelo">
-									</td>
-									<td>
-										<select class="electro__Marca electro__setup" name="marca" id="" ${entrada eq 'bloquear'? 'disabled':''}>
-											<c:forEach items="${lstMarcas}" var="marca">
-												<option value="${marca.getId()}"><c:out value="${marca.getNombre()}"></c:out></option>
-											</c:forEach>
-										</select>
-									</td>
-									<td>
-										<a href="#" style="margin-right: 10px"><i class="fa-solid fa-floppy-disk icono2"></i></a>
-										<a href="#"><i class="fa-solid fa-xmark icono2"></i></a>
-									</td>
-								</tr>
-								</c:when>
-							</c:choose>
 							
+<%-- 							<c:choose> --%>
+<%-- 								<c:when test="${contenido ne 'nuevo'}"> --%>
+<!-- 								<tr class="titulo-col" id="tabla__fila"> -->
+<!-- 									<td style="opacity: 0">a</td> -->
+<!-- 									<td> -->
+<!-- 										<input class="electro__serie electro__setup" type="number" name="serie"> -->
+<!-- 									</td> -->
+<!-- 									<td> -->
+<%-- 										<select class="electro__tipo electro__setup" name="tipo" id="" ${entrada eq 'bloquear'? 'disabled':''}> --%>
+<%-- 											<c:forEach items="${lstTipos}" var="tipo"> --%>
+<%-- 												<option value="${tipo.getId()}"><c:out value="${tipo.getNombre()}"></c:out></option> --%>
+<%-- 											</c:forEach> --%>
+<!-- 										</select> -->
+<!-- 									</td> -->
+<!-- 									<td> -->
+<!-- 										<input class="electro__modelo electro__setup" type="text" name="modelo"> -->
+<!-- 									</td> -->
+<!-- 									<td> -->
+<%-- 										<select class="electro__Marca electro__setup" name="marca" id="" ${entrada eq 'bloquear'? 'disabled':''}> --%>
+<%-- 											<c:forEach items="${lstMarcas}" var="marca"> --%>
+<%-- 												<option value="${marca.getId()}"><c:out value="${marca.getNombre()}"></c:out></option> --%>
+<%-- 											</c:forEach> --%>
+<!-- 										</select> -->
+<!-- 									</td> -->
+<!-- 									<td> -->
+<!-- 										<a href="#" style="margin-right: 10px"><i class="fa-solid fa-floppy-disk icono2"></i></a> -->
+<!-- 										<a href="#"><i class="fa-solid fa-xmark icono2"></i></a> -->
+<!-- 									</td> -->
+<!-- 								</tr> -->
+<%-- 								</c:when> --%>
+<%-- 							</c:choose> --%>
+
 							<!-- PRUEBA ENTRADA EN LINEA -->
 						</tbody>
 					</table>

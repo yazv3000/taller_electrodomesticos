@@ -166,7 +166,8 @@ label {
     display:grid;
     grid-template-columns: repeat(2,1fr);
     gap: 23px;
-    padding: 10px
+    padding: 10px;
+    grid-auto-rows: minmax(35px, auto);
 }
 
 .form__titulo {
@@ -243,6 +244,18 @@ label {
 .form__input:focus ~ .form__line,
 .form__input:not(:placeholder-shown) ~ .form__line {
     transform: scale(1);
+}
+
+.seleccion__especialidades{
+	text-align: left;
+	color: white;
+	grid-row: 5 / 9;
+}
+
+.label__especialidades{
+	transform: scale(.9);
+    transform-origin: left top;
+    color: var(--secundario);
 }
 
 .btn__insertar,.btn__modificar{

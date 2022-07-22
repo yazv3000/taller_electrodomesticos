@@ -84,7 +84,7 @@
 						                <label for="" class="form__label">Segundo Apellido:</label>
 						                <span class="form__line"></span>
 						            </div>
-						            <select class="form__seleccion" name="cbx_tipodoc">
+						            <select class="form__seleccion" name="cbx_tipodoc" >
 						                <option class="form__opcion" value=1  ${cli.getTipoDocumento() == 1 ? 'selected' : ''}>DNI</option>
 						                <option class="form__opcion" value=2  ${cli.getTipoDocumento() == 2 ? 'selected' : ''}>Carne de Extranjer�a</option>
 						                <option class="form__opcion" value=3  ${cli.getTipoDocumento() == 3 ? 'selected' : ''}>Otros</option>
@@ -120,15 +120,8 @@
 						                <label for="" class="form__label">Correo Electronico:</label>
 						                <span class="form__line"></span>
 						            </div>
-						            <div class="form__grupo" align="center">
-						                <div class="input-group">
-									      <input id="txtPassword" type="password" class="form__input form-control" placeholder="Contrasena" name="txt_pass" required>
-									      <div class="input-group-append">
-							              <button style="color: white;" id="show_password" class="btn btn__cerrar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
-							          	  </div>
-						    			</div>
 						            </div>
-						            </div>
+						            <input type="hidden" value="${cli.getContrasena()}" name="txt_pass">
 						            <div class="form__grupo col-12">
 							      		<div class="form__titulo">
 							                <p>INFORMACION DEL ELECTRODOMESTICO</p>
@@ -259,13 +252,7 @@
 				              <button style="color: white;" id="show_password" class="btn btn__cerrar" type="button" onclick="mostrarPassword()"> <span class="fa fa-eye-slash icon"></span> </button>
 				          	  </div>
 			    			</div>
-			            </div>
-			            <div class="form__grupo" align="center">
-			                <div class="input-group">
-						      <input type="file" name="imagen">
-				          	  </div>
-			    			</div>
-			            </div>        
+			            </div>       
 				        <div class="row align-items-center pt-4">
 					      	<div class="form__grupo col-12">
 				                <input name="accion" value="insertar"  class="btn__insertar" type="submit" >      

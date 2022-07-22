@@ -13,7 +13,6 @@ import utp.taller.dao.DaoPieza;
 import utp.taller.entidades.CategoriaPieza;
 import utp.taller.entidades.Pieza;
 
-
 /**
  * Servlet implementation class ServletGestionarTecnico
  */
