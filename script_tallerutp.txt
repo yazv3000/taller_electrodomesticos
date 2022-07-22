@@ -289,7 +289,9 @@ WITH (
      JOIN electrodomestico e ON e.id_electrodomestico = a.id_electro
      LEFT JOIN persona t ON t.id_persona = h.id_tecnico
      LEFT JOIN persona c ON c.id_persona = e.id_propietario
-  WHERE a.estado_atencion::text = 'Pendiente'::text OR a.estado_atencion::text = 'Presupuesto en espera'::text AND a.estado_activ;
+  WHERE a.estado_atencion::text = 'Pendiente'::text OR a.estado_atencion::text = 'Presupuesto en espera'::text 
+ OR a.estado_atencion::text = 'Finalizado'::text
+AND a.estado_activ;
 ----------------------------------------------------------
 CREATE OR REPLACE VIEW public.v_citas_domicilio
 WITH (
